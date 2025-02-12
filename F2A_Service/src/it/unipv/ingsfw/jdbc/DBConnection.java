@@ -14,10 +14,12 @@ public class DBConnection {
 	private static final String PROPERTYDBURL = "DBURL";
 	private static final String PROPERTYNAME = "db_usn";
 	private static final String PROPERTYPSW = "db_psw";
+	private static final String PROPERTYSCHEMA = "schema"; 
 	private static String username;
 	private static String password;
 	private static String dbDriver;
 	private static String dbURL;
+	private static String schema;
 	private static DBConnection conn;
 
 	private static void initialize() {
@@ -29,6 +31,7 @@ public class DBConnection {
 			password = p.getProperty(PROPERTYPSW);
 			dbDriver = p.getProperty(PROPERTYDBDRIVER);
 			dbURL = p.getProperty(PROPERTYDBURL);
+			schema = p.getProperty(PROPERTYSCHEMA);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -36,7 +39,7 @@ public class DBConnection {
 	}
 
 	// corrispettivo del getIstance() presenti nelle classi SINGLETON
-	public static Connection startConnection(Connection conn, String schema) {
+	public static Connection startConnection(Connection conn) {
 		initialize();
 		System.out.println(dbURL);
 

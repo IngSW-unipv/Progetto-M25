@@ -14,8 +14,8 @@ public class ConnectionTest {
 	private Connection conn;
 	
 	public ConnectionTest() {
-		this.schema = "PROVA";
-//		conn=DBConnection.startConnection(conn,schema);
+		//this.schema = "f2a_service";
+		conn=DBConnection.startConnection(conn);
 	}
 	
 	
@@ -23,24 +23,24 @@ public class ConnectionTest {
 		
 		ArrayList<Cliente> result = new ArrayList<Cliente>();
 		
-		conn=DBConnection.startConnection(conn,schema);
+		conn=DBConnection.startConnection(conn);
 		Statement st1;
 		ResultSet rs1;
-		System.out.println("aaa");
+		//System.out.println("aaa");
 
 		try
 		{
 			st1 = conn.createStatement();
-			String query="SELECT * from persona ";
+			String query="SELECT * from clienti ";
 			rs1=st1.executeQuery(query);
 
 			while(rs1.next())
 			{
-				Cliente f=new Cliente(rs1.getString(1), rs1.getString(2),rs1.getString(3),rs1.getString(4), 
-						rs1.getString(5),rs1.getBoolean(6),rs1.getBoolean(7));
+				Cliente f = new Cliente(rs1.getString(1), rs1.getString(2),rs1.getString(3),rs1.getString(4), 
+						rs1.getString(5),rs1.getString(6));
 
 				result.add(f);
-				System.out.println(rs1.getString(1)+""+ rs1.getString(2)+""+rs1.getString(3));
+				System.out.println(f);
 			}
 		}catch (Exception e){e.printStackTrace();}
 
@@ -50,6 +50,7 @@ public class ConnectionTest {
 	
 	
 	public static void main(String []args) {
+		
 		ConnectionTest af=new ConnectionTest();
 		af.selectAll();
 	}

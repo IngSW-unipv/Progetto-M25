@@ -1,4 +1,5 @@
-DBDRIVER = "com.mysql.jdbc.Driver"
-DBURL = "jdbc:mysql://127.0.0.1:3306/%s";
+DBDRIVER = com.mysql.cj.jdbc.Driver
+DBURL = jdbc:mysql://127.0.0.1:3306/%s
 db_usn = root
-db_psw = 1234
+db_psw = 04082002
+schema = f2a_service?serverTimezone=UTC
