@@ -2,19 +2,19 @@ package it.unipv.ingsfw.model.users;
 
 public class Operatore extends Dipendente {
 	
-	private Enum tipoOperatore;
+	private TipoOperatore tipoOperatore;
 
 	public Operatore(String idDipendente, String nome, String cognome, String cf, String email, String password,
-			int stipendio, Enum tipoOperatore) {
+			int stipendio, TipoOperatore tipoOperatore) {
 		super(idDipendente, nome, cognome, cf, email, password, stipendio);
 		this.tipoOperatore = tipoOperatore;
 	}
 
-	public Enum getTipoOperatore() {
+	public TipoOperatore getTipoOperatore() {
 		return tipoOperatore;
 	}
 
-	public void setTipoOperatore(Enum tipoOperatore) {
+	public void setTipoOperatore(TipoOperatore tipoOperatore) {
 		this.tipoOperatore = tipoOperatore;
 	}
 	
