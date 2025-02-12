@@ -1,5 +1,9 @@
 package it.unipv.ingsfw.model.users;
 
-public interface IDipendenteDAO {
+import java.util.ArrayList;
 
+public interface IDipendenteDAO {
+	public ArrayList<Dipendente> selectAll();
+	public ArrayList<Dipendente> selectByTipo(Dipendente fornInput);
+	public boolean insertDipendente(Dipendente f);
 }
