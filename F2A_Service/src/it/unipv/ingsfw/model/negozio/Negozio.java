@@ -8,6 +8,11 @@ public class Negozio extends Tappa {
 		super(idTappa, stato, indirizzo);
 		this.totem = totem;
 	}
+	
+	public Negozio(String idTappa) {
+		super(idTappa, false, null);
+		this.totem = null;
+	}
 
 	public Totem getTotem() {
 		return totem;

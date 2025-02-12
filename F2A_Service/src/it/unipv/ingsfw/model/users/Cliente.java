@@ -26,6 +26,16 @@ public class Cliente {
 		this.email = email;
 		this.password = password;
 	}
+	
+	public Cliente(String idCliente) {
+		super();
+		this.idCliente = idCliente;
+		this.nome = null;
+		this.cognome = null;
+		this.telefono = null;
+		this.email = null;
+		this.password = null;
+	}
 
 	public String getIdCliente() {
 		return idCliente;
