@@ -17,5 +17,9 @@ public class Negozio extends Tappa {
 		this.totem = totem;
 	}
 	
+	@Override
+	public String toString() {
+		return "Negozio " + getIdTappa() + "\nIndirizzo: " + getIndirizzo() + "\n";
+	}
 	
 }

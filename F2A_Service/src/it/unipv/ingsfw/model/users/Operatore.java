@@ -18,6 +18,10 @@ public class Operatore extends Dipendente {
 		this.tipoOperatore = tipoOperatore;
 	}
 	
+	@Override
+	public String toString() {
+		return super.toString() + "\nTipoOperatore " + tipoOperatore;
+	}
 	
 
 }

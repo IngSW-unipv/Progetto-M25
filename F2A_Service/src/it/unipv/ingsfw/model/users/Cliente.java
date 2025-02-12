@@ -1,14 +1,14 @@
 package it.unipv.ingsfw.model.users;
 
 public class Cliente {
-	
+
 	private String idCliente;
 	private String nome;
 	private String cognome;
 	private String telefono;
 	private String email;
 	private String password;
-	
+
 	/**
 	 * @param idCliente
 	 * @param nome
@@ -74,7 +74,11 @@ public class Cliente {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "Cliente "+ idCliente + "\nNome: " + nome + "\nCognome: " + cognome + "\nTelefono: "
+				+ telefono + "\nEmail: " + email + "\nPassword " + password;
+	}
 
 }

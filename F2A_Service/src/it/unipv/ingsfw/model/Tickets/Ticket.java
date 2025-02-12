@@ -42,4 +42,9 @@ public class Ticket {
 		this.stato = stato;
 	}
 	
+	@Override
+	public String toString() {
+		return  "\nTicket " + idTicket + "\nTipologia: " + tipologia + "\nStato: " + stato;
+	}
+	
 }

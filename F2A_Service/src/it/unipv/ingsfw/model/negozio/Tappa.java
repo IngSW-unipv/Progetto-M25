@@ -47,5 +47,5 @@ public abstract class Tappa {
 
 	public void setIndirizzo(String indirizzo) {
 		this.indirizzo = indirizzo;
-	}	
+	}
 }

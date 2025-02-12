@@ -87,7 +87,11 @@ public abstract class Dipendente {
 		this.stipendio = stipendio;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "Dipendente "+ idDipendente + "\nNome: " + nome + "\nCognome: " + cognome + "\ncf: "
+				+ cf + "\nEmail: " + email + "\nPassword " + password;
+	}
 	
 	
 	

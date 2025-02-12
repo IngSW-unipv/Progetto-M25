@@ -17,5 +17,9 @@ public class Corriere extends Dipendente {
 	public void setStatoCorriere(StatoCorriere statoCorriere) {
 		this.statoCorriere = statoCorriere;
 	}
-
+	
+	@Override
+	public String toString() {
+		return super.toString() + "\nStatoCorriere " + statoCorriere;
+	}
 }

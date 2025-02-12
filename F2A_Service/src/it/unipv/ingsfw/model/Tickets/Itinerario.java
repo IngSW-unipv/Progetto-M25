@@ -33,6 +33,17 @@ public class Itinerario {
 		this.listaTappeNegozi = listaTappeNegozi;
 	}
 	
+	@Override
+	public String toString() {
+		String itinerario = "Itinerario " + idItinerario + "\nTappe:\n";
+		
+		for(Negozio n: listaTappeNegozi)
+			itinerario += n.toString();
+		
+		return  itinerario;
+		
+	}
+	
 	
 	//public Negozio getTappaCorrente() {
 	//}
