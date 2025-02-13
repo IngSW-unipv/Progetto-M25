@@ -1,5 +1,10 @@
 package it.unipv.ingsfw.model.lavorazioneCapi;
 
-public interface ICatenaLavorazioneDAO {
+import java.util.ArrayList;
 
+public interface ICatenaLavorazioneDAO {
+	
+	public ArrayList<CatenaLavorazione> selectAll();
+	public ArrayList<CatenaLavorazione> selectByTipoLavaggio(CatenaLavorazione fornInput);
+	public boolean insertCatena(CatenaLavorazione c);
 }

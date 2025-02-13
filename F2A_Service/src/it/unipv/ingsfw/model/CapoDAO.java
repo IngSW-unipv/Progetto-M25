@@ -104,9 +104,9 @@ public class CapoDAO implements ICapoDAO {
 			st1.setString(2,c.getStatoCapo().toString());
 			st1.setString(3,c.getDataRitiro().toString());
 			st1.setDouble(4,c.getPrezzoScontato());
-			st1.setString(3,c.getDataUltimaConsegna().toString());
-			st1.setString(3,c.getTipoLavaggio().toString());
-			st1.setString(3,c.getNegozioConsegna().getIdTappa());
+			st1.setString(5,c.getDataUltimaConsegna().toString());
+			st1.setString(6,c.getTipoLavaggio().toString());
+			st1.setString(7,c.getNegozioConsegna().getIdTappa());
 			
 			st1.executeUpdate(query);
 
