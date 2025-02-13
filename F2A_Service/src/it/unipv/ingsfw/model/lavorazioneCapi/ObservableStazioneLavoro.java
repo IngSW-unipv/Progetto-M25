@@ -62,5 +62,4 @@ public class ObservableStazioneLavoro extends Observable {
 		System.out.println(s.getTipo());
 	}*/
 	
-	
 }

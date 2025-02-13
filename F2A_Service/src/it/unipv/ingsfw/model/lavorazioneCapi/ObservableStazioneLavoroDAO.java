@@ -84,15 +84,37 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 
 			conn=DBConnection.startConnection(conn);
 			PreparedStatement st1;
+			PreparedStatement st2;
+			ResultSet rs2;
+			String idCatena = "";
 			
 			boolean esito=true;
+			
+			try
+			{
+				String query="SELECT IDCATENA FROM CATENELAVORAZIONE WHERE IDLAVAGGIO = ? LIMIT 1";
+				st2 = conn.prepareStatement(query);
+				st2.setString(1,s.getTipo().toString());
+				
+				rs2 = st2.executeQuery(query);
+				
+				while(rs2.next())
+				{
+			
+					idCatena = rs2.getString(1);
+				}
 
+			}catch (Exception e){
+				e.printStackTrace();
+				esito=false;
+			}
+			
 			try
 			{
 				String query="INSERT INTO STAZIONILAVORO (IDSTAZIONE,IDCATENA,TIPO,STATO,LIVELLOPRODOTTOLAVAGGIO) VALUES(?,?,?,?,?)";
 				st1 = conn.prepareStatement(query);
 				st1.setString(1,s.getIdStazione());
-				st1.setString(2,null);
+				st1.setString(2,idCatena);
 				st1.setString(3,s.getTipo().toString());
 				st1.setString(4,s.getStatoStazione().toString());
 				st1.setDouble(5,s.getLivelloProdottoLavaggio());

@@ -10,7 +10,7 @@ import it.unipv.ingsfw.model.users.Cliente;
 
 public class ConnectionTest {
 	
-	private String schema;
+	//private String schema;
 	private Connection conn;
 	
 	public ConnectionTest() {
