@@ -4,7 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import it.unipv.ingsfw.jdbc.DBConnection;
 import it.unipv.ingsfw.model.negozio.Negozio;
@@ -14,12 +21,14 @@ public class CapoDAO implements ICapoDAO {
 	
 	//private String schema;
 	private Connection conn;
+	private SimpleDateFormat format;
 
 
 	public CapoDAO() {
 		super();
 		//this.schema = "PROVA";
 		//conn=DBConnection.startConnection(conn,schema);
+		format = new SimpleDateFormat("YYYY-MM-DD");
 	}
 
 
@@ -89,10 +98,12 @@ public class CapoDAO implements ICapoDAO {
 	}
 	
 	@Override
-	public boolean insertCapo(Capo c) {
+	public boolean insertCapo(Capo c) throws ParseException {
 
 		conn=DBConnection.startConnection(conn);
 		PreparedStatement st1;
+		Date parsed;
+		java.sql.Date dataBuona;
 		
 		boolean esito=true;
 
@@ -102,9 +113,17 @@ public class CapoDAO implements ICapoDAO {
 			st1 = conn.prepareStatement(query);
 			st1.setString(1,c.getIdCapo());
 			st1.setString(2,c.getStatoCapo().toString());
-			st1.setString(3,c.getDataRitiro().toString());
+			
+			parsed = c.getDataRitiro();
+			dataBuona = new java.sql.Date(parsed.getTime());
+			st1.setDate(3,dataBuona);
+			
 			st1.setDouble(4,c.getPrezzoScontato());
-			st1.setString(5,c.getDataUltimaConsegna().toString());
+			
+			parsed = c.getDataUltimaConsegna();
+			dataBuona = new java.sql.Date(parsed.getTime());
+			st1.setDate(5,dataBuona);
+			
 			st1.setString(6,c.getTipoLavaggio().toString());
 			st1.setString(7,c.getNegozioConsegna().getIdTappa());
 			
@@ -118,6 +137,10 @@ public class CapoDAO implements ICapoDAO {
 		DBConnection.closeConnection(conn);
 		return esito;
 
+	}
+	
+	public static void main(String[] args) {
+		//da testare inserimento corretto data
 	}
 
 }
