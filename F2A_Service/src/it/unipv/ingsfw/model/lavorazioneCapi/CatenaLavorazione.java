@@ -7,7 +7,7 @@ public class CatenaLavorazione {
 	
 	private String idCatena;
 	private TipoLavaggio tipoLavaggio;
-	private ArrayList<StazioneLavoro> listaStazioni;
+	private ArrayList<ObservableStazioneLavoro> listaStazioni;
 	
 	/**
 	 * @param idCatena
@@ -18,7 +18,7 @@ public class CatenaLavorazione {
 		super();
 		this.idCatena = idCatena;
 		this.tipoLavaggio = tipoLavaggio;
-		this.listaStazioni = new ArrayList<StazioneLavoro>();
+		this.listaStazioni = new ArrayList<ObservableStazioneLavoro>();
 	}
 
 	public String getIdCatena() {
@@ -37,7 +37,7 @@ public class CatenaLavorazione {
 		this.tipoLavaggio = tipoLavaggio;
 	}
 
-	public ArrayList<StazioneLavoro> getListaStazioni() {
+	public ArrayList<ObservableStazioneLavoro> getListaStazioni() {
 		return listaStazioni;
 	}
 
@@ -45,7 +45,7 @@ public class CatenaLavorazione {
 		this.listaStazioni = listaStazioni;
 	}*/
 	
-	public void checkStatoStazione(StazioneLavoro stazione) {
+	public void checkStatoStazione(ObservableStazioneLavoro stazione) {
 		stazione.getStatoStazione().toString();
 	}
 	
