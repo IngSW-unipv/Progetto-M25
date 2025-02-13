@@ -1,4 +1,4 @@
-package it.unipv.ingsfw.model.Tickets;
+package it.unipv.ingsfw.model.tickets;
 
 public enum StatoTicket {
 	//ASSEGNATO, PRESO_IN_CARICO, COMPLETATO
