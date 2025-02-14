@@ -110,20 +110,24 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 		}
 
 		try {
+
+			query2 = "INSERT INTO STAZIONILAVORO (IDSTAZIONE,IDCATENA,TIPO,STATO,LIVELLOPRODOTTOLAVAGGIO) VALUES (?,?,?,?,?)";
+			st1 = conn.prepareStatement(query2);
+			st1.setString(1, s.getIdStazione());
+			st1.setString(2, idCatena);
+			st1.setString(3, s.getTipo().toString());
+			st1.setString(4, s.getStatoStazione().toString());
+			st1.setDouble(5, s.getLivelloProdottoLavaggio());
+
 			/*
-			 * query2="INSERT INTO STAZIONILAVORO (IDSTAZIONE,IDCATENA,TIPO,STATO,LIVELLOPRODOTTOLAVAGGIO) VALUES (?,?,?,?,?)"
-			 * ; st1 = conn.prepareStatement(query2); st1.setString(1,s.getIdStazione());
-			 * st1.setString(2,idCatena); st1.setString(3,s.getTipo().toString());
-			 * st1.setString(4,s.getStatoStazione().toString());
-			 * st1.setDouble(5,s.getLivelloProdottoLavaggio());
+			 * query2 =
+			 * "INSERT INTO STAZIONILAVORO (IDSTAZIONE,IDCATENA,TIPO,STATO,LIVELLOPRODOTTOLAVAGGIO) VALUES ('"
+			 * + s.getIdStazione() + "','" + idCatena + "','" + s.getTipo().toString() +
+			 * "','" + s.getStatoStazione().toString() + "', " +
+			 * s.getLivelloProdottoLavaggio() + ")"; st1 = conn.prepareStatement(query2);
 			 */
 
-			query2 = "INSERT INTO STAZIONILAVORO (IDSTAZIONE,IDCATENA,TIPO,STATO,LIVELLOPRODOTTOLAVAGGIO) VALUES ('"
-					+ s.getIdStazione() + "','" + idCatena + "','" + s.getTipo().toString() + "','"
-					+ s.getStatoStazione().toString() + "', " + s.getLivelloProdottoLavaggio() + ")";
-			st1 = conn.prepareStatement(query2);
-
-			st1.executeUpdate(query2);
+			st1.executeUpdate();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -137,13 +141,14 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 
 	public static void main(String[] args) {
 		ObservableStazioneLavoroDAO st = new ObservableStazioneLavoroDAO();
-		//ObservableStazioneLavoro s = new ObservableStazioneLavoro("S001", TipologiaStazione.ASCIUGATURA, StatoStazione.READY, 100.0);
-		//boolean t = st.insertStazione(s);
-		//if (t)
-			//System.out.println(s);
-		
+		ObservableStazioneLavoro s = new ObservableStazioneLavoro("S001", TipologiaStazione.ASCIUGATURA,
+				StatoStazione.READY, 100.0);
+		boolean t = st.insertStazione(s);
+		if (t)
+			System.out.println(s);
+
 		ArrayList<ObservableStazioneLavoro> obs = st.selectAll();
-		for(ObservableStazioneLavoro o : obs)
+		for (ObservableStazioneLavoro o : obs)
 			System.out.println(o);
 	}
 

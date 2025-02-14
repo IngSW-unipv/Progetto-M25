@@ -238,8 +238,7 @@ public class DipendenteDAO implements IDipendenteDAO {
 		// ResultSet rs1;
 
 		try {
-			String query = "SELECT * FROM DIPENDENTI WHERE EMAIL='" + input.getEmail() + "' AND PASSWORD='"
-					+ input.getPassword() + "'";
+			String query = "SELECT * FROM DIPENDENTI WHERE EMAIL='" + input.getEmail() + "' AND PASSWORD='" + input.getPassword() + "'";
 
 			st1 = conn.prepareStatement(query);
 			st1.executeQuery(query);
