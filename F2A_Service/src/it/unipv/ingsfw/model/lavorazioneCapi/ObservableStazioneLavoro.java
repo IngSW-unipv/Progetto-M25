@@ -3,12 +3,12 @@ package it.unipv.ingsfw.model.lavorazioneCapi;
 import java.util.Observable;
 
 public class ObservableStazioneLavoro extends Observable {
-	
+
 	private String idStazione;
 	private TipologiaStazione tipo;
 	private StatoStazione statoStazione;
 	private double livelloProdottoLavaggio;
-	
+
 	/**
 	 * @param idStazione
 	 * @param tipo
@@ -55,11 +55,17 @@ public class ObservableStazioneLavoro extends Observable {
 	public void setLivelloProdottoLavaggio(double livelloProdottoLavaggio) {
 		this.livelloProdottoLavaggio = livelloProdottoLavaggio;
 	}
-	
+
 	/*
-	public static void main(String[] args) {
-		StazioneLavoro s = new StazioneLavoro("S001", TipologiaStazione.ASCIUGATURA, StatoStazione.READY, 100);
-		System.out.println(s.getTipo());
-	}*/
-	
+	 * public static void main(String[] args) { StazioneLavoro s = new
+	 * StazioneLavoro("S001", TipologiaStazione.ASCIUGATURA, StatoStazione.READY,
+	 * 100); System.out.println(s.getTipo()); }
+	 */
+
+	@Override
+	public String toString() {
+		return "StazioneLavoro " + idStazione + "\nTipo: " + tipo.toString() + "\nStato: " + statoStazione.toString()
+				+ "\nLivelloProdottoLavaggio: " + livelloProdottoLavaggio;
+	}
+
 }

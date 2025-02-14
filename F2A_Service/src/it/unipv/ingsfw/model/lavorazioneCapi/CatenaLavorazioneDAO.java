@@ -5,8 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import it.unipv.ingsfw.jdbc.DBConnection;
+import it.unipv.ingsfw.model.LavaggioDAO;
 import it.unipv.ingsfw.model.TipoLavaggio;
 
 public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO {
@@ -49,7 +51,7 @@ public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO {
 	}
 	
 	@Override
-	public ArrayList<CatenaLavorazione> selectByTipoLavaggio(CatenaLavorazione fornInput)
+	public ArrayList<CatenaLavorazione> selectByTipoLavaggio(CatenaLavorazione input)
 	{
 		ArrayList<CatenaLavorazione> result = new ArrayList<>();
 
@@ -57,20 +59,23 @@ public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO {
 		PreparedStatement st1;
 		ResultSet rs1;
 		CatenaLavorazione s;
-
+		
+		
 		try
 		{
-			String query="SELECT * FROM CATENELAVORAZIONE WHERE IDLAVAGGIO=?";
-
+			LavaggioDAO lav = new LavaggioDAO();
+			HashMap<Integer,String> listaTipiLavaggio = lav.selectAll();
+			
+			String query="SELECT * FROM CATENELAVORAZIONE WHERE IDLAVAGGIO =" + Integer.parseInt(input.getTipoLavaggio().toString());
 			st1 = conn.prepareStatement(query);
-			st1.setString(1, fornInput.getTipoLavaggio().toString());
+			System.out.println(input.getTipoLavaggio().toString());
 			
 			rs1=st1.executeQuery(query);
 
 			while(rs1.next())
 			{
 		
-				s = new CatenaLavorazione(rs1.getString(1),TipoLavaggio.valueOf(rs1.getString(2)));
+				s = new CatenaLavorazione(rs1.getString(1),TipoLavaggio.valueOf(listaTipiLavaggio.get(rs1.getInt(2))));
 
 				result.add(s);
 			}
@@ -105,6 +110,16 @@ public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO {
 		DBConnection.closeConnection(conn);
 		return esito;
 
+	}
+	
+	public static void main(String[] args) {
+		CatenaLavorazioneDAO cl = new CatenaLavorazioneDAO();
+		
+		CatenaLavorazione cl0 = new CatenaLavorazione(null, TipoLavaggio.BIANCHI);
+		ArrayList<CatenaLavorazione> listaCatene = cl.selectByTipoLavaggio(cl0);
+		
+		for(CatenaLavorazione c : listaCatene)
+			System.out.println(c);
 	}
 
 }

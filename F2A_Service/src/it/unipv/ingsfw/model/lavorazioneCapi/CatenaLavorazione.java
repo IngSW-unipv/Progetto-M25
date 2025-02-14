@@ -55,4 +55,12 @@ public class CatenaLavorazione {
 				
 		}
 	}*/
+	
+	@Override
+	public String toString() {
+		String catena = "Catena " + idCatena + "\nTipoLavaggio: " + tipoLavaggio.toString();
+		for(ObservableStazioneLavoro s : listaStazioni)
+			s.toString();
+		return catena;
+	}
 }
