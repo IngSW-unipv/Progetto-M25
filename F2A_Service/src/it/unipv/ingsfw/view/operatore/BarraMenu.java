@@ -1,4 +1,4 @@
-package it.unipv.ingsfw.view;
+package it.unipv.ingsfw.view.operatore;
 
 import java.awt.BorderLayout;
 
@@ -13,12 +13,12 @@ public class BarraMenu extends JMenuBar{
 		setLayout(new BorderLayout());
 		JMenuBar menuBar = new JMenuBar();
         JMenu gestioneStazioni = new JMenu("Gestione Stazioni");
-        JMenu loginMenu = new JMenu("Login");
         JMenu controlloMacchinari = new JMenu("Controllo Macchinari");
-        menuBar.add(loginMenu);
+        JMenu modificaProfilo = new JMenu("Modifica Profilo");
         menuBar.add(gestioneStazioni);
         menuBar.add(controlloMacchinari);
-        add(menuBar, BorderLayout.NORTH);
+        menuBar.add(modificaProfilo);
+        add(menuBar, BorderLayout.CENTER);
 	}
 	
 	

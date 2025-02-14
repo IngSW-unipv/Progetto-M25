@@ -1,4 +1,4 @@
-package it.unipv.ingsfw.view;
+package it.unipv.ingsfw.view.operatore;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

@@ -1,5 +1,6 @@
-package it.unipv.ingsfw.view;
+package it.unipv.ingsfw.view.operatore;
 
+import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
@@ -37,6 +38,11 @@ public class GUILoginOperatore extends JFrame{
 		c.add(menu);
 		c.add(pannello);
 		c.add(b);
+		setLayout(new BorderLayout());
+		add(menu, BorderLayout.NORTH);
+		add(pannello, BorderLayout.CENTER);
+		add(b, BorderLayout.SOUTH);
+		
 	}
 	
 	public static void main(String[] args) {
