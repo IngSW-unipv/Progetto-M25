@@ -2,8 +2,8 @@ package it.unipv.ingsfw.model.users;
 
 public enum TipoOperatore {
 	//MANUTENTORE, RESPONSABILE_STAZIONE
-	MANUTENTORE("Manutentore"),
-	RESPONSABILE_STAZIONE("Responsabile stazione")
+	MANUTENTORE("MANUTENTORE"),
+	RESPONSABILE_STAZIONE("RESPONSABILE STAZIONE")
     ;
 
     private final String tipologia;

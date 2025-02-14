@@ -90,7 +90,7 @@ public abstract class Dipendente {
 	@Override
 	public String toString() {
 		return "Dipendente "+ idDipendente + "\nNome: " + nome + "\nCognome: " + cognome + "\ncf: "
-				+ cf + "\nEmail: " + email + "\nPassword " + password;
+				+ cf + "\nEmail: " + email + "\nPassword: " + password;
 	}
 	
 	

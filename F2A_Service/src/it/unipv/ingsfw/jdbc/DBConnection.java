@@ -41,7 +41,7 @@ public class DBConnection {
 	// corrispettivo del getIstance() presenti nelle classi SINGLETON
 	public static Connection startConnection(Connection conn) {
 		initialize();
-		System.out.println(dbURL);
+		//System.out.println(dbURL);
 
 		if (isOpen(conn))
 			closeConnection(conn);

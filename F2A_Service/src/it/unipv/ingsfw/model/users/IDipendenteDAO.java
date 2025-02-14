@@ -4,6 +4,11 @@ import java.util.ArrayList;
 
 public interface IDipendenteDAO {
 	public ArrayList<Dipendente> selectAll();
-	public ArrayList<Dipendente> selectById(Dipendente fornInput);
+	//public ArrayList<Dipendente> selectById(Dipendente input);
+	public ArrayList<Corriere> selectCorrieri();
+	public ArrayList<Corriere> selectCorrieriLiberi();
+	public ArrayList<Operatore> selectOperatori(Operatore input);
+	public ArrayList<Operatore> selectByTipoOperatore(Operatore input);
+	public boolean selectByEmailPassword(Dipendente input);
 	public boolean insertDipendente(Dipendente d);
 }

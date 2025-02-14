@@ -11,7 +11,7 @@ import it.unipv.ingsfw.jdbc.DBConnection;
 import it.unipv.ingsfw.model.LavaggioDAO;
 import it.unipv.ingsfw.model.TipoLavaggio;
 
-public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO {
+public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO{
 	
 	private Connection conn;
 	
@@ -90,17 +90,18 @@ public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO {
 
 		conn=DBConnection.startConnection(conn);
 		PreparedStatement st1;
+		String query;
 		
 		boolean esito=true;
 		
 		try
 		{
-			String query="INSERT INTO CATENALAVORAZIONE (IDCATENA,IDLAVAGGIO) VALUES(?,?)";
+			query="INSERT INTO CATENELAVORAZIONE (IDCATENA,IDLAVAGGIO) VALUES (?,?)";
 			st1 = conn.prepareStatement(query);
 			st1.setString(1,s.getIdCatena());
 			st1.setString(2,s.getTipoLavaggio().toString());
 			
-			st1.executeUpdate(query);
+			st1.executeUpdate();
 
 		}catch (Exception e){
 			e.printStackTrace();
@@ -112,6 +113,37 @@ public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO {
 
 	}
 	
+	public ArrayList<ObservableStazioneLavoro> selectStazioniByCatena(CatenaLavorazione input){
+		
+		ArrayList<ObservableStazioneLavoro> result = new ArrayList<>();
+
+		conn=DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+		ObservableStazioneLavoro s;
+		
+		
+		try
+		{
+			String query="SELECT * FROM STAZIONILAVORO WHERE IDCATENA ='" + input.getIdCatena() + "'";
+			st1 = conn.prepareStatement(query);
+			
+			rs1=st1.executeQuery(query);
+
+			while(rs1.next())
+			{
+		
+				s = new ObservableStazioneLavoro(rs1.getString(1), TipologiaStazione.valueOf(rs1.getString(3)),
+						StatoStazione.valueOf(rs1.getString(4)), rs1.getDouble(5));
+
+				result.add(s);
+			}
+		}catch (Exception e){e.printStackTrace();}
+
+		DBConnection.closeConnection(conn);
+		return result;
+	}
+	
 	public static void main(String[] args) {
 		CatenaLavorazioneDAO cl = new CatenaLavorazioneDAO();
 		
@@ -120,6 +152,17 @@ public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO {
 		
 		for(CatenaLavorazione c : listaCatene)
 			System.out.println(c);
+		
+		CatenaLavorazione cl1 = new CatenaLavorazione("CAT001", null);
+		ArrayList<ObservableStazioneLavoro> listaStazioni = cl.selectStazioniByCatena(cl1);
+		
+		for(ObservableStazioneLavoro o : listaStazioni)
+			System.out.println(o);
+		
+		CatenaLavorazione cl2 = new CatenaLavorazione("CAT002", TipoLavaggio.PELLE);
+		boolean t = cl.insertCatena(cl2);
+		if(t)
+			System.out.println(cl2);
 	}
 
 }

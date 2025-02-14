@@ -9,103 +9,279 @@ import java.util.ArrayList;
 import it.unipv.ingsfw.jdbc.DBConnection;
 
 public class DipendenteDAO implements IDipendenteDAO {
-	
-	private Connection conn;
 
+	private Connection conn;
 
 	public DipendenteDAO() {
 		super();
-		//this.schema = "PROVA";
-		//conn=DBConnection.startConnection(conn,schema);
+		// this.schema = "PROVA";
+		// conn=DBConnection.startConnection(conn,schema);
 	}
 
-
 	@Override
-	public ArrayList<Dipendente> selectAll()
-	{
+	public ArrayList<Dipendente> selectAll() {
 		ArrayList<Dipendente> result = new ArrayList<>();
 
-		conn=DBConnection.startConnection(conn);
+		conn = DBConnection.startConnection(conn);
 		Statement st1;
 		ResultSet rs1;
 		Dipendente d;
 
-		try
-		{
+		try {
 			st1 = conn.createStatement();
-			String query="SELECT * from CAPI";
-			rs1=st1.executeQuery(query);
+			String query = "SELECT * from DIPENDENTI";
+			rs1 = st1.executeQuery(query);
 
-			while(rs1.next())
-			{
-				
-				//d = new (rs1.getString(1));
+			while (rs1.next()) {
 
-				//result.add(c);
+				// d = new (rs1.getString(1));
+
+				// result.add(c);
 			}
-		}catch (Exception e){e.printStackTrace();}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		DBConnection.closeConnection(conn);
 		return result;
 	}
-	
-	@Override
-	public ArrayList<Dipendente> selectById(Dipendente fornInput)
-	{
-		ArrayList<Dipendente> result = new ArrayList<>();
 
-		conn=DBConnection.startConnection(conn);
+	@Override
+	public ArrayList<Corriere> selectCorrieri() {
+		ArrayList<Corriere> result = new ArrayList<>();
+
+		conn = DBConnection.startConnection(conn);
 		PreparedStatement st1;
 		ResultSet rs1;
-		Dipendente d;
+		PreparedStatement st2;
+		ResultSet rs2;
+		Corriere c;
 
-		try
-		{
-			//TIPO DIPENDENTE --> CORRIERE O OPERATORE
-			String query="SELECT * FROM DIPENDENTI WHERE TIPO=?";
+		try {
 
-			st1 = conn.prepareStatement(query);
-			//st1.setString(1, fornInput.getStatoCapo().toString());
+			String query = "SELECT * FROM DIPENDENTI WHERE TIPO='CORRIERE'";
 			
-			rs1=st1.executeQuery(query);
+			st1 = conn.prepareStatement(query);
+			rs1 = st1.executeQuery(query);
+			
+			while (rs1.next()) {
 
-			while(rs1.next())
-			{
+				c = new Corriere(rs1.getString(1), rs1.getString(2), rs1.getString(3), rs1.getString(4),
+						rs1.getString(5), rs1.getString(6), rs1.getInt(8));
+
+				String query2 = "SELECT * FROM DIPENDENTI D WHERE D.IDDIPENDENTE = '" + rs1.getString(1)
+						+ "' AND EXISTS (SELECT * FROM TICKET T WHERE D.IDDIPENDENTE = T.IDDIPENDENTE AND T.STATO <> 'COMPLETATO')";
 				
-				//d = new (rs1.getString(1));
-
-				//result.add(d);
+				st2 = conn.prepareStatement(query2);
+				rs2 = st2.executeQuery(query2);
+				
+				while(rs2.next())
+					
+					c.setStatoCorriere(StatoCorriere.OCCUPATO);
+				
+				result.add(c);
 			}
-		}catch (Exception e){e.printStackTrace();}
+
+		} catch (ClassCastException e) {
+			System.out.println("Errore in fase di casting del dipendente");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		DBConnection.closeConnection(conn);
 		return result;
 	}
-	
+
+	@Override
+	public ArrayList<Corriere> selectCorrieriLiberi() {
+		ArrayList<Corriere> result = new ArrayList<>();
+
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+		Corriere c;
+
+		try {
+
+			String query = "SELECT * FROM DIPENDENTE D WHERE D.TIPO = 'CORRIERE' AND NOT EXISTS (SELECT * FROM TICKET T WHERE D.IDDIPENDENTE = T.IDDIPENDENTE AND S.STATO <> 'COMPLETATO');";
+			st1 = conn.prepareStatement(query);
+			rs1 = st1.executeQuery(query);
+			while (rs1.next()) {
+				c = new Corriere(rs1.getString(1), rs1.getString(2), rs1.getString(3), rs1.getString(4),
+						rs1.getString(5), rs1.getString(6), rs1.getInt(8), StatoCorriere.LIBERO);
+				result.add(c);
+			}
+
+		} catch (ClassCastException e) {
+			System.out.println("Errore in fase di casting del dipendente");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return result;
+	}
+
+	public ArrayList<Operatore> selectOperatori(Operatore input) {
+		ArrayList<Operatore> result = new ArrayList<>();
+
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+		Operatore o;
+
+		try {
+
+			String query = "SELECT * FROM DIPENDENTI WHERE TIPO='OPERATORE'";
+			st1 = conn.prepareStatement(query);
+			rs1 = st1.executeQuery(query);
+			while (rs1.next()) {
+				o = new Operatore(rs1.getString(1), rs1.getString(2), rs1.getString(3), rs1.getString(4),
+						rs1.getString(5), rs1.getString(6), rs1.getInt(8), TipoOperatore.valueOf(rs1.getString(9)));
+				result.add(o);
+			}
+
+		} catch (ClassCastException e) {
+			System.out.println("Errore in fase di casting del dipendente");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return result;
+	}
+
+	public ArrayList<Operatore> selectByTipoOperatore(Operatore input) {
+		ArrayList<Operatore> result = new ArrayList<>();
+
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+		Operatore o;
+
+		try {
+			// TIPO_OPERATORE --> MANUTENTORE O RESPONSABILE_STAZIONE
+			String query = "SELECT * FROM DIPENDENTI WHERE TIPOOPERATORE='" + input.getTipoOperatore() + "'";
+
+			st1 = conn.prepareStatement(query);
+			rs1 = st1.executeQuery(query);
+
+			while (rs1.next()) {
+
+				o = new Operatore(rs1.getString(1), rs1.getString(2), rs1.getString(3), rs1.getString(4),
+						rs1.getString(5), rs1.getString(6), rs1.getInt(8), TipoOperatore.valueOf(rs1.getString(9)));
+
+				result.add(o);
+			}
+
+		} catch (ClassCastException e) {
+			System.err.println("Errore in fase di casting del dipendente");
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return result;
+	}
+
 	@Override
 	public boolean insertDipendente(Dipendente d) {
 
-		conn=DBConnection.startConnection(conn);
+		conn = DBConnection.startConnection(conn);
 		PreparedStatement st1;
-		
-		boolean esito=true;
 
-		try
-		{
-			String query="INSERT INTO DIPENDENTI () VALUES(?)";
+		boolean esito = true;
+
+		try {
+			String query = "INSERT INTO DIPENDENTI VALUES(?,?,?,?,?,?,?,?,?)";
 			st1 = conn.prepareStatement(query);
-			st1.setString(1,d.getIdDipendente());
-			
-			
-			st1.executeUpdate(query);
+			st1.setString(1, d.getIdDipendente());
+			st1.setString(2, d.getNome());
+			st1.setString(3, d.getCognome());
+			st1.setString(4, d.getCf());
+			st1.setString(5, d.getEmail());
+			st1.setString(6, d.getPassword());
+			st1.setInt(8, d.getStipendio());
 
-		}catch (Exception e){
+			try {
+
+				Operatore o = (Operatore) d;
+				st1.setString(7, "OPERATORE"); // tipo
+				st1.setString(9, o.getTipoOperatore().toString()); // tipooperatore
+				st1.executeUpdate();
+
+			} catch (ClassCastException e) {
+				System.err.println("Errore in fase di casting del dipendente");
+				Corriere c = (Corriere) d;
+				st1.setString(7, "CORRIERE"); // tipo
+				st1.setString(9, null); // tipooperatore
+				st1.executeUpdate();
+			}
+
+		} catch (ClassCastException e) {
+			System.err.println("Errore in fase di casting del dipendente");
+		} catch (Exception e) {
 			e.printStackTrace();
-			esito=false;
+			esito = false;
 		}
 
 		DBConnection.closeConnection(conn);
 		return esito;
+
+	}
+
+	public boolean selectByEmailPassword(Dipendente input) {
+
+		boolean result = true;
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		// ResultSet rs1;
+
+		try {
+			String query = "SELECT * FROM DIPENDENTI WHERE EMAIL='" + input.getEmail() + "' AND PASSWORD='"
+					+ input.getPassword() + "'";
+
+			st1 = conn.prepareStatement(query);
+			st1.executeQuery(query);
+
+		} catch (ClassCastException e) {
+			System.err.println("Errore in fase di casting del dipendente");
+		} catch (Exception e1) {
+			System.err.println("Errore in fase di autenticazione");
+			result = false;
+		}
+
+		DBConnection.closeConnection(conn);
+		return result;
+	}
+
+	public static void main(String[] args) {
+		DipendenteDAO d = new DipendenteDAO();
+
+		/*
+		 * Operatore o = new Operatore("D001", "Andrea", "Bigoli", "BGLAND23Y45R207U",
+		 * "andrea.bigoli@f2aservice.com", "ciaomamma", 1200,
+		 * TipoOperatore.MANUTENTORE); boolean t = d.insertDipendente(o); if (t)
+		 * System.out.println(o);
+		 * 
+		 * Operatore fittizio = new Operatore(null, null, null, null, null, null, 0,
+		 * TipoOperatore.MANUTENTORE); ArrayList<Operatore> lista =
+		 * d.selectByTipoOperatore(fittizio);
+		 * 
+		 * for (Operatore o1 : lista) System.out.println(o1);
+		 */
+
+		/*Corriere c = new Corriere("D002", "Filippo", "Andreini", "BGLAND23Y45R207T", "filippo.andreini@f2aservice.com",
+				"ciaopapa", 1200, StatoCorriere.LIBERO);
+		boolean t = d.insertDipendente(c);
+		if (t)
+			System.out.println(c);*/
+
+		// Corriere fittizio = new Corriere(null, null, null, null, null, null, 0);
+		ArrayList<Corriere> listaCorrieri = d.selectCorrieri();
+
+		for (Corriere o1 : listaCorrieri)
+			System.out.println(o1);
 
 	}
 }

@@ -20,7 +20,7 @@ public class Operatore extends Dipendente {
 	
 	@Override
 	public String toString() {
-		return super.toString() + "\nTipoOperatore " + tipoOperatore;
+		return super.toString() + "\nTipoOperatore: " + tipoOperatore;
 	}
 	
 

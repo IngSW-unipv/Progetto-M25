@@ -5,6 +5,12 @@ public class Corriere extends Dipendente {
 	private StatoCorriere statoCorriere;
 
 	public Corriere(String idDipendente, String nome, String cognome, String cf, String email, String password,
+			int stipendio) {
+		super(idDipendente, nome, cognome, cf, email, password, stipendio);
+		this.statoCorriere = StatoCorriere.LIBERO;
+	}
+	
+	public Corriere(String idDipendente, String nome, String cognome, String cf, String email, String password,
 			int stipendio, StatoCorriere statoCorriere) {
 		super(idDipendente, nome, cognome, cf, email, password, stipendio);
 		this.statoCorriere = statoCorriere;

@@ -65,8 +65,8 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 
 			while (rs1.next()) {
 
-				s = new ObservableStazioneLavoro(rs1.getString(1), TipologiaStazione.valueOf(rs1.getString(2)),
-						StatoStazione.valueOf(rs1.getString(3)), rs1.getDouble(7));
+				s = new ObservableStazioneLavoro(rs1.getString(1), TipologiaStazione.valueOf(rs1.getString(3)),
+						StatoStazione.valueOf(rs1.getString(4)), rs1.getDouble(5));
 
 				result.add(s);
 			}
