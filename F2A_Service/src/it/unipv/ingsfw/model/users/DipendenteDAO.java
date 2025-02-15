@@ -60,10 +60,10 @@ public class DipendenteDAO implements IDipendenteDAO {
 		try {
 
 			String query = "SELECT * FROM DIPENDENTI WHERE TIPO='CORRIERE'";
-			
+
 			st1 = conn.prepareStatement(query);
 			rs1 = st1.executeQuery(query);
-			
+
 			while (rs1.next()) {
 
 				c = new Corriere(rs1.getString(1), rs1.getString(2), rs1.getString(3), rs1.getString(4),
@@ -71,14 +71,14 @@ public class DipendenteDAO implements IDipendenteDAO {
 
 				String query2 = "SELECT * FROM DIPENDENTI D WHERE D.IDDIPENDENTE = '" + rs1.getString(1)
 						+ "' AND EXISTS (SELECT * FROM TICKET T WHERE D.IDDIPENDENTE = T.IDDIPENDENTE AND T.STATO <> 'COMPLETATO')";
-				
+
 				st2 = conn.prepareStatement(query2);
 				rs2 = st2.executeQuery(query2);
-				
-				while(rs2.next())
-					
+
+				while (rs2.next())
+
 					c.setStatoCorriere(StatoCorriere.OCCUPATO);
-				
+
 				result.add(c);
 			}
 
@@ -122,7 +122,9 @@ public class DipendenteDAO implements IDipendenteDAO {
 		return result;
 	}
 
-	public ArrayList<Operatore> selectOperatori(Operatore input) {
+	@Override
+	public ArrayList<Operatore> selectResponsabiliStazioneNonAssegnati() {
+
 		ArrayList<Operatore> result = new ArrayList<>();
 
 		conn = DBConnection.startConnection(conn);
@@ -132,7 +134,7 @@ public class DipendenteDAO implements IDipendenteDAO {
 
 		try {
 
-			String query = "SELECT * FROM DIPENDENTI WHERE TIPO='OPERATORE'";
+			String query = "SELECT * FROM DIPENDENTI D WHERE D.TIPO='OPERATORE' AND D.TIPOOPERATORE='RESPONSABILE_STAZIONE' AND NOT EXISTS (SELECT * FROM ASSEGNAZIONI A WHERE A.IDDIPENDENTE = D.IDDIPENDENTE AND A.DATAFINEASSEGNAZIONE IS NULL)";
 			st1 = conn.prepareStatement(query);
 			rs1 = st1.executeQuery(query);
 			while (rs1.next()) {
@@ -141,8 +143,34 @@ public class DipendenteDAO implements IDipendenteDAO {
 				result.add(o);
 			}
 
-		} catch (ClassCastException e) {
-			System.out.println("Errore in fase di casting del dipendente");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return result;
+	}
+
+	public ArrayList<Operatore> selectManutentoriNonAssegnati() {
+
+		ArrayList<Operatore> result = new ArrayList<>();
+
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+		Operatore o;
+
+		try {
+
+			String query = "SELECT * FROM DIPENDENTI D WHERE D.TIPO='OPERATORE' AND D.TIPOOPERATORE='MANUTENTORE' AND NOT EXISTS (SELECT * FROM ASSEGNAZIONI A WHERE A.IDDIPENDENTE = D.IDDIPENDENTE AND A.DATAFINEASSEGNAZIONE IS NULL)";
+			st1 = conn.prepareStatement(query);
+			rs1 = st1.executeQuery(query);
+			while (rs1.next()) {
+				o = new Operatore(rs1.getString(1), rs1.getString(2), rs1.getString(3), rs1.getString(4),
+						rs1.getString(5), rs1.getString(6), rs1.getInt(8), TipoOperatore.valueOf(rs1.getString(9)));
+				result.add(o);
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -238,7 +266,8 @@ public class DipendenteDAO implements IDipendenteDAO {
 		// ResultSet rs1;
 
 		try {
-			String query = "SELECT * FROM DIPENDENTI WHERE EMAIL='" + input.getEmail() + "' AND PASSWORD='" + input.getPassword() + "'";
+			String query = "SELECT * FROM DIPENDENTI WHERE EMAIL='" + input.getEmail() + "' AND PASSWORD='"
+					+ input.getPassword() + "'";
 
 			st1 = conn.prepareStatement(query);
 			st1.executeQuery(query);
@@ -270,17 +299,24 @@ public class DipendenteDAO implements IDipendenteDAO {
 		 * for (Operatore o1 : lista) System.out.println(o1);
 		 */
 
-		/*Corriere c = new Corriere("D002", "Filippo", "Andreini", "BGLAND23Y45R207T", "filippo.andreini@f2aservice.com",
-				"ciaopapa", 1200, StatoCorriere.LIBERO);
-		boolean t = d.insertDipendente(c);
-		if (t)
-			System.out.println(c);*/
+		/*
+		 * Corriere c = new Corriere("D002", "Filippo", "Andreini", "BGLAND23Y45R207T",
+		 * "filippo.andreini@f2aservice.com", "ciaopapa", 1200, StatoCorriere.LIBERO);
+		 * boolean t = d.insertDipendente(c); if (t) System.out.println(c);
+		 */
 
 		// Corriere fittizio = new Corriere(null, null, null, null, null, null, 0);
 		ArrayList<Corriere> listaCorrieri = d.selectCorrieri();
 
 		for (Corriere o1 : listaCorrieri)
 			System.out.println(o1);
+		
+		System.out.println("--------------------------------------------------------");
+		ArrayList<Operatore> listaResponsabiliLiberi = d.selectResponsabiliStazioneNonAssegnati();
+
+		for (Operatore o2 : listaResponsabiliLiberi)
+			System.out.println(o2);
 
 	}
+	
 }

@@ -3,6 +3,7 @@ package it.unipv.ingsfw.model.lavorazioneCapi;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,9 +86,8 @@ public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO{
 		return result;
 	}
 	
-	@Override
-	public boolean insertCatena(CatenaLavorazione s) {
-
+	public boolean checkCatenaAlreadyExists(CatenaLavorazione c) {
+		
 		conn=DBConnection.startConnection(conn);
 		PreparedStatement st1;
 		String query;
@@ -96,12 +96,10 @@ public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO{
 		
 		try
 		{
-			query="INSERT INTO CATENELAVORAZIONE (IDCATENA,IDLAVAGGIO) VALUES (?,?)";
+			query="SELECT * FROM CATENELAVORAZIONE WHERE IDCATENA = '" + c.getIdCatena() + "'";
 			st1 = conn.prepareStatement(query);
-			st1.setString(1,s.getIdCatena());
-			st1.setString(2,s.getTipoLavaggio().toString());
 			
-			st1.executeUpdate();
+			st1.executeQuery();
 
 		}catch (Exception e){
 			e.printStackTrace();
@@ -110,6 +108,41 @@ public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO{
 
 		DBConnection.closeConnection(conn);
 		return esito;
+	}
+	
+	@Override
+	public boolean insertCatena(CatenaLavorazione c) {
+		
+		//if(checkCatenaAlreadyExists(c)) {
+			
+			conn=DBConnection.startConnection(conn);
+			PreparedStatement st1;
+			String query;
+			
+			boolean esito=true;
+			
+			try
+			{
+				query="INSERT INTO CATENELAVORAZIONE (IDCATENA,IDLAVAGGIO) VALUES (?,?)";
+				st1 = conn.prepareStatement(query);
+				st1.setString(1,c.getIdCatena());
+				st1.setString(2,c.getTipoLavaggio().toString());
+				
+				st1.executeUpdate();
+	
+			}catch(SQLIntegrityConstraintViolationException e) {
+				System.err.println("Catena già esistente");
+				esito=false;
+			}catch (Exception e){
+				e.printStackTrace();
+				esito=false;
+			}
+	
+			DBConnection.closeConnection(conn);
+			return esito;
+		//}
+		//System.err.println("Catena già esistente");
+		//return false;
 
 	}
 	
@@ -147,7 +180,7 @@ public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO{
 	public static void main(String[] args) {
 		CatenaLavorazioneDAO cl = new CatenaLavorazioneDAO();
 		
-		CatenaLavorazione cl0 = new CatenaLavorazione(null, TipoLavaggio.BIANCHI);
+		/*CatenaLavorazione cl0 = new CatenaLavorazione(null, TipoLavaggio.BIANCHI);
 		ArrayList<CatenaLavorazione> listaCatene = cl.selectByTipoLavaggio(cl0);
 		
 		for(CatenaLavorazione c : listaCatene)
@@ -162,7 +195,19 @@ public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO{
 		CatenaLavorazione cl2 = new CatenaLavorazione("CAT002", TipoLavaggio.PELLE);
 		boolean t = cl.insertCatena(cl2);
 		if(t)
+			System.out.println(cl2);*/
+		
+		CatenaLavorazione cl2 = new CatenaLavorazione("CAT002", TipoLavaggio.PELLE);
+		//System.out.println(cl.checkCatenaAlreadyExists(cl2));
+		boolean t = cl.insertCatena(cl2);
+		if(t)
 			System.out.println(cl2);
+		
+		CatenaLavorazione cl3 = new CatenaLavorazione("CAT003", TipoLavaggio.COTONE);
+		//System.out.println(cl.checkCatenaAlreadyExists(cl2));
+		boolean t1 = cl.insertCatena(cl3);
+		if(t1)
+			System.out.println(cl3);
 	}
 
 }

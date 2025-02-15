@@ -1,4 +1,5 @@
 package it.unipv.ingsfw.model.lavorazioneCapi;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import it.unipv.ingsfw.model.TipoLavaggio;
@@ -55,6 +56,34 @@ public class CatenaLavorazione {
 				
 		}
 	}*/
+	
+	public boolean tipoStazioneAlreadyExists(ObservableStazioneLavoro s) {
+		for(ObservableStazioneLavoro o : listaStazioni) {
+			if(s.getTipo().equals(o.getTipo()))
+				return true;
+		}
+		return false;
+	}
+	
+	public boolean addStazioneLavoro(ObservableStazioneLavoro newStazione) {
+		ObservableStazioneLavoroDAO stazione = new ObservableStazioneLavoroDAO();
+		
+		if(listaStazioni.size() <= 2 && !tipoLavaggio.equals(TipoLavaggio.PELLE) && !tipoStazioneAlreadyExists(newStazione)) {
+			if(stazione.insertStazioneWithKnownCatena(newStazione, this)) {
+				listaStazioni.add(newStazione);
+				return true;
+			}
+				
+		}
+		return false;
+			
+	}
+	
+	public boolean riempimentoListaStazioni() throws SQLException {
+		CatenaLavorazioneDAO cl = new CatenaLavorazioneDAO();
+		listaStazioni = cl.selectStazioniByCatena(this);
+		return true;
+	}
 	
 	@Override
 	public String toString() {

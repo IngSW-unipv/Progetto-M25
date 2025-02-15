@@ -3,11 +3,18 @@ package it.unipv.ingsfw.model.lavorazioneCapi;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import it.unipv.ingsfw.jdbc.DBConnection;
 import it.unipv.ingsfw.model.TipoLavaggio;
+import it.unipv.ingsfw.model.users.DipendenteDAO;
+import it.unipv.ingsfw.model.users.Operatore;
 
 public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO {
 
@@ -79,7 +86,7 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 	}
 
 	@Override
-	public boolean insertStazione(ObservableStazioneLavoro s) {
+	public boolean insertStazioneWithUnknownCatena(ObservableStazioneLavoro s) {
 
 		conn = DBConnection.startConnection(conn);
 		PreparedStatement st1;
@@ -129,6 +136,9 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 
 			st1.executeUpdate();
 
+		} catch (SQLIntegrityConstraintViolationException e) {
+			System.err.println("Stazione già esistente");
+			esito = false;
 		} catch (Exception e) {
 			e.printStackTrace();
 			esito = false;
@@ -139,17 +149,265 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 
 	}
 
+	@Override
+	public boolean insertStazioneWithKnownCatena(ObservableStazioneLavoro s, CatenaLavorazione c) {
+
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+
+		boolean esito = true;
+
+		try {
+
+			String query = "INSERT INTO STAZIONILAVORO (IDSTAZIONE,IDCATENA,TIPO,STATO,LIVELLOPRODOTTOLAVAGGIO) VALUES (?,?,?,?,?)";
+			st1 = conn.prepareStatement(query);
+			st1.setString(1, s.getIdStazione());
+			st1.setString(2, c.getIdCatena());
+			st1.setString(3, s.getTipo().toString());
+			st1.setString(4, s.getStatoStazione().toString());
+			st1.setDouble(5, s.getLivelloProdottoLavaggio());
+
+			/*
+			 * query2 =
+			 * "INSERT INTO STAZIONILAVORO (IDSTAZIONE,IDCATENA,TIPO,STATO,LIVELLOPRODOTTOLAVAGGIO) VALUES ('"
+			 * + s.getIdStazione() + "','" + idCatena + "','" + s.getTipo().toString() +
+			 * "','" + s.getStatoStazione().toString() + "', " +
+			 * s.getLivelloProdottoLavaggio() + ")"; st1 = conn.prepareStatement(query2);
+			 */
+
+			st1.executeUpdate();
+
+		} catch (SQLIntegrityConstraintViolationException e) {
+			System.err.println("Stazione già esistente");
+			esito = false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			esito = false;
+		}
+
+		DBConnection.closeConnection(conn);
+		return esito;
+
+	}
+
+	public int getIdLastAssegnazione() {
+		
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+
+		int id = 0;
+
+		try {
+
+			String query = "SELECT IDASSEGNAZIONE FROM ASSEGNAZIONI ORDER BY IDASSEGNAZIONE DESC LIMIT 1";
+			st1 = conn.prepareStatement(query);
+			rs1 = st1.executeQuery();
+			
+			while(rs1.next())
+				id = rs1.getInt(1);
+
+		}catch (SQLException e) {
+			System.err.println("Errore di esecuzione");
+			e.printStackTrace();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return id;
+	}
+
+	public String selectIdCatenaByStazione(ObservableStazioneLavoro s) {
+
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+
+		String cat = "";
+
+		try {
+
+			String query = "SELECT IDCATENA FROM STAZIONILAVORO WHERE IDSTAZIONE = '" + s.getIdStazione() + "'";
+			st1 = conn.prepareStatement(query);
+			rs1 = st1.executeQuery();
+
+			while(rs1.next())
+				cat = rs1.getString(1);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return cat;
+	}
+
+	public boolean assegnazioneResponsabileStazioneLibero(ObservableStazioneLavoro s) {
+
+		DipendenteDAO dip = new DipendenteDAO();
+		ArrayList<Operatore> listaResponsabiliStazioneLiberi = dip.selectResponsabiliStazioneNonAssegnati();
+		int idNewAssegnazione = getIdLastAssegnazione() + 1;
+
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+
+		boolean esito = true;
+
+		try {
+
+			long millis = System.currentTimeMillis(); 
+			java.sql.Date date = new java.sql.Date(millis); 
+			//System.out.println(date);
+
+			String query = "INSERT INTO ASSEGNAZIONI VALUES (?,?,?,?,?)";
+			st1 = conn.prepareStatement(query);
+			st1.setInt(1, idNewAssegnazione);
+			st1.setString(2, s.getIdStazione());
+			st1.setString(3, listaResponsabiliStazioneLiberi.get(0).getIdDipendente());
+			st1.setDate(4, date);
+			st1.setDate(5, null);
+			
+			st1.executeUpdate();
+
+		}catch (SQLIntegrityConstraintViolationException e) {
+			System.err.println("IdAssegnazione già esistente");
+			esito = false;
+		}catch (SQLException e) {
+			System.err.println("Errore in fase di elaborazione query");
+			e.printStackTrace();
+			esito = false;
+		}catch (IndexOutOfBoundsException e){
+			System.err.println("Nessun operatore al momento libero");
+		}catch (Exception e) {
+			e.printStackTrace();
+			esito = false;
+		}
+
+		DBConnection.closeConnection(conn);
+		return esito;
+	}
+
+	public boolean assegnazioneManutentoreLibero(ObservableStazioneLavoro s) {
+
+		DipendenteDAO dip = new DipendenteDAO();
+		ArrayList<Operatore> listaManutentoriLiberi = dip.selectManutentoriNonAssegnati();
+		int idNewAssegnazione = getIdLastAssegnazione() + 1;
+
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+
+		boolean esito = true;
+
+		try {
+
+			long millis = System.currentTimeMillis(); 
+			java.sql.Date date = new java.sql.Date(millis); 
+			//System.out.println(date);
+
+			String query = "INSERT INTO ASSEGNAZIONI VALUES (?,?,?,?,?)";
+			st1 = conn.prepareStatement(query);
+			st1.setInt(1, idNewAssegnazione);
+			st1.setString(2, s.getIdStazione());
+			st1.setString(3, listaManutentoriLiberi.get(0).getIdDipendente());
+			st1.setDate(4, date);
+			st1.setDate(5, null);
+			
+			st1.executeUpdate();
+
+		} catch (SQLIntegrityConstraintViolationException e) {
+			System.err.println("Assegnazione già esistente");
+			esito = false;
+		} catch (SQLException e) {
+			System.err.println("Errore in fase di elaborazione query");
+			//e.printStackTrace();
+		} catch (IndexOutOfBoundsException e){
+			System.err.println("Nessun manutentore al momento libero");
+		}catch (Exception e) {
+			e.printStackTrace();
+			esito = false;
+		}
+
+		DBConnection.closeConnection(conn);
+		return esito;
+
+	}
+
+	public ArrayList<ObservableStazioneLavoro> selectStazioniReadyNonAssegnate() {
+		
+		ArrayList<ObservableStazioneLavoro> result = new ArrayList<>();
+
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+		ObservableStazioneLavoro s;
+
+		try {
+			String query = "SELECT * FROM STAZIONILAVORO S WHERE S.STATO = 'READY' AND NOT EXISTS (SELECT * FROM ASSEGNAZIONI A WHERE S.IDSTAZIONE = A.IDSTAZIONE AND A.DATAFINEASSEGNAZIONE IS NULL)";
+			st1 = conn.prepareStatement(query);
+
+			rs1 = st1.executeQuery(query);
+
+			while (rs1.next()) {
+
+				s = new ObservableStazioneLavoro(rs1.getString(1), TipologiaStazione.valueOf(rs1.getString(3)),
+						StatoStazione.valueOf(rs1.getString(4)), rs1.getDouble(5));
+
+				result.add(s);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return result;
+	}
+	
+public ArrayList<ObservableStazioneLavoro> selectStazioniMaintenanceNonAssegnate() {
+		
+		ArrayList<ObservableStazioneLavoro> result = new ArrayList<>();
+
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+		ObservableStazioneLavoro s;
+
+		try {
+			String query = "SELECT * FROM STAZIONILAVORO S WHERE S.STATO = 'MAINTENANCE' AND NOT EXISTS (SELECT * FROM ASSEGNAZIONI A WHERE S.IDSTAZIONE = A.IDSTAZIONE AND A.DATAFINEASSEGNAZIONE IS NULL)";
+			st1 = conn.prepareStatement(query);
+
+			rs1 = st1.executeQuery(query);
+
+			while (rs1.next()) {
+
+				s = new ObservableStazioneLavoro(rs1.getString(1), TipologiaStazione.valueOf(rs1.getString(3)),
+						StatoStazione.valueOf(rs1.getString(4)), rs1.getDouble(5));
+
+				result.add(s);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return result;
+	}
+
 	public static void main(String[] args) {
 		ObservableStazioneLavoroDAO st = new ObservableStazioneLavoroDAO();
-		ObservableStazioneLavoro s = new ObservableStazioneLavoro("S001", TipologiaStazione.ASCIUGATURA,
-				StatoStazione.READY, 100.0);
-		boolean t = st.insertStazione(s);
-		if (t)
-			System.out.println(s);
+		boolean t = st.assegnazioneResponsabileStazioneLibero(st.selectStazioniReadyNonAssegnate().get(0));
+		
+		if(t)
+			System.out.println(st.selectStazioniReadyNonAssegnate().get(0));
+		/*
+		 * ObservableStazioneLavoro s = new ObservableStazioneLavoro("S001",
+		 * TipologiaStazione.ASCIUGATURA, StatoStazione.READY, 100.0); boolean t =
+		 * st.insertStazioneWithUnknownCatena(s); if (t) System.out.println(s);
+		 * 
+		 * ArrayList<ObservableStazioneLavoro> obs = st.selectAll(); for
+		 * (ObservableStazioneLavoro o : obs) System.out.println(o);
+		 */
 
-		ArrayList<ObservableStazioneLavoro> obs = st.selectAll();
-		for (ObservableStazioneLavoro o : obs)
-			System.out.println(o);
 	}
 
 }

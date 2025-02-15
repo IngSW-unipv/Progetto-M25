@@ -46,8 +46,12 @@ public class SingletonSedeLavorazione {
 	
 	//deve restituire un booleano
 	public boolean addCatenaLavorazione(CatenaLavorazione catena) {
-		listaCatene.add(catena);
-		return true;
+		CatenaLavorazioneDAO cl = new CatenaLavorazioneDAO();
+		if(cl.insertCatena(catena)) {
+			listaCatene.add(catena);
+			return true;
+		}
+			return false;
 	}
 	
 }

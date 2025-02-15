@@ -7,5 +7,6 @@ public interface ICatenaLavorazioneDAO {
 	public ArrayList<CatenaLavorazione> selectAll();
 	public ArrayList<CatenaLavorazione> selectByTipoLavaggio(CatenaLavorazione input);
 	public boolean insertCatena(CatenaLavorazione c);
+	public boolean checkCatenaAlreadyExists(CatenaLavorazione c);
 	public ArrayList<ObservableStazioneLavoro> selectStazioniByCatena(CatenaLavorazione input);
 }
