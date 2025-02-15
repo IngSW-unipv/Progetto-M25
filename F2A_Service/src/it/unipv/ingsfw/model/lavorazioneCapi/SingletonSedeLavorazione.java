@@ -1,8 +1,9 @@
 package it.unipv.ingsfw.model.lavorazioneCapi;
+
 import java.util.ArrayList;
 
 public class SingletonSedeLavorazione {
-	
+
 	private String idSede;
 	private ArrayList<CatenaLavorazione> listaCatene;
 	private static SingletonSedeLavorazione instance = null;
@@ -17,13 +18,12 @@ public class SingletonSedeLavorazione {
 	}
 
 	// Allow construction only once
-	//STATIC SENNO' NON INVOCABILE
+	// STATIC SENNO' NON INVOCABILE
 	public static SingletonSedeLavorazione getInstance() {
-		if(instance == null) {
+		if (instance == null) {
 			instance = new SingletonSedeLavorazione();
 			System.out.println("Create new instance");
-		}
-		else
+		} else
 			System.out.println("Instance already available");
 		return instance;
 	}
@@ -40,18 +40,19 @@ public class SingletonSedeLavorazione {
 		return listaCatene;
 	}
 
-	/*public void setListaCatene() {
-		this.listaCatene = new ArrayList<CatenaLavorazione>();
-	}*/
-	
-	//deve restituire un booleano
+	/*
+	 * public void setListaCatene() { this.listaCatene = new
+	 * ArrayList<CatenaLavorazione>(); }
+	 */
+
+	// deve restituire un booleano
 	public boolean addCatenaLavorazione(CatenaLavorazione catena) {
 		CatenaLavorazioneDAO cl = new CatenaLavorazioneDAO();
-		if(cl.insertCatena(catena)) {
+		if (cl.insertCatena(catena)) {
 			listaCatene.add(catena);
 			return true;
 		}
-			return false;
+		return false;
 	}
-	
+
 }

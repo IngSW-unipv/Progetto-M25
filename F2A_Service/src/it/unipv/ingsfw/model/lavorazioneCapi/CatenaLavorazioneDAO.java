@@ -3,6 +3,7 @@ package it.unipv.ingsfw.model.lavorazioneCapi;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -131,7 +132,8 @@ public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO{
 				st1.executeUpdate();
 	
 			}catch(SQLIntegrityConstraintViolationException e) {
-				System.err.println("Catena già esistente");
+				System.err.println("Catena già esistente --> Inserimento automatico con codice corretto");
+				insertCatena(new CatenaLavorazione(getNewIdCatena(), c.getTipoLavaggio()));
 				esito=false;
 			}catch (Exception e){
 				e.printStackTrace();
@@ -171,10 +173,52 @@ public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO{
 
 				result.add(s);
 			}
-		}catch (Exception e){e.printStackTrace();}
+		}catch (SQLException e){
+			e.printStackTrace();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 
 		DBConnection.closeConnection(conn);
 		return result;
+	}
+	
+	public String getNewIdCatena() {
+
+		conn=DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+		String newIdCatena = "";
+		
+		
+		try
+		{
+			String query="SELECT IDCATENA FROM CATENELAVORAZIONE ORDER BY IDCATENA DESC LIMIT 1";
+			st1 = conn.prepareStatement(query);
+			
+			rs1=st1.executeQuery(query);
+
+			while(rs1.next())
+			{
+		
+				newIdCatena = rs1.getString(1);
+				String sub = newIdCatena.substring(3);
+				//System.out.println(sub);
+				int num = Integer.parseInt(sub)+ 1;
+				newIdCatena = String.format("CAT%03d",num);
+				//System.out.println(newIdCatena);
+
+			}
+		}catch (NumberFormatException e){
+			e.printStackTrace();
+		}catch (SQLException e){
+			e.printStackTrace();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return newIdCatena;
 	}
 	
 	public static void main(String[] args) {
@@ -197,7 +241,7 @@ public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO{
 		if(t)
 			System.out.println(cl2);*/
 		
-		CatenaLavorazione cl2 = new CatenaLavorazione("CAT002", TipoLavaggio.PELLE);
+		/*CatenaLavorazione cl2 = new CatenaLavorazione("CAT002", TipoLavaggio.PELLE);
 		//System.out.println(cl.checkCatenaAlreadyExists(cl2));
 		boolean t = cl.insertCatena(cl2);
 		if(t)
@@ -207,7 +251,11 @@ public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO{
 		//System.out.println(cl.checkCatenaAlreadyExists(cl2));
 		boolean t1 = cl.insertCatena(cl3);
 		if(t1)
-			System.out.println(cl3);
+			System.out.println(cl3);*/
+		
+		cl.getNewIdCatena();
+		
+		
 	}
 
 }

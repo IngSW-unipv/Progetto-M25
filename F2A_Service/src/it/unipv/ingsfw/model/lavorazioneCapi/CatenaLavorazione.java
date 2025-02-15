@@ -1,15 +1,16 @@
 package it.unipv.ingsfw.model.lavorazioneCapi;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import it.unipv.ingsfw.model.TipoLavaggio;
 
 public class CatenaLavorazione {
-	
+
 	private String idCatena;
 	private TipoLavaggio tipoLavaggio;
 	private ArrayList<ObservableStazioneLavoro> listaStazioni;
-	
+
 	/**
 	 * @param idCatena
 	 * @param tipoLavaggio
@@ -42,54 +43,66 @@ public class CatenaLavorazione {
 		return listaStazioni;
 	}
 
-	/*public void setListaStazioni(ArrayList<StazioneLavoro> listaStazioni) {
-		this.listaStazioni = listaStazioni;
-	}*/
-	
+	/*
+	 * public void setListaStazioni(ArrayList<StazioneLavoro> listaStazioni) {
+	 * this.listaStazioni = listaStazioni; }
+	 */
+
 	public void checkStatoStazione(ObservableStazioneLavoro stazione) {
 		stazione.getStatoStazione().toString();
 	}
-	
-	/*public boolean svuotaStazione(StazioneLavoro stazione) {
-		for(StazioneLavoro s : listaStazioni) {
-			if(s.equals(stazione))
-				
-		}
-	}*/
-	
+
+	/*
+	 * public boolean svuotaStazione(StazioneLavoro stazione) { for(StazioneLavoro s
+	 * : listaStazioni) { if(s.equals(stazione))
+	 * 
+	 * } }
+	 */
+
 	public boolean tipoStazioneAlreadyExists(ObservableStazioneLavoro s) {
-		for(ObservableStazioneLavoro o : listaStazioni) {
-			if(s.getTipo().equals(o.getTipo()))
+		for (ObservableStazioneLavoro o : listaStazioni) {
+			if (s.getTipo().equals(o.getTipo()))
 				return true;
 		}
 		return false;
 	}
-	
+
 	public boolean addStazioneLavoro(ObservableStazioneLavoro newStazione) {
 		ObservableStazioneLavoroDAO stazione = new ObservableStazioneLavoroDAO();
-		
-		if(listaStazioni.size() <= 2 && !tipoLavaggio.equals(TipoLavaggio.PELLE) && !tipoStazioneAlreadyExists(newStazione)) {
-			if(stazione.insertStazioneWithKnownCatena(newStazione, this)) {
+
+		if (listaStazioni.size() <= 2 && !tipoLavaggio.equals(TipoLavaggio.PELLE)
+				&& !tipoStazioneAlreadyExists(newStazione)) {
+			if (stazione.insertStazioneWithKnownCatena(newStazione, this)) {
 				listaStazioni.add(newStazione);
 				return true;
 			}
-				
+
 		}
 		return false;
-			
+
 	}
-	
-	public boolean riempimentoListaStazioni() throws SQLException {
-		CatenaLavorazioneDAO cl = new CatenaLavorazioneDAO();
-		listaStazioni = cl.selectStazioniByCatena(this);
-		return true;
+
+	public boolean riempimentoListaStazioniDaDB() {
+		CatenaLavorazioneDAO catena = new CatenaLavorazioneDAO();
+		if (listaStazioni.size() == 0) {
+			listaStazioni = catena.selectStazioniByCatena(this);
+			return true;
+		}
+		return false;
 	}
-	
+
 	@Override
 	public String toString() {
 		String catena = "Catena " + idCatena + "\nTipoLavaggio: " + tipoLavaggio.toString();
-		for(ObservableStazioneLavoro s : listaStazioni)
+		for (ObservableStazioneLavoro s : listaStazioni)
 			s.toString();
 		return catena;
+	}
+	
+	public static void main(String[] args) {
+		
+		CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
+		CatenaLavorazione newCat = new CatenaLavorazione("CAT002", TipoLavaggio.DELICATI);
+		cat.insertCatena(newCat);
 	}
 }

@@ -191,7 +191,7 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 	}
 
 	public int getIdLastAssegnazione() {
-		
+
 		conn = DBConnection.startConnection(conn);
 		PreparedStatement st1;
 		ResultSet rs1;
@@ -203,14 +203,14 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 			String query = "SELECT IDASSEGNAZIONE FROM ASSEGNAZIONI ORDER BY IDASSEGNAZIONE DESC LIMIT 1";
 			st1 = conn.prepareStatement(query);
 			rs1 = st1.executeQuery();
-			
-			while(rs1.next())
+
+			while (rs1.next())
 				id = rs1.getInt(1);
 
-		}catch (SQLException e) {
+		} catch (SQLException e) {
 			System.err.println("Errore di esecuzione");
 			e.printStackTrace();
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
@@ -232,7 +232,7 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 			st1 = conn.prepareStatement(query);
 			rs1 = st1.executeQuery();
 
-			while(rs1.next())
+			while (rs1.next())
 				cat = rs1.getString(1);
 
 		} catch (Exception e) {
@@ -256,9 +256,9 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 
 		try {
 
-			long millis = System.currentTimeMillis(); 
-			java.sql.Date date = new java.sql.Date(millis); 
-			//System.out.println(date);
+			long millis = System.currentTimeMillis();
+			java.sql.Date date = new java.sql.Date(millis);
+			// System.out.println(date);
 
 			String query = "INSERT INTO ASSEGNAZIONI VALUES (?,?,?,?,?)";
 			st1 = conn.prepareStatement(query);
@@ -267,19 +267,19 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 			st1.setString(3, listaResponsabiliStazioneLiberi.get(0).getIdDipendente());
 			st1.setDate(4, date);
 			st1.setDate(5, null);
-			
+
 			st1.executeUpdate();
 
-		}catch (SQLIntegrityConstraintViolationException e) {
+		} catch (SQLIntegrityConstraintViolationException e) {
 			System.err.println("IdAssegnazione già esistente");
 			esito = false;
-		}catch (SQLException e) {
+		} catch (SQLException e) {
 			System.err.println("Errore in fase di elaborazione query");
 			e.printStackTrace();
 			esito = false;
-		}catch (IndexOutOfBoundsException e){
+		} catch (IndexOutOfBoundsException e) {
 			System.err.println("Nessun operatore al momento libero");
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			esito = false;
 		}
@@ -301,9 +301,9 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 
 		try {
 
-			long millis = System.currentTimeMillis(); 
-			java.sql.Date date = new java.sql.Date(millis); 
-			//System.out.println(date);
+			long millis = System.currentTimeMillis();
+			java.sql.Date date = new java.sql.Date(millis);
+			// System.out.println(date);
 
 			String query = "INSERT INTO ASSEGNAZIONI VALUES (?,?,?,?,?)";
 			st1 = conn.prepareStatement(query);
@@ -312,7 +312,7 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 			st1.setString(3, listaManutentoriLiberi.get(0).getIdDipendente());
 			st1.setDate(4, date);
 			st1.setDate(5, null);
-			
+
 			st1.executeUpdate();
 
 		} catch (SQLIntegrityConstraintViolationException e) {
@@ -320,10 +320,10 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 			esito = false;
 		} catch (SQLException e) {
 			System.err.println("Errore in fase di elaborazione query");
-			//e.printStackTrace();
-		} catch (IndexOutOfBoundsException e){
+			// e.printStackTrace();
+		} catch (IndexOutOfBoundsException e) {
 			System.err.println("Nessun manutentore al momento libero");
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			esito = false;
 		}
@@ -334,7 +334,7 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 	}
 
 	public ArrayList<ObservableStazioneLavoro> selectStazioniReadyNonAssegnate() {
-		
+
 		ArrayList<ObservableStazioneLavoro> result = new ArrayList<>();
 
 		conn = DBConnection.startConnection(conn);
@@ -362,9 +362,9 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 		DBConnection.closeConnection(conn);
 		return result;
 	}
-	
-public ArrayList<ObservableStazioneLavoro> selectStazioniMaintenanceNonAssegnate() {
-		
+
+	public ArrayList<ObservableStazioneLavoro> selectStazioniMaintenanceNonAssegnate() {
+
 		ArrayList<ObservableStazioneLavoro> result = new ArrayList<>();
 
 		conn = DBConnection.startConnection(conn);
@@ -393,11 +393,46 @@ public ArrayList<ObservableStazioneLavoro> selectStazioniMaintenanceNonAssegnate
 		return result;
 	}
 
+	public String getNewIdStazione() {
+
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+		String newIdStazione = "";
+
+		try {
+			String query = "SELECT IDSTAZIONE FROM STAZIONILAVORO ORDER BY IDSTAZIONE DESC LIMIT 1";
+			st1 = conn.prepareStatement(query);
+
+			rs1 = st1.executeQuery(query);
+
+			while (rs1.next()) {
+
+				newIdStazione = rs1.getString(1);
+				String sub = newIdStazione.substring(3);
+				//System.out.println(sub);
+				int num = Integer.parseInt(sub) + 1;
+				newIdStazione = String.format("S%03d", num);
+				//System.out.println(newIdStazione);
+
+			}
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return newIdStazione;
+	}
+
 	public static void main(String[] args) {
 		ObservableStazioneLavoroDAO st = new ObservableStazioneLavoroDAO();
 		boolean t = st.assegnazioneResponsabileStazioneLibero(st.selectStazioniReadyNonAssegnate().get(0));
-		
-		if(t)
+
+		if (t)
 			System.out.println(st.selectStazioniReadyNonAssegnate().get(0));
 		/*
 		 * ObservableStazioneLavoro s = new ObservableStazioneLavoro("S001",

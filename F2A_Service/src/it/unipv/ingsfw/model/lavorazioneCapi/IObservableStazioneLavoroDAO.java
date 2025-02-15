@@ -16,4 +16,5 @@ public interface IObservableStazioneLavoroDAO {
 	public int getIdLastAssegnazione();
 	public ArrayList<ObservableStazioneLavoro> selectStazioniReadyNonAssegnate();
 	public ArrayList<ObservableStazioneLavoro> selectStazioniMaintenanceNonAssegnate();
+	public String getNewIdStazione();
 }
