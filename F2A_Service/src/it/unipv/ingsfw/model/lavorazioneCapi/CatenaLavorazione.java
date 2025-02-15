@@ -3,6 +3,9 @@ package it.unipv.ingsfw.model.lavorazioneCapi;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import it.unipv.ingsfw.model.Capo;
+import it.unipv.ingsfw.model.CapoDAO;
+import it.unipv.ingsfw.model.StatoCapo;
 import it.unipv.ingsfw.model.TipoLavaggio;
 
 public class CatenaLavorazione {
@@ -102,7 +105,42 @@ public class CatenaLavorazione {
 	public static void main(String[] args) {
 		
 		CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
-		CatenaLavorazione newCat = new CatenaLavorazione("CAT002", TipoLavaggio.DELICATI);
-		cat.insertCatena(newCat);
+		CatenaLavorazione newCat = new CatenaLavorazione("CAT002", TipoLavaggio.BIANCHI);
+		//cat.insertCatena(newCat);
+		
+		CapoDAO cap = new CapoDAO();
+		ArrayList<Capo> capi = cap.selectCapoByStatoETipo(new Capo(StatoCapo.IN_LAVORAZIONE, newCat.getTipoLavaggio()));
+		
+		for(Capo c : capi)
+			System.out.println(c);
+		
+		//ESEMPIO LAVORAZIONE IN UNA CATENA COMPOSTA DA 2/3 STAZIONI DI LAVORO
+		
+		newCat.getListaStazioni().get(0).getListaCapiDaLavorare().addAll(capi);
+		
+		//azione operatore
+		newCat.getListaStazioni().get(0).setStatoStazione(StatoStazione.WORKING);
+		
+		//aspetto un tot.....
+		
+		newCat.getListaStazioni().get(0).setStatoStazione(StatoStazione.READY);
+		//azione operatore
+		ArrayList<Capo> capiDaSpostare = newCat.getListaStazioni().get(0).getListaCapiDaLavorare();
+		newCat.getListaStazioni().get(1).getListaCapiDaLavorare().addAll(capiDaSpostare);
+		newCat.getListaStazioni().get(1).setStatoStazione(StatoStazione.WORKING);
+		
+		//aspetto un tot...
+		
+		newCat.getListaStazioni().get(1).setStatoStazione(StatoStazione.READY);
+		
+		if(!newCat.getTipoLavaggio().toString().equals("PELLE")) {
+			//azione operatore
+			newCat.getListaStazioni().get(2).getListaCapiDaLavorare().addAll(capiDaSpostare);
+			newCat.getListaStazioni().get(2).setStatoStazione(StatoStazione.WORKING);
+		}
+		
+		//cambio stato capi a db da IN_LAVORAZIONE a IN_CONSEGNA
+		
+		
 	}
 }

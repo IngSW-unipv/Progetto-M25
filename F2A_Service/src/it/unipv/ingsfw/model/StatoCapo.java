@@ -2,12 +2,12 @@ package it.unipv.ingsfw.model;
 
 public enum StatoCapo {
 	//IN_STORE, RITIRATO, IN_LAVORAZIONE, IN_CONSEGNA, CONSEGNATO, PRELEVATO
-	IN_STORE("In Store"),
-	RITIRATO("Ritirato"),
-	IN_LAVORAZIONE("In Lavorazione"),
-	IN_CONSEGNA("In consegna"),
-	CONSEGNATO("Consegnato"),
-	PRELEVATO("Prelevato")
+	IN_STORE("IN_STORE"),
+	RITIRATO("RITIRATO"),
+	IN_LAVORAZIONE("IN_LAVORAZIONE"),
+	IN_CONSEGNA("IN_CONSEGNA"),
+	CONSEGNATO("CONSEGNATO"),
+	PRELEVATO("PRELEVATO")
     ;
 
     private final String stato;

@@ -70,9 +70,9 @@ public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO{
 			
 			String query="SELECT * FROM CATENELAVORAZIONE WHERE IDLAVAGGIO =" + Integer.parseInt(input.getTipoLavaggio().toString());
 			st1 = conn.prepareStatement(query);
-			System.out.println(input.getTipoLavaggio().toString());
+			//System.out.println(input.getTipoLavaggio().toString());
 			
-			rs1=st1.executeQuery(query);
+			rs1=st1.executeQuery();
 
 			while(rs1.next())
 			{
@@ -163,7 +163,7 @@ public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO{
 			String query="SELECT * FROM STAZIONILAVORO WHERE IDCATENA ='" + input.getIdCatena() + "'";
 			st1 = conn.prepareStatement(query);
 			
-			rs1=st1.executeQuery(query);
+			rs1=st1.executeQuery();
 
 			while(rs1.next())
 			{
@@ -196,7 +196,7 @@ public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO{
 			String query="SELECT IDCATENA FROM CATENELAVORAZIONE ORDER BY IDCATENA DESC LIMIT 1";
 			st1 = conn.prepareStatement(query);
 			
-			rs1=st1.executeQuery(query);
+			rs1=st1.executeQuery();
 
 			while(rs1.next())
 			{

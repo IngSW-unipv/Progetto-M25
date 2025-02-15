@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Observable;
 
 import it.unipv.ingsfw.model.Capo;
+import it.unipv.ingsfw.model.CapoDAO;
 
 public class ObservableStazioneLavoro extends Observable {
 
@@ -60,9 +61,19 @@ public class ObservableStazioneLavoro extends Observable {
 	public void setLivelloProdottoLavaggio(double livelloProdottoLavaggio) {
 		this.livelloProdottoLavaggio = livelloProdottoLavaggio;
 	}
-	
+
 	public ArrayList<Capo> getListaCapiDaLavorare() {
 		return listaCapiDaLavorare;
+	}
+
+	public boolean setListaCapiDaLavorare(Capo c) {
+		CapoDAO capi = new CapoDAO();
+
+		if (statoStazione.toString().equals("READY")) {
+			listaCapiDaLavorare = capi.selectCapoByStatoETipo(c);
+			return true;
+		}
+		return false;
 	}
 
 	/*
@@ -70,7 +81,6 @@ public class ObservableStazioneLavoro extends Observable {
 	 * StazioneLavoro("S001", TipologiaStazione.ASCIUGATURA, StatoStazione.READY,
 	 * 100); System.out.println(s.getTipo()); }
 	 */
-	
 
 	@Override
 	public String toString() {

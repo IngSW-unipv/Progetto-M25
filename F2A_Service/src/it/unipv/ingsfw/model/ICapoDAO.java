@@ -6,7 +6,9 @@ import java.util.ArrayList;
 public interface ICapoDAO {
 	
 	public ArrayList<Capo> selectAll();
-	public ArrayList<Capo> selectByStatoCapo(Capo fornInput);
+	public ArrayList<Capo> selectCapoByStatoETipo(Capo input);
+	public boolean updateStatoCapo(Capo inputSet);
+	public String getNewIdCapo();
 	public boolean insertCapo(Capo c) throws ParseException;
 	
 }

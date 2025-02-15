@@ -10,6 +10,7 @@ public class Capo {
 	private TipoLavaggio tipoLavaggio;
 	private Date dataRitiro;
 	private Date dataUltimaConsegna;
+	private Negozio negozioDeposito;
 	private Negozio negozioConsegna;
 	private double prezzoScontato;
 	private Cliente cliente;
@@ -24,16 +25,30 @@ public class Capo {
 	 * @param prezzoScontato
 	 */
 	public Capo(String idCapo, StatoCapo statoCapo, TipoLavaggio tipoLavaggio, Date dataRitiro, Date dataUltimaConsegna,
-			Negozio negozioConsegna, double prezzoScontato, Cliente cliente) {
+			Negozio negozioConsegna, Negozio negozioDeposito, double prezzoScontato, Cliente cliente) {
 		super();
 		this.idCapo = idCapo;
 		this.statoCapo = statoCapo;
 		this.tipoLavaggio = tipoLavaggio;
 		this.dataRitiro = dataRitiro;
 		this.dataUltimaConsegna = dataUltimaConsegna;
+		this.negozioDeposito = negozioDeposito;
 		this.negozioConsegna = negozioConsegna;
 		this.prezzoScontato = prezzoScontato;
 		this.cliente = cliente;
+	}
+
+	public Capo(StatoCapo statoCapo, TipoLavaggio tipoLavaggio) {
+		super();
+		this.idCapo = null;
+		this.statoCapo = statoCapo;
+		this.tipoLavaggio = tipoLavaggio;
+		this.dataRitiro = null;
+		this.dataUltimaConsegna = null;
+		this.negozioDeposito = null;
+		this.negozioConsegna = null;
+		this.prezzoScontato = 0.0;
+		this.cliente = null;
 	}
 
 	public String getIdCapo() {
@@ -76,6 +91,14 @@ public class Capo {
 		this.dataUltimaConsegna = dataUltimaConsegna;
 	}
 
+	public Negozio getNegozioDeposito() {
+		return negozioDeposito;
+	}
+
+	public void setNegozioDeposito(Negozio negozioDeposito) {
+		this.negozioDeposito = negozioDeposito;
+	}
+
 	public Negozio getNegozioConsegna() {
 		return negozioConsegna;
 	}
@@ -100,12 +123,12 @@ public class Capo {
 		this.cliente = cliente;
 	}
 
-	
 	@Override
 	public String toString() {
 		return "Capo " + idCapo + "\nStato: " + statoCapo + "\nTipoLavaggio: " + tipoLavaggio + "\nDataRitiro: "
-				+ dataRitiro + "\nDataUltimaConsegna: " + dataUltimaConsegna + "\nNegozioConsegna: "
-				+ negozioConsegna.getIdTappa() + "\nPrezzoScontato: " + prezzoScontato + "\nIdCliente: " + cliente.getIdCliente();
+				+ dataRitiro + "\nDataUltimaConsegna: " + dataUltimaConsegna + "\nNegozioDeposito: "
+				+ negozioDeposito.getIdTappa() + "\nNegozioConsegna: " + negozioConsegna.getIdTappa()
+				+ "\nPrezzoScontato: " + prezzoScontato + "\nIdCliente: " + cliente.getIdCliente();
 	}
 
 }

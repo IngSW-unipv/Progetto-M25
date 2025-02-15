@@ -3,6 +3,8 @@ package it.unipv.ingsfw.model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -15,132 +17,229 @@ import java.util.TimeZone;
 
 import it.unipv.ingsfw.jdbc.DBConnection;
 import it.unipv.ingsfw.model.negozio.Negozio;
+import it.unipv.ingsfw.model.negozio.Totem;
 import it.unipv.ingsfw.model.users.Cliente;
 
 public class CapoDAO implements ICapoDAO {
-	
-	//private String schema;
+
+	// private String schema;
 	private Connection conn;
 	private SimpleDateFormat format;
 
-
 	public CapoDAO() {
 		super();
-		//this.schema = "PROVA";
-		//conn=DBConnection.startConnection(conn,schema);
+		// this.schema = "PROVA";
+		// conn=DBConnection.startConnection(conn,schema);
 		format = new SimpleDateFormat("YYYY-MM-DD");
 	}
 
-
 	@Override
-	public ArrayList<Capo> selectAll()
-	{
+	public ArrayList<Capo> selectAll() {
 		ArrayList<Capo> result = new ArrayList<>();
 
-		conn=DBConnection.startConnection(conn);
+		conn = DBConnection.startConnection(conn);
 		Statement st1;
 		ResultSet rs1;
-		Negozio n;
-		Cliente c0;
+		Negozio negDep;
+		Negozio negCon;
+		Cliente cl;
 
-		try
-		{
+		try {
 			st1 = conn.createStatement();
-			String query="SELECT * from CAPI";
-			rs1=st1.executeQuery(query);
+			String query = "SELECT * from CAPI";
+			rs1 = st1.executeQuery(query);
 
-			while(rs1.next())
-			{
-				n = new Negozio(rs1.getString(6));
-				c0 = new Cliente(rs1.getString(8));
-				Capo c = new Capo(rs1.getString(1),StatoCapo.valueOf(rs1.getString(2)),TipoLavaggio.valueOf(rs1.getString(3)), rs1.getDate(4), rs1.getDate(5), n, rs1.getDouble(7), c0);
+			while (rs1.next()) {
+				negDep = new Negozio(rs1.getString(6));
+				negCon = new Negozio(rs1.getString(7));
+				cl = new Cliente(rs1.getString(9));
+				Capo c = new Capo(rs1.getString(1), StatoCapo.valueOf(rs1.getString(2)),
+						TipoLavaggio.valueOf(rs1.getString(3)), rs1.getDate(4), rs1.getDate(5), negDep, negCon,
+						rs1.getDouble(8), cl);
 
 				result.add(c);
 			}
-		}catch (Exception e){e.printStackTrace();}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return result;
+	}
+
+	@Override
+	public ArrayList<Capo> selectCapoByStatoETipo(Capo input) {
+		ArrayList<Capo> result = new ArrayList<>();
+
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+		Negozio negDep;
+		Negozio negCon;
+		Cliente cl;
+
+		try {
+			String query = "SELECT * FROM CAPI WHERE STATO=? AND IDLAVAGGIO =? LIMIT 50";
+
+			st1 = conn.prepareStatement(query);
+			st1.setString(1, input.getStatoCapo().toString());
+			st1.setInt(2, Integer.parseInt(input.getTipoLavaggio().toString()));
+
+			rs1 = st1.executeQuery();
+
+			while (rs1.next()) {
+				negDep = new Negozio(rs1.getString(6));
+				negCon = new Negozio(rs1.getString(7));
+				cl = new Cliente(rs1.getString(9));
+				Capo c = new Capo(rs1.getString(1), StatoCapo.valueOf(rs1.getString(2)),
+						input.getTipoLavaggio(), rs1.getDate(4), rs1.getDate(5), negDep, negCon,
+						rs1.getDouble(8), cl);
+
+				result.add(c);
+			}
+		} catch (NumberFormatException e) {
+			System.err.println("Parsing non andato a buon fine");
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		DBConnection.closeConnection(conn);
 		return result;
 	}
 	
 	@Override
-	public ArrayList<Capo> selectByStatoCapo(Capo fornInput)
-	{
-		ArrayList<Capo> result = new ArrayList<>();
-
-		conn=DBConnection.startConnection(conn);
+	public boolean updateStatoCapo(Capo inputSet){
+		
+		conn = DBConnection.startConnection(conn);
 		PreparedStatement st1;
-		ResultSet rs1;
-		Negozio n;
-		Cliente c0;
+		boolean esito = true;
 
-		try
-		{
-			String query="SELECT * FROM CAPI WHERE STATO=?";
+		try {
+			String query = "UPDATE CAPI SET STATO =? WHERE IDC = ?";
 
 			st1 = conn.prepareStatement(query);
-			st1.setString(1, fornInput.getStatoCapo().toString());
-			
-			rs1=st1.executeQuery(query);
+			st1.setString(1, inputSet.getStatoCapo().toString());
+			st1.setString(2, inputSet.getIdCapo());
 
-			while(rs1.next())
-			{
-				n = new Negozio(rs1.getString(6));
-				c0 = new Cliente(rs1.getString(8));
-				Capo c = new Capo(rs1.getString(1),StatoCapo.valueOf(rs1.getString(2)),TipoLavaggio.valueOf(rs1.getString(3)), rs1.getDate(4), rs1.getDate(5), n, rs1.getDouble(7), c0);
+			st1.executeUpdate();
 
-				result.add(c);
-			}
-		}catch (Exception e){e.printStackTrace();}
+		} catch(SQLTimeoutException e) {
+			System.err.println("Timeout");
+			e.printStackTrace();
+			esito = false;
+		}catch (NumberFormatException e) {
+			System.err.println("Parsing non andato a buon fine");
+			e.printStackTrace();
+			esito = false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			esito = false;
+		}
 
 		DBConnection.closeConnection(conn);
-		return result;
+		return esito;
 	}
-	
+	@Override
+	public String getNewIdCapo() {
+
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+		String newIdCapo = "";
+
+		try {
+			String query = "SELECT IDC FROM CAPI ORDER BY IDC DESC LIMIT 1";
+			st1 = conn.prepareStatement(query);
+
+			rs1 = st1.executeQuery(query);
+
+			while (rs1.next()) {
+
+				newIdCapo = rs1.getString(1);
+				String sub = newIdCapo.substring(3);
+				//System.out.println(sub);
+				int num = Integer.parseInt(sub) + 1;
+				newIdCapo = String.format("C%03d", num);
+				//System.out.println(newIdStazione);
+
+			}
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return newIdCapo;
+	}
+
 	@Override
 	public boolean insertCapo(Capo c) throws ParseException {
 
-		conn=DBConnection.startConnection(conn);
+		conn = DBConnection.startConnection(conn);
 		PreparedStatement st1;
 		Date parsed;
 		java.sql.Date dataBuona;
-		
-		boolean esito=true;
 
-		try
-		{
-			String query="INSERT INTO CAPI (IDC,STATO,,DATARITIRO,PREZZOSCONTATO,DATACONSEGNAULTIMA,IDLAVAGGIO,IDNEGOZIOCONSEGNA) VALUES(?,?,?,?,?,?,?,?)";
+		boolean esito = true;
+
+		try {
+			String query = "INSERT INTO CAPI VALUES(?,?,?,?,?,?,?,?,?)";
 			st1 = conn.prepareStatement(query);
-			st1.setString(1,c.getIdCapo());
-			st1.setString(2,c.getStatoCapo().toString());
+			st1.setString(1, c.getIdCapo());
+			st1.setString(2, c.getStatoCapo().toString());
+			st1.setString(3, c.getTipoLavaggio().toString());
+			
+			//gestione inserimento data nulla che altrimenti scatenerebbe una eccezione
 			
 			parsed = c.getDataRitiro();
-			dataBuona = new java.sql.Date(parsed.getTime());
-			st1.setDate(3,dataBuona);
-			
-			st1.setDouble(4,c.getPrezzoScontato());
+			if(parsed != null) {
+				dataBuona = new java.sql.Date(parsed.getTime());
+				st1.setDate(4, dataBuona);
+			}else {
+				st1.setDate(4, null);
+			}
 			
 			parsed = c.getDataUltimaConsegna();
 			dataBuona = new java.sql.Date(parsed.getTime());
-			st1.setDate(5,dataBuona);
-			
-			st1.setString(6,c.getTipoLavaggio().toString());
-			st1.setString(7,c.getNegozioConsegna().getIdTappa());
-			
-			st1.executeUpdate(query);
+			st1.setDate(5, dataBuona);
 
-		}catch (Exception e){
+			st1.setString(6, c.getNegozioDeposito().getIdTappa());
+			st1.setString(7, c.getNegozioConsegna().getIdTappa());
+			st1.setDouble(8, c.getPrezzoScontato());
+			st1.setString(9, c.getCliente().getIdCliente());
+			
+			
+			st1.executeUpdate();
+
+		}catch (Exception e) {
 			e.printStackTrace();
-			esito=false;
+			esito = false;
 		}
 
 		DBConnection.closeConnection(conn);
 		return esito;
 
 	}
-	
-	public static void main(String[] args) {
-		//da testare inserimento corretto data
+
+	public static void main(String[] args) throws ParseException {
+		// da testare inserimento corretto data
+
+		CapoDAO c = new CapoDAO();
+		ArrayList<Capo> capi = c.selectCapoByStatoETipo(new Capo(StatoCapo.IN_LAVORAZIONE, TipoLavaggio.BIANCHI));
+
+		//for (Capo c0 : capi)
+			//System.out.println(c0);
+		
+		String string = "2025-02-18";
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Date parsed = format.parse(string);
+		java.sql.Date sql = new java.sql.Date(parsed.getTime());
+		boolean t = c.insertCapo(new Capo(c.getNewIdCapo(),StatoCapo.IN_STORE, TipoLavaggio.BIANCHI, null, sql, new Negozio("N002"), new Negozio("N003"), 25.6, new Cliente("CL001")));
+		System.out.println(t);
 	}
 
 }
