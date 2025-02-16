@@ -78,6 +78,8 @@ public class Operatore extends Dipendente {
 
 	// metodo per mandare in stato di working una stazione di lavorazione, andando
 	// prima a controllare se questa contiene effettivamente dei capi da lavorare
+	
+	//uso attributo index utile per passare da GUI a esecuzione del metodo
 
 	public void avviaStazione(int index) {
 		ObservableStazioneLavoroDAO dao = new ObservableStazioneLavoroDAO();
@@ -91,35 +93,11 @@ public class Operatore extends Dipendente {
 
 			stazioniAssociate.get(index).setStatoStazione(StatoStazione.READY);
 
-			removeCapiStazione(stazioniAssociate.get(index));
+			stazioniAssociate.get(index).removeCapiStazione();
 
 			dao.changeStatoStazione(stazioniAssociate.get(index));
 
 		}
-	}
-
-	public void removeCapiStazione(ObservableStazioneLavoro o) {
-
-		CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
-
-		ArrayList<ObservableStazioneLavoro> stazioni = cat.selectStazioniByCatena(new CatenaLavorazione(o.getIdCatena()));
-
-		if (o.getTipo().toString().equals("STIRATURA") || cat.selectCatenaByStazione(o).getTipoLavaggio().toString().equals("PELLE")) {
-
-			CapoDAO cap = new CapoDAO();
-
-			for (Capo c : o.getListaCapiDaLavorare()) {
-				c.setStatoCapo(StatoCapo.IN_CONSEGNA);
-				cap.updateStatoCapo(c);
-			}
-
-		} else {
-			int numStazioneSuccessiva = stazioni.indexOf(o) + 1;
-			stazioni.get(numStazioneSuccessiva).caricamentoLavorazioniSospese();
-		}
-
-		o.svuotaStazione();
-
 	}
 
 	public static void main(String[] args) {
@@ -127,6 +105,7 @@ public class Operatore extends Dipendente {
 		DipendenteDAO dip = new DipendenteDAO();
 		ArrayList<Operatore> listaOp = dip.selectResponsabiliStazioneNonAssegnati();
 		ArrayList<Operatore> listaOpMan = dip.selectManutentoriNonAssegnati();
+		
 		for (Operatore o : listaOp)
 			System.out.println(o);
 

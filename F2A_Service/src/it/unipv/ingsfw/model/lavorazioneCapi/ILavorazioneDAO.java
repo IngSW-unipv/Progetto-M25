@@ -1,5 +1,7 @@
 package it.unipv.ingsfw.model.lavorazioneCapi;
 
+import java.util.ArrayList;
+
 import it.unipv.ingsfw.model.Capo;
 
 public interface ILavorazioneDAO {
@@ -11,4 +13,5 @@ public interface ILavorazioneDAO {
 	// aggiunta metodo per inserire a db una lavorazione ma senza specificare la
 	// data non essendo ancora stata svolta la lavorazione stessa
 	public boolean addLavorazioneSospesa(ObservableStazioneLavoro s, Capo c);
+	public ArrayList<Capo> checkPresenzaCapiInStazione(ObservableStazioneLavoro s);
 }

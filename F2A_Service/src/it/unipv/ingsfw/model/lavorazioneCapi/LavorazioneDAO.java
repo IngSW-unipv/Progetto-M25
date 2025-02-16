@@ -2,17 +2,36 @@ package it.unipv.ingsfw.model.lavorazioneCapi;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 
 import it.unipv.ingsfw.jdbc.DBConnection;
 import it.unipv.ingsfw.model.Capo;
+import it.unipv.ingsfw.model.LavaggioDAO;
+import it.unipv.ingsfw.model.StatoCapo;
+import it.unipv.ingsfw.model.TipoLavaggio;
+import it.unipv.ingsfw.model.negozio.Negozio;
+import it.unipv.ingsfw.model.users.Cliente;
 
 public class LavorazioneDAO implements ILavorazioneDAO {
 
 	private Connection conn;
+	private static LavorazioneDAO instance = null;
 
-	public LavorazioneDAO() {
+	private LavorazioneDAO() {
 		super();
+	}
+	
+	public static LavorazioneDAO getInstance() {
+		if (instance == null) {
+			instance = new LavorazioneDAO();
+			System.out.println("Create new instance");
+		} else
+			System.out.println("Instance already available");
+		return instance;
 	}
 
 	@Override
@@ -97,5 +116,44 @@ public class LavorazioneDAO implements ILavorazioneDAO {
 		}
 		DBConnection.closeConnection(conn);
 		return esito;
+	}
+
+	@Override
+	public ArrayList<Capo> checkPresenzaCapiInStazione(ObservableStazioneLavoro s) {
+
+		ArrayList<Capo> result = new ArrayList<>();
+
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+
+		try {
+
+			LavaggioDAO lav = new LavaggioDAO();
+			HashMap<Integer, String> listaTipiLavaggio = lav.selectAll();
+
+			String query = "SELECT * FROM CAPI WHERE IDC IN (SELECT IDC FROM LAVORAZIONI WHERE IDSTAZIONE='"
+					+ s.getIdStazione() + "' AND DATALAVORAZIONE IS NULL)";
+			st1 = conn.prepareStatement(query);
+
+			rs1 = st1.executeQuery();
+
+			while (rs1.next()) {
+
+				Negozio negDep = new Negozio(rs1.getString(6));
+				Negozio negCon = new Negozio(rs1.getString(7));
+				Cliente cl = new Cliente(rs1.getString(9));
+				Capo c = new Capo(rs1.getString(1), StatoCapo.valueOf(rs1.getString(2)),
+						TipoLavaggio.valueOf(listaTipiLavaggio.get(rs1.getInt(3))), rs1.getDate(4), rs1.getDate(5),
+						negDep, negCon, rs1.getDouble(8), cl);
+
+				result.add(c);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return result;
 	}
 }

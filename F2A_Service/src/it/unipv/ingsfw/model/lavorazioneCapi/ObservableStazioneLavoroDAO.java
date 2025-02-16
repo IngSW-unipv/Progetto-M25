@@ -410,10 +410,10 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 
 				newIdStazione = rs1.getString(1);
 				String sub = newIdStazione.substring(3);
-				//System.out.println(sub);
+				// System.out.println(sub);
 				int num = Integer.parseInt(sub) + 1;
 				newIdStazione = String.format("S%03d", num);
-				//System.out.println(newIdStazione);
+				// System.out.println(newIdStazione);
 
 			}
 		} catch (NumberFormatException e) {
@@ -427,18 +427,19 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 		DBConnection.closeConnection(conn);
 		return newIdStazione;
 	}
-	
+
 	public ObservableStazioneLavoro selectStazioniReadyNonAssegnatePerTipo(ObservableStazioneLavoro s) {
-		
+
 		conn = DBConnection.startConnection(conn);
 		PreparedStatement st1;
 		ResultSet rs1;
 		ObservableStazioneLavoro s0 = null;
 
 		try {
-			String query = "SELECT * FROM STAZIONILAVORO S WHERE S.STATO = 'READY' AND TIPO='"+ s.getTipo().toString() + "' AND NOT EXISTS (SELECT * FROM ASSEGNAZIONI A WHERE S.IDSTAZIONE = A.IDSTAZIONE AND A.DATAFINEASSEGNAZIONE IS NULL) LIMIT 1";
+			String query = "SELECT * FROM STAZIONILAVORO S WHERE S.STATO = 'READY' AND TIPO='" + s.getTipo().toString()
+					+ "' AND NOT EXISTS (SELECT * FROM ASSEGNAZIONI A WHERE S.IDSTAZIONE = A.IDSTAZIONE AND A.DATAFINEASSEGNAZIONE IS NULL) LIMIT 1";
 			st1 = conn.prepareStatement(query);
-			
+
 			rs1 = st1.executeQuery();
 
 			while (rs1.next()) {
@@ -454,9 +455,10 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 		DBConnection.closeConnection(conn);
 		return s0;
 	}
+
 	@Override
 	public boolean assegnazioneOperatoreNoto(ObservableStazioneLavoro s, Operatore o) {
-		
+
 		int idNewAssegnazione = getIdLastAssegnazione() + 1;
 
 		conn = DBConnection.startConnection(conn);
@@ -495,9 +497,10 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 		DBConnection.closeConnection(conn);
 		return esito;
 	}
+
 	@Override
 	public boolean changeStatoStazione(ObservableStazioneLavoro s) {
-		
+
 		conn = DBConnection.startConnection(conn);
 		PreparedStatement st1;
 
@@ -510,11 +513,10 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 			st1.setString(1, s.getStatoStazione().toString());
 			st1.setString(2, s.getIdStazione());
 
-
 			st1.executeUpdate();
 
 		} catch (SQLIntegrityConstraintViolationException e) {
-			//System.err.println("");
+			// System.err.println("");
 			esito = false;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -539,13 +541,14 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 		 * ArrayList<ObservableStazioneLavoro> obs = st.selectAll(); for
 		 * (ObservableStazioneLavoro o : obs) System.out.println(o);
 		 */
-		
-		ObservableStazioneLavoro s = st.selectStazioniReadyNonAssegnatePerTipo(new ObservableStazioneLavoro(TipologiaStazione.ASCIUGATURA));
+
+		ObservableStazioneLavoro s = st
+				.selectStazioniReadyNonAssegnatePerTipo(new ObservableStazioneLavoro(TipologiaStazione.ASCIUGATURA));
 		System.out.println(s);
 		System.out.println("------------------------------------------------");
-		
+
 		ArrayList<ObservableStazioneLavoro> lista = st.selectAll();
-		for(ObservableStazioneLavoro s0 : lista)
+		for (ObservableStazioneLavoro s0 : lista)
 			System.out.println(s0);
 
 	}

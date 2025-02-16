@@ -5,6 +5,7 @@ import java.util.Observable;
 
 import it.unipv.ingsfw.model.Capo;
 import it.unipv.ingsfw.model.CapoDAO;
+import it.unipv.ingsfw.model.StatoCapo;
 
 public class ObservableStazioneLavoro extends Observable {
 
@@ -22,7 +23,6 @@ public class ObservableStazioneLavoro extends Observable {
 	 */
 	public ObservableStazioneLavoro(String idStazione, TipologiaStazione tipo, StatoStazione statoStazione,
 			double livelloProdottoLavaggio) {
-		super();
 		this.idStazione = idStazione;
 		this.tipo = tipo;
 		this.statoStazione = statoStazione;
@@ -31,7 +31,6 @@ public class ObservableStazioneLavoro extends Observable {
 	}
 
 	public ObservableStazioneLavoro(TipologiaStazione tipo) {
-		super();
 		this.idStazione = null;
 		this.tipo = tipo;
 		this.statoStazione = null;
@@ -92,41 +91,72 @@ public class ObservableStazioneLavoro extends Observable {
 	}
 
 	public boolean checkPresenzaCapi() {
-		if (this.listaCapiDaLavorare.size() == 0) {
-			return false;
+		LavorazioneDAO lav = LavorazioneDAO.getInstance();
+
+		ArrayList<Capo> listaCapi = lav.checkPresenzaCapiInStazione(this);
+
+		if (listaCapi.size() != 0) {
+			this.listaCapiDaLavorare = listaCapi;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	public boolean caricamentoLavorazioni() {
-		LavorazioneDAO lav = new LavorazioneDAO();
+		LavorazioneDAO lav = LavorazioneDAO.getInstance();
 
 		boolean esitoCaricamento = false;
 		for (Capo c : listaCapiDaLavorare)
 			esitoCaricamento = lav.addLavorazione(this, c);
-		
+
 		return esitoCaricamento;
 	}
-	
+
 	public boolean caricamentoLavorazioniSospese() {
-		LavorazioneDAO lav = new LavorazioneDAO();
+		LavorazioneDAO lav = LavorazioneDAO.getInstance();
 
 		boolean esitoCaricamento = false;
 		for (Capo c : listaCapiDaLavorare)
 			esitoCaricamento = lav.addLavorazioneSospesa(this, c);
-		
+
 		return esitoCaricamento;
 	}
 
 	public void svuotaStazione() {
-		//ArrayList<Capo> capiDaSpostare = this.listaCapiDaLavorare;
+		// ArrayList<Capo> capiDaSpostare = this.listaCapiDaLavorare;
 		this.listaCapiDaLavorare.clear();
 	}
-	
+
 	public String getIdCatena() {
 		ObservableStazioneLavoroDAO obs = new ObservableStazioneLavoroDAO();
 		String idCatena = obs.selectIdCatenaByStazione(this);
 		return idCatena;
+	}
+
+	public void removeCapiStazione() {
+
+		CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
+
+		ArrayList<ObservableStazioneLavoro> stazioni = cat
+				.selectStazioniByCatena(new CatenaLavorazione(this.getIdCatena()));
+
+		if (this.getTipo().toString().equals("STIRATURA")
+				|| cat.selectCatenaByStazione(this).getTipoLavaggio().toString().equals("PELLE")) {
+
+			CapoDAO cap = new CapoDAO();
+
+			for (Capo c : this.getListaCapiDaLavorare()) {
+				c.setStatoCapo(StatoCapo.IN_CONSEGNA);
+				cap.updateStatoCapo(c);
+			}
+
+		} else {
+			int numStazioneSuccessiva = stazioni.indexOf(this) + 1;
+			stazioni.get(numStazioneSuccessiva).caricamentoLavorazioniSospese();
+		}
+
+		this.svuotaStazione();
+
 	}
 
 }
