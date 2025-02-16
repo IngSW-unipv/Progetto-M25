@@ -29,6 +29,15 @@ public class ObservableStazioneLavoro extends Observable {
 		this.livelloProdottoLavaggio = livelloProdottoLavaggio;
 		this.listaCapiDaLavorare = new ArrayList<Capo>();
 	}
+	
+	public ObservableStazioneLavoro(TipologiaStazione tipo) {
+		super();
+		this.idStazione = null;
+		this.tipo = tipo;
+		this.statoStazione = null;
+		this.livelloProdottoLavaggio = 0.0;
+		this.listaCapiDaLavorare = null;
+	}
 
 	public String getIdStazione() {
 		return idStazione;

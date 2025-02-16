@@ -3,6 +3,7 @@ package it.unipv.ingsfw.model.users;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
@@ -143,7 +144,10 @@ public class DipendenteDAO implements IDipendenteDAO {
 				result.add(o);
 			}
 
-		} catch (Exception e) {
+		} catch(IndexOutOfBoundsException e) {
+			System.err.println("Nessun responsabile libero");
+			e.printStackTrace();
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
 
@@ -210,6 +214,41 @@ public class DipendenteDAO implements IDipendenteDAO {
 
 		DBConnection.closeConnection(conn);
 		return result;
+	}
+	@Override
+	public String getNewIdDipendente() {
+		
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+		String newIdDipendente = "";
+
+		try {
+			String query = "SELECT IDDIPENDENTE FROM DIPENDENTI ORDER BY IDDIPENDENTE DESC LIMIT 1";
+			st1 = conn.prepareStatement(query);
+
+			rs1 = st1.executeQuery(query);
+
+			while (rs1.next()) {
+
+				newIdDipendente = rs1.getString(1);
+				String sub = newIdDipendente.substring(3);
+				//System.out.println(sub);
+				int num = Integer.parseInt(sub) + 1;
+				newIdDipendente = String.format("D%03d", num);
+				//System.out.println(newIdStazione);
+
+			}
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return newIdDipendente;
 	}
 
 	@Override

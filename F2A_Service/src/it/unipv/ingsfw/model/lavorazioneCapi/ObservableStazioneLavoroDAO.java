@@ -427,6 +427,74 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 		DBConnection.closeConnection(conn);
 		return newIdStazione;
 	}
+	
+	public ObservableStazioneLavoro selectStazioniReadyNonAssegnatePerTipo(ObservableStazioneLavoro s) {
+		
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+		ObservableStazioneLavoro s0 = null;
+
+		try {
+			String query = "SELECT * FROM STAZIONILAVORO S WHERE S.STATO = 'READY' AND TIPO='"+ s.getTipo().toString() + "' AND NOT EXISTS (SELECT * FROM ASSEGNAZIONI A WHERE S.IDSTAZIONE = A.IDSTAZIONE AND A.DATAFINEASSEGNAZIONE IS NULL) LIMIT 1";
+			st1 = conn.prepareStatement(query);
+			
+			rs1 = st1.executeQuery();
+
+			while (rs1.next()) {
+
+				s0 = new ObservableStazioneLavoro(rs1.getString(1), TipologiaStazione.valueOf(rs1.getString(3)),
+						StatoStazione.valueOf(rs1.getString(4)), rs1.getDouble(5));
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return s0;
+	}
+	@Override
+	public boolean assegnazioneOperatoreNoto(ObservableStazioneLavoro s, Operatore o) {
+		
+		int idNewAssegnazione = getIdLastAssegnazione() + 1;
+
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+
+		boolean esito = true;
+
+		try {
+
+			long millis = System.currentTimeMillis();
+			java.sql.Date date = new java.sql.Date(millis);
+			// System.out.println(date);
+
+			String query = "INSERT INTO ASSEGNAZIONI VALUES (?,?,?,?,?)";
+			st1 = conn.prepareStatement(query);
+			st1.setInt(1, idNewAssegnazione);
+			st1.setString(2, s.getIdStazione());
+			st1.setString(3, o.getIdDipendente());
+			st1.setDate(4, date);
+			st1.setDate(5, null);
+
+			st1.executeUpdate();
+
+		} catch (SQLIntegrityConstraintViolationException e) {
+			System.err.println("IdAssegnazione già esistente");
+			esito = false;
+		} catch (SQLException e) {
+			System.err.println("Errore in fase di elaborazione query");
+			e.printStackTrace();
+			esito = false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			esito = false;
+		}
+
+		DBConnection.closeConnection(conn);
+		return esito;
+	}
 
 	public static void main(String[] args) {
 		ObservableStazioneLavoroDAO st = new ObservableStazioneLavoroDAO();
@@ -442,6 +510,14 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 		 * ArrayList<ObservableStazioneLavoro> obs = st.selectAll(); for
 		 * (ObservableStazioneLavoro o : obs) System.out.println(o);
 		 */
+		
+		ObservableStazioneLavoro s = st.selectStazioniReadyNonAssegnatePerTipo(new ObservableStazioneLavoro(TipologiaStazione.ASCIUGATURA));
+		System.out.println(s);
+		System.out.println("------------------------------------------------");
+		
+		ArrayList<ObservableStazioneLavoro> lista = st.selectAll();
+		for(ObservableStazioneLavoro s0 : lista)
+			System.out.println(s0);
 
 	}
 

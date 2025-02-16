@@ -14,7 +14,9 @@ public interface IObservableStazioneLavoroDAO {
 	public boolean assegnazioneResponsabileStazioneLibero(ObservableStazioneLavoro s);
 	public boolean assegnazioneManutentoreLibero(ObservableStazioneLavoro s);
 	public int getIdLastAssegnazione();
+	public String getNewIdStazione();
 	public ArrayList<ObservableStazioneLavoro> selectStazioniReadyNonAssegnate();
 	public ArrayList<ObservableStazioneLavoro> selectStazioniMaintenanceNonAssegnate();
-	public String getNewIdStazione();
+	public ObservableStazioneLavoro selectStazioniReadyNonAssegnatePerTipo(ObservableStazioneLavoro s);
+	public boolean assegnazioneOperatoreNoto(ObservableStazioneLavoro s, Operatore o);
 }

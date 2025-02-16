@@ -1,8 +1,5 @@
 package it.unipv.ingsfw.model.lavorazioneCapi;
-
-import java.sql.SQLException;
 import java.util.ArrayList;
-
 import it.unipv.ingsfw.model.Capo;
 import it.unipv.ingsfw.model.CapoDAO;
 import it.unipv.ingsfw.model.StatoCapo;
@@ -73,8 +70,7 @@ public class CatenaLavorazione {
 	public boolean addStazioneLavoro(ObservableStazioneLavoro newStazione) {
 		ObservableStazioneLavoroDAO stazione = new ObservableStazioneLavoroDAO();
 
-		if (listaStazioni.size() <= 2 && !tipoLavaggio.equals(TipoLavaggio.PELLE)
-				&& !tipoStazioneAlreadyExists(newStazione)) {
+		if (listaStazioni.size() <= 2 && !tipoLavaggio.equals(TipoLavaggio.PELLE) && !tipoStazioneAlreadyExists(newStazione)) {
 			if (stazione.insertStazioneWithKnownCatena(newStazione, this)) {
 				listaStazioni.add(newStazione);
 				return true;
@@ -140,6 +136,13 @@ public class CatenaLavorazione {
 		}
 		
 		//cambio stato capi a db da IN_LAVORAZIONE a IN_CONSEGNA
+		
+		for(Capo c : capi) {
+			c.setStatoCapo(StatoCapo.IN_CONSEGNA);
+			cap.updateStatoCapo(c);
+		}
+			
+			
 		
 		
 	}
