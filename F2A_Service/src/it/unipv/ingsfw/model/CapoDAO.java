@@ -79,7 +79,7 @@ public class CapoDAO implements ICapoDAO {
 		Cliente cl;
 
 		try {
-			String query = "SELECT * FROM CAPI WHERE STATO=? AND IDLAVAGGIO =? LIMIT 50";
+			String query = "SELECT * FROM CAPI WHERE STATO=? AND IDLAVAGGIO =? ORDER BY DATAULTIMACONSEGNA LIMIT 50";
 
 			st1 = conn.prepareStatement(query);
 			st1.setString(1, input.getStatoCapo().toString());
@@ -228,7 +228,7 @@ public class CapoDAO implements ICapoDAO {
 	public static void main(String[] args) throws ParseException {
 		// da testare inserimento corretto data
 
-		CapoDAO c = new CapoDAO();
+		/*CapoDAO c = new CapoDAO();
 		ArrayList<Capo> capi = c.selectCapoByStatoETipo(new Capo(StatoCapo.IN_LAVORAZIONE, TipoLavaggio.BIANCHI));
 
 		//for (Capo c0 : capi)
@@ -239,7 +239,7 @@ public class CapoDAO implements ICapoDAO {
 		Date parsed = format.parse(string);
 		java.sql.Date sql = new java.sql.Date(parsed.getTime());
 		boolean t = c.insertCapo(new Capo(c.getNewIdCapo(),StatoCapo.IN_STORE, TipoLavaggio.BIANCHI, null, sql, new Negozio("N002"), new Negozio("N003"), 25.6, new Cliente("CL001")));
-		System.out.println(t);
+		System.out.println(t);*/
 	}
 
 }

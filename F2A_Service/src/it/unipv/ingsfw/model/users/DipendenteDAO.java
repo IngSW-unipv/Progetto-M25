@@ -302,19 +302,29 @@ public class DipendenteDAO implements IDipendenteDAO {
 		boolean result = true;
 		conn = DBConnection.startConnection(conn);
 		PreparedStatement st1;
-		// ResultSet rs1;
+		ResultSet rs1;
 
 		try {
-			String query = "SELECT * FROM DIPENDENTI WHERE EMAIL='" + input.getEmail() + "' AND PASSWORD='"
-					+ input.getPassword() + "'";
+			String query = "SELECT * FROM DIPENDENTI WHERE EMAIL=? AND PASSWORD=?";
 
 			st1 = conn.prepareStatement(query);
-			st1.executeQuery(query);
+			st1.setString(1, input.getEmail());
+			st1.setString(2, input.getPassword());
+			
+			rs1 = st1.executeQuery();
+			
+			result = rs1.absolute(1);
+			System.out.println("reeeeeeeeeeees: " + result);
 
-		} catch (ClassCastException e) {
+		} catch (IndexOutOfBoundsException e1) {
+			System.err.println("");
+			result = false;
+		}catch (ClassCastException e1) {
 			System.err.println("Errore in fase di casting del dipendente");
+			result = false;
 		} catch (Exception e1) {
 			System.err.println("Errore in fase di autenticazione");
+			e1.printStackTrace();
 			result = false;
 		}
 
@@ -345,7 +355,8 @@ public class DipendenteDAO implements IDipendenteDAO {
 		 */
 
 		// Corriere fittizio = new Corriere(null, null, null, null, null, null, 0);
-		ArrayList<Corriere> listaCorrieri = d.selectCorrieri();
+		
+		/*ArrayList<Corriere> listaCorrieri = d.selectCorrieri();
 
 		for (Corriere o1 : listaCorrieri)
 			System.out.println(o1);
@@ -354,7 +365,10 @@ public class DipendenteDAO implements IDipendenteDAO {
 		ArrayList<Operatore> listaResponsabiliLiberi = d.selectResponsabiliStazioneNonAssegnati();
 
 		for (Operatore o2 : listaResponsabiliLiberi)
-			System.out.println(o2);
+			System.out.println(o2);*/
+		
+		Operatore o = new Operatore("fabio.colombo@f2aservice.com", "1234");
+		System.out.println(d.selectByEmailPassword(o));
 
 	}
 	

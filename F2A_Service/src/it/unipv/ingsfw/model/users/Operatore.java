@@ -23,6 +23,16 @@ public class Operatore extends Dipendente {
 		this.tipoOperatore = tipoOperatore;
 		stazioniAssociate = new ArrayList<ObservableStazioneLavoro>();
 	}
+	
+	public Operatore(String email, String password) {
+		super(email, password);
+		this.tipoOperatore = null;
+		stazioniAssociate = null;
+	}
+	
+	public Operatore() {
+		super(null, null);
+	}
 
 	public TipoOperatore getTipoOperatore() {
 		return tipoOperatore;
@@ -85,19 +95,25 @@ public class Operatore extends Dipendente {
 		ObservableStazioneLavoroDAO dao = new ObservableStazioneLavoroDAO();
 
 		if (stazioniAssociate.get(index).checkPresenzaCapi()) {
-			stazioniAssociate.get(index).setStatoStazione(StatoStazione.WORKING);
+			stazioniAssociate.get(index).messaInLavorazione();
 			dao.changeStatoStazione(stazioniAssociate.get(index));
 			stazioniAssociate.get(index).caricamentoLavorazioni();
 
 			// attendere qualche secondo ....
 
-			stazioniAssociate.get(index).setStatoStazione(StatoStazione.READY);
+			stazioniAssociate.get(index).messaInStandBy();
 
 			stazioniAssociate.get(index).removeCapiStazione();
 
 			dao.changeStatoStazione(stazioniAssociate.get(index));
 
 		}
+	}
+	
+	public boolean verificaCredenzialiAccesso(String email, String password) {
+		DipendenteDAO dip = new DipendenteDAO();
+		boolean t = dip.selectByEmailPassword(new Operatore(email,password));
+		return t;
 	}
 
 	public static void main(String[] args) {

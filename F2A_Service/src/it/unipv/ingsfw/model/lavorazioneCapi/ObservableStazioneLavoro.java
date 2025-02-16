@@ -90,6 +90,20 @@ public class ObservableStazioneLavoro extends Observable {
 				+ "\nLivelloProdottoLavaggio: " + livelloProdottoLavaggio;
 	}
 
+	// metodo per modifica stato macchinario in maniera più automatizzata e generale
+
+	public void messaInLavorazione() {
+		statoStazione = StatoStazione.WORKING;
+	}
+
+	public void messaInStandBy() {
+		statoStazione = StatoStazione.READY;
+	}
+
+	public void messaInManutenzione() {
+		statoStazione = StatoStazione.MAINTENANCE;
+	}
+
 	public boolean checkPresenzaCapi() {
 		LavorazioneDAO lav = LavorazioneDAO.getInstance();
 
@@ -140,8 +154,7 @@ public class ObservableStazioneLavoro extends Observable {
 		ArrayList<ObservableStazioneLavoro> stazioni = cat
 				.selectStazioniByCatena(new CatenaLavorazione(this.getIdCatena()));
 
-		if (this.getTipo().toString().equals("STIRATURA")
-				|| cat.selectCatenaByStazione(this).getTipoLavaggio().toString().equals("PELLE")) {
+		if (this.getTipo().toString().equals("STIRATURA") || cat.selectCatenaByStazione(this).getTipoLavaggio().toString().equals("PELLE")) {
 
 			CapoDAO cap = new CapoDAO();
 
