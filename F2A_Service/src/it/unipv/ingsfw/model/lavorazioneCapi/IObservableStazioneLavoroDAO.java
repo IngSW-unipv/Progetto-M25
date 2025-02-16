@@ -1,7 +1,6 @@
 package it.unipv.ingsfw.model.lavorazioneCapi;
 
 import java.util.ArrayList;
-
 import it.unipv.ingsfw.model.users.Operatore;
 
 public interface IObservableStazioneLavoroDAO {
@@ -19,4 +18,5 @@ public interface IObservableStazioneLavoroDAO {
 	public ArrayList<ObservableStazioneLavoro> selectStazioniMaintenanceNonAssegnate();
 	public ObservableStazioneLavoro selectStazioniReadyNonAssegnatePerTipo(ObservableStazioneLavoro s);
 	public boolean assegnazioneOperatoreNoto(ObservableStazioneLavoro s, Operatore o);
+	public boolean changeStatoStazione(ObservableStazioneLavoro s);
 }

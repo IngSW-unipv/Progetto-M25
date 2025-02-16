@@ -22,6 +22,13 @@ public class CatenaLavorazione {
 		this.tipoLavaggio = tipoLavaggio;
 		this.listaStazioni = new ArrayList<ObservableStazioneLavoro>();
 	}
+	
+	public CatenaLavorazione(String idCatena) {
+		super();
+		this.idCatena = idCatena;
+		this.tipoLavaggio = null;
+		this.listaStazioni = new ArrayList<ObservableStazioneLavoro>();
+	}
 
 	public String getIdCatena() {
 		return idCatena;

@@ -495,6 +495,35 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 		DBConnection.closeConnection(conn);
 		return esito;
 	}
+	@Override
+	public boolean changeStatoStazione(ObservableStazioneLavoro s) {
+		
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+
+		boolean esito = true;
+
+		try {
+
+			String query = "UPDATE STAZIONILAVORO SET STATO=? WHERE IDSTAZIONE =?";
+			st1 = conn.prepareStatement(query);
+			st1.setString(1, s.getStatoStazione().toString());
+			st1.setString(2, s.getIdStazione());
+
+
+			st1.executeUpdate();
+
+		} catch (SQLIntegrityConstraintViolationException e) {
+			//System.err.println("");
+			esito = false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			esito = false;
+		}
+
+		DBConnection.closeConnection(conn);
+		return esito;
+	}
 
 	public static void main(String[] args) {
 		ObservableStazioneLavoroDAO st = new ObservableStazioneLavoroDAO();

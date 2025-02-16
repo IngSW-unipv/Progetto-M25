@@ -2,8 +2,15 @@ package it.unipv.ingsfw.model.users;
 
 import java.util.ArrayList;
 
+import it.unipv.ingsfw.model.Capo;
+import it.unipv.ingsfw.model.CapoDAO;
+import it.unipv.ingsfw.model.StatoCapo;
+import it.unipv.ingsfw.model.lavorazioneCapi.CatenaLavorazione;
+import it.unipv.ingsfw.model.lavorazioneCapi.CatenaLavorazioneDAO;
+import it.unipv.ingsfw.model.lavorazioneCapi.LavorazioneDAO;
 import it.unipv.ingsfw.model.lavorazioneCapi.ObservableStazioneLavoro;
 import it.unipv.ingsfw.model.lavorazioneCapi.ObservableStazioneLavoroDAO;
+import it.unipv.ingsfw.model.lavorazioneCapi.StatoStazione;
 
 public class Operatore extends Dipendente {
 
@@ -67,6 +74,52 @@ public class Operatore extends Dipendente {
 	@Override
 	public String toString() {
 		return super.toString() + "\nTipoOperatore: " + tipoOperatore;
+	}
+
+	// metodo per mandare in stato di working una stazione di lavorazione, andando
+	// prima a controllare se questa contiene effettivamente dei capi da lavorare
+
+	public void avviaStazione(int index) {
+		ObservableStazioneLavoroDAO dao = new ObservableStazioneLavoroDAO();
+
+		if (stazioniAssociate.get(index).checkPresenzaCapi()) {
+			stazioniAssociate.get(index).setStatoStazione(StatoStazione.WORKING);
+			dao.changeStatoStazione(stazioniAssociate.get(index));
+			stazioniAssociate.get(index).caricamentoLavorazioni();
+
+			// attendere qualche secondo ....
+
+			stazioniAssociate.get(index).setStatoStazione(StatoStazione.READY);
+
+			removeCapiStazione(stazioniAssociate.get(index));
+
+			dao.changeStatoStazione(stazioniAssociate.get(index));
+
+		}
+	}
+
+	public void removeCapiStazione(ObservableStazioneLavoro o) {
+
+		CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
+
+		ArrayList<ObservableStazioneLavoro> stazioni = cat.selectStazioniByCatena(new CatenaLavorazione(o.getIdCatena()));
+
+		if (o.getTipo().toString().equals("STIRATURA") || cat.selectCatenaByStazione(o).getTipoLavaggio().toString().equals("PELLE")) {
+
+			CapoDAO cap = new CapoDAO();
+
+			for (Capo c : o.getListaCapiDaLavorare()) {
+				c.setStatoCapo(StatoCapo.IN_CONSEGNA);
+				cap.updateStatoCapo(c);
+			}
+
+		} else {
+			int numStazioneSuccessiva = stazioni.indexOf(o) + 1;
+			stazioni.get(numStazioneSuccessiva).caricamentoLavorazioniSospese();
+		}
+
+		o.svuotaStazione();
+
 	}
 
 	public static void main(String[] args) {

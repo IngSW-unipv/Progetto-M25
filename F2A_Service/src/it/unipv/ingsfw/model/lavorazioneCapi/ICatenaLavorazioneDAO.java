@@ -9,5 +9,6 @@ public interface ICatenaLavorazioneDAO {
 	public boolean insertCatena(CatenaLavorazione c);
 	public boolean checkCatenaAlreadyExists(CatenaLavorazione c);
 	public ArrayList<ObservableStazioneLavoro> selectStazioniByCatena(CatenaLavorazione input);
+	public CatenaLavorazione selectCatenaByStazione(ObservableStazioneLavoro input);
 	public String getNewIdCatena();
 }

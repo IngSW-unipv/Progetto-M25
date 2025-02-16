@@ -29,7 +29,7 @@ public class ObservableStazioneLavoro extends Observable {
 		this.livelloProdottoLavaggio = livelloProdottoLavaggio;
 		this.listaCapiDaLavorare = new ArrayList<Capo>();
 	}
-	
+
 	public ObservableStazioneLavoro(TipologiaStazione tipo) {
 		super();
 		this.idStazione = null;
@@ -85,16 +85,48 @@ public class ObservableStazioneLavoro extends Observable {
 		return false;
 	}
 
-	/*
-	 * public static void main(String[] args) { StazioneLavoro s = new
-	 * StazioneLavoro("S001", TipologiaStazione.ASCIUGATURA, StatoStazione.READY,
-	 * 100); System.out.println(s.getTipo()); }
-	 */
-
 	@Override
 	public String toString() {
 		return "StazioneLavoro " + idStazione + "\nTipo: " + tipo.toString() + "\nStato: " + statoStazione.toString()
 				+ "\nLivelloProdottoLavaggio: " + livelloProdottoLavaggio;
+	}
+
+	public boolean checkPresenzaCapi() {
+		if (this.listaCapiDaLavorare.size() == 0) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean caricamentoLavorazioni() {
+		LavorazioneDAO lav = new LavorazioneDAO();
+
+		boolean esitoCaricamento = false;
+		for (Capo c : listaCapiDaLavorare)
+			esitoCaricamento = lav.addLavorazione(this, c);
+		
+		return esitoCaricamento;
+	}
+	
+	public boolean caricamentoLavorazioniSospese() {
+		LavorazioneDAO lav = new LavorazioneDAO();
+
+		boolean esitoCaricamento = false;
+		for (Capo c : listaCapiDaLavorare)
+			esitoCaricamento = lav.addLavorazioneSospesa(this, c);
+		
+		return esitoCaricamento;
+	}
+
+	public void svuotaStazione() {
+		//ArrayList<Capo> capiDaSpostare = this.listaCapiDaLavorare;
+		this.listaCapiDaLavorare.clear();
+	}
+	
+	public String getIdCatena() {
+		ObservableStazioneLavoroDAO obs = new ObservableStazioneLavoroDAO();
+		String idCatena = obs.selectIdCatenaByStazione(this);
+		return idCatena;
 	}
 
 }
