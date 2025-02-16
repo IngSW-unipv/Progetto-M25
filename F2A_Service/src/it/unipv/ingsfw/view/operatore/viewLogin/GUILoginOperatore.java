@@ -1,4 +1,4 @@
-package it.unipv.ingsfw.view.operatore;
+package it.unipv.ingsfw.view.operatore.viewLogin;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -12,12 +12,17 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
+import it.unipv.ingsfw.controller.OperatoreAction;
+import it.unipv.ingsfw.model.users.Operatore;
+
 public class GUILoginOperatore extends JFrame{
 	
+	InsertPanel pannello;
+	Container c;
 	/**
 	 * @throws HeadlessException
 	 */
-	public GUILoginOperatore() throws HeadlessException {
+	public GUILoginOperatore(Operatore o) throws HeadlessException {
 		super();
 		Toolkit kit = Toolkit.getDefaultToolkit();
 		Dimension screenSize = kit.getScreenSize();
@@ -29,24 +34,38 @@ public class GUILoginOperatore extends JFrame{
 		setIconImage(img);
 		setTitle("Login Operatore");
 		
-		BarraMenu menu = new BarraMenu();
-		setJMenuBar(menu);
         
-		InsertPanel pannello = new InsertPanel();
-		ButtonPanel b = new ButtonPanel();
-		Container c = getContentPane();
-		c.add(menu);
+		pannello = new InsertPanel();
+		//ButtonPanel b = new ButtonPanel();
+		c = getContentPane();
 		c.add(pannello);
-		c.add(b);
+		//c.add(b);
 		setLayout(new BorderLayout());
-		add(menu, BorderLayout.NORTH);
 		add(pannello, BorderLayout.CENTER);
-		add(b, BorderLayout.SOUTH);
-		
+		//add(b, BorderLayout.SOUTH);
+		OperatoreAction opAction = new OperatoreAction(o, this);
 	}
-	
+
+	public InsertPanel getPannello() {
+		return pannello;
+	}
+
+	public void setPannello(InsertPanel pannello) {
+		this.pannello = pannello;
+	}
+
+	public Container getC() {
+		return c;
+	}
+
+	public void setC(Container c) {
+		this.c = c;
+	}
+
+
 	public static void main(String[] args) {
-		GUILoginOperatore loginOp = new GUILoginOperatore();
+		Operatore op = new Operatore();
+		GUILoginOperatore loginOp = new GUILoginOperatore(op);
 		loginOp.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		loginOp.setVisible(true);
 	}
