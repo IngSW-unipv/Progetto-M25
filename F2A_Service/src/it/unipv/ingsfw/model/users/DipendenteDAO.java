@@ -365,6 +365,41 @@ public class DipendenteDAO implements IDipendenteDAO {
 		DBConnection.closeConnection(conn);
 		return id;
 	}
+	
+	@Override
+	public TipoOperatore selectTipoOperatoreById(Dipendente input) {
+		
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+		TipoOperatore tipo = null;
+		
+		try {
+			String query = "SELECT TIPOOPERATORE FROM DIPENDENTI WHERE IDDIPENDENTE=?";
+
+			st1 = conn.prepareStatement(query);
+			st1.setString(1, input.getIdDipendente());
+			
+			rs1 = st1.executeQuery();
+			
+			while(rs1.next()) {
+				tipo = TipoOperatore.valueOf(rs1.getString(1));
+				System.out.println(tipo);
+				return tipo;
+			}
+
+		} catch (IndexOutOfBoundsException e1) {
+			System.err.println("");
+		}catch (ClassCastException e1) {
+			System.err.println("Errore in fase di casting del dipendente");
+		} catch (Exception e1) {
+			System.err.println("Errore in fase di autenticazione");
+			e1.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return tipo;
+	}
 
 	public static void main(String[] args) {
 		DipendenteDAO d = new DipendenteDAO();
@@ -402,7 +437,8 @@ public class DipendenteDAO implements IDipendenteDAO {
 			System.out.println(o2);*/
 		
 		Operatore o = new Operatore("fabio.colombo@f2aservice.com", "1234");
-		System.out.println(d.selectByEmailPassword(o));
+		//System.out.println(d.selectByEmailPassword(o));
+		System.out.println(d.selectTipoOperatoreById(new Operatore(d.selectIdByEmailPassword(o))));
 
 	}
 	

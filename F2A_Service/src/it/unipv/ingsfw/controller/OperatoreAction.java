@@ -1,7 +1,5 @@
 package it.unipv.ingsfw.controller;
 
-import java.awt.Button;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
@@ -43,8 +41,11 @@ public class OperatoreAction {
                         JOptionPane.showMessageDialog(g, "Benvenuto!", "Accesso", JOptionPane.INFORMATION_MESSAGE);
                         g.dispose();
                         DipendenteDAO d = new DipendenteDAO();
-                        MainFrameOperatore loginOp = new MainFrameOperatore(new Operatore(
-                            d.selectIdByEmailPassword(new Operatore(g.getPannello().getUserText().getText(), g.getPannello().getPassText().getText()))));
+                        op = new Operatore(d.selectIdByEmailPassword(new Operatore(g.getPannello().getUserText().getText(), g.getPannello().getPassText().getText())));
+                        MainFrameOperatore loginOp = new MainFrameOperatore(op);
+                        
+                        
+                        
                         loginOp.setVisible(true);
                     } else {
                         JOptionPane.showMessageDialog(g, "Credenziali errate", "Errore", JOptionPane.ERROR_MESSAGE);
@@ -55,6 +56,10 @@ public class OperatoreAction {
     }
 
     private void addMainListeners() {
+    	
+    	DipendenteDAO d = new DipendenteDAO();
+    	
+    	
         // Refresh delle stazioni
         m.getMenu().getRefreshButton().addActionListener(new ActionListener() {
             @Override
@@ -75,7 +80,12 @@ public class OperatoreAction {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					System.out.println(j);
-					op.avviaStazione(j);
+					op.setTipoOperatore(d.selectTipoOperatoreById(op));
+					try {
+						op.avviaStazione(j);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
 				}
 			});
 		}

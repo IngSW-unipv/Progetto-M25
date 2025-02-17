@@ -27,13 +27,13 @@ public class Operatore extends Dipendente {
 	public Operatore(String email, String password) {
 		super(email, password);
 		this.tipoOperatore = null;
-		stazioniAssociate = null;
+		stazioniAssociate = new ArrayList<ObservableStazioneLavoro>();
 	}
 	
 	public Operatore(String idDipendente) {
 		super(idDipendente);
 		this.tipoOperatore = null;
-		stazioniAssociate = null;
+		stazioniAssociate = new ArrayList<ObservableStazioneLavoro>();
 	}
 	
 	public Operatore() {
@@ -61,29 +61,36 @@ public class Operatore extends Dipendente {
 	// stazione guasta alla volta
 
 	public void setStazioniAssociate() {
-
+		
 		ObservableStazioneLavoroDAO staz = new ObservableStazioneLavoroDAO();
+		
+		if(staz.selectStazioniByOperatore(this).size() != 0) {
+			stazioniAssociate = staz.selectStazioniByOperatore(this);
+			
+		}else {
+			
+			switch (tipoOperatore) {
+			case RESPONSABILE_STAZIONE:
 
-		switch (tipoOperatore) {
-		case RESPONSABILE_STAZIONE:
+				ArrayList<ObservableStazioneLavoro> obsReady = staz.selectStazioniReadyNonAssegnate();
 
-			ArrayList<ObservableStazioneLavoro> obsReady = staz.selectStazioniReadyNonAssegnate();
+				for (int i = 0; i < 3; i++) {
+					stazioniAssociate.add(obsReady.get(i));
+					staz.assegnazioneOperatoreNoto(obsReady.get(i), this);
+				}
 
-			for (int i = 0; i < 3; i++) {
-				stazioniAssociate.add(obsReady.get(i));
-				staz.assegnazioneOperatoreNoto(obsReady.get(i), this);
+				break;
+
+			case MANUTENTORE:
+
+				ArrayList<ObservableStazioneLavoro> obsMain = staz.selectStazioniMaintenanceNonAssegnate();
+				stazioniAssociate.add(obsMain.get(0));
+				staz.assegnazioneOperatoreNoto(obsMain.get(0), this);
+
+				break;
 			}
-
-			break;
-
-		case MANUTENTORE:
-
-			ArrayList<ObservableStazioneLavoro> obsMain = staz.selectStazioniMaintenanceNonAssegnate();
-			stazioniAssociate.add(obsMain.get(0));
-			staz.assegnazioneOperatoreNoto(obsMain.get(0), this);
-
-			break;
 		}
+		
 
 	}
 
@@ -97,12 +104,15 @@ public class Operatore extends Dipendente {
 	
 	//uso attributo index utile per passare da GUI a esecuzione del metodo
 
-	public void avviaStazione(int index) {
+	public void avviaStazione(int index) throws Exception{
 		ObservableStazioneLavoroDAO dao = new ObservableStazioneLavoroDAO();
-
+		
+		setStazioniAssociate();
 		if (stazioniAssociate.get(index).checkPresenzaCapi()) {
 			stazioniAssociate.get(index).messaInLavorazione();
+			
 			dao.changeStatoStazione(stazioniAssociate.get(index));
+			
 			stazioniAssociate.get(index).caricamentoLavorazioni();
 
 			// attendere qualche secondo ....
@@ -113,6 +123,9 @@ public class Operatore extends Dipendente {
 
 			dao.changeStatoStazione(stazioniAssociate.get(index));
 
+		}else {
+			System.err.println("Capi assenti");
+			
 		}
 	}
 	

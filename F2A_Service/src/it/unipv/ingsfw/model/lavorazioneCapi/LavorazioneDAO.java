@@ -94,6 +94,8 @@ public class LavorazioneDAO implements ILavorazioneDAO {
 		return esito;
 	}
 
+	//usata in removeCapiStazione() nella classe ObservableStazioneLavoro
+	
 	@Override
 	public boolean addLavorazioneSospesa(ObservableStazioneLavoro s, Capo c) {
 		conn = DBConnection.startConnection(conn);

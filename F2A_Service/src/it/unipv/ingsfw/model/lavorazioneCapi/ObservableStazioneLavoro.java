@@ -85,6 +85,10 @@ public class ObservableStazioneLavoro extends Observable {
 		}
 		return false;
 	}
+	
+	public void setListaCapiDaLavorare(ArrayList<Capo> listaCapi) {
+		listaCapiDaLavorare = listaCapi;
+	}
 
 	@Override
 	public String toString() {
@@ -153,8 +157,7 @@ public class ObservableStazioneLavoro extends Observable {
 
 		CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
 
-		ArrayList<ObservableStazioneLavoro> stazioni = cat
-				.selectStazioniByCatena(new CatenaLavorazione(this.getIdCatena()));
+		ArrayList<ObservableStazioneLavoro> stazioni = cat.selectStazioniByCatena(new CatenaLavorazione(this.getIdCatena()));
 
 		if (this.getTipo().toString().equals("STIRATURA") || cat.selectCatenaByStazione(this).getTipoLavaggio().toString().equals("PELLE")) {
 
@@ -167,6 +170,7 @@ public class ObservableStazioneLavoro extends Observable {
 
 		} else {
 			int numStazioneSuccessiva = stazioni.indexOf(this) + 1;
+			stazioni.get(numStazioneSuccessiva).setListaCapiDaLavorare(this.listaCapiDaLavorare);
 			stazioni.get(numStazioneSuccessiva).caricamentoLavorazioniSospese();
 		}
 
