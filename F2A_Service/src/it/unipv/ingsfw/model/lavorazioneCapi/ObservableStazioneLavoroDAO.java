@@ -460,7 +460,7 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 	public boolean assegnazioneOperatoreNoto(ObservableStazioneLavoro s, Operatore o) {
 
 		int idNewAssegnazione = getIdLastAssegnazione() + 1;
-
+		//System.out.println(idNewAssegnazione);
 		conn = DBConnection.startConnection(conn);
 		PreparedStatement st1;
 
@@ -479,10 +479,10 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 			st1.setString(3, o.getIdDipendente());
 			st1.setDate(4, date);
 			st1.setDate(5, null);
-
+			System.out.println(st1);
 			st1.executeUpdate();
 
-		} catch (SQLIntegrityConstraintViolationException e) {
+		}catch (SQLIntegrityConstraintViolationException e) {
 			System.err.println("IdAssegnazione già esistente");
 			esito = false;
 		} catch (SQLException e) {
@@ -526,21 +526,53 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 		DBConnection.closeConnection(conn);
 		return esito;
 	}
+	
+	@Override
+	public ArrayList<ObservableStazioneLavoro> selectStazioniByOperatore(Operatore o) {
+		
+		ArrayList<ObservableStazioneLavoro> result = new ArrayList<>();
+		
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+		ObservableStazioneLavoro s0 = null;
 
-	public static void main(String[] args) {
+		try {
+			String query = "SELECT * FROM STAZIONILAVORO WHERE IDSTAZIONE IN (SELECT IDSTAZIONE FROM ASSEGNAZIONI WHERE IDDIPENDENTE =?)";
+			st1 = conn.prepareStatement(query);
+			st1.setString(1, o.getIdDipendente());
+
+			rs1 = st1.executeQuery();
+
+			while (rs1.next()) {
+
+				s0 = new ObservableStazioneLavoro(rs1.getString(1), TipologiaStazione.valueOf(rs1.getString(3)),
+						StatoStazione.valueOf(rs1.getString(4)), rs1.getDouble(5));
+				result.add(s0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return result;
+		
+	}
+
+	public static void main(String[] args) throws IndexOutOfBoundsException{
 		ObservableStazioneLavoroDAO st = new ObservableStazioneLavoroDAO();
-		boolean t = st.assegnazioneResponsabileStazioneLibero(st.selectStazioniReadyNonAssegnate().get(0));
-
+		//boolean t = st.assegnazioneResponsabileStazioneLibero(st.selectStazioniReadyNonAssegnate().get(0));
+		/*
 		if (t)
 			System.out.println(st.selectStazioniReadyNonAssegnate().get(0));
-		/*
+		
 		 * ObservableStazioneLavoro s = new ObservableStazioneLavoro("S001",
 		 * TipologiaStazione.ASCIUGATURA, StatoStazione.READY, 100.0); boolean t =
 		 * st.insertStazioneWithUnknownCatena(s); if (t) System.out.println(s);
 		 * 
 		 * ArrayList<ObservableStazioneLavoro> obs = st.selectAll(); for
 		 * (ObservableStazioneLavoro o : obs) System.out.println(o);
-		 */
+		 
 
 		ObservableStazioneLavoro s = st
 				.selectStazioniReadyNonAssegnatePerTipo(new ObservableStazioneLavoro(TipologiaStazione.ASCIUGATURA));
@@ -550,7 +582,17 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 		ArrayList<ObservableStazioneLavoro> lista = st.selectAll();
 		for (ObservableStazioneLavoro s0 : lista)
 			System.out.println(s0);
-
+		*/
+		Operatore o = new Operatore("D001");
+		
+		//st.assegnazioneOperatoreNoto(st.selectStazioniReadyNonAssegnate().get(0), o);
+		//st.assegnazioneOperatoreNoto(st.selectStazioniReadyNonAssegnate().get(0), o);
+		//st.assegnazioneOperatoreNoto(st.selectStazioniReadyNonAssegnate().get(0), o);
+		ArrayList<ObservableStazioneLavoro> lista = st.selectStazioniByOperatore(o);
+		
+		for(ObservableStazioneLavoro s : lista)
+			System.out.println(s);
+		
 	}
 
 }

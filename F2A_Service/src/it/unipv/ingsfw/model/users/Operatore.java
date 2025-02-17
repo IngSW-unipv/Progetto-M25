@@ -30,6 +30,12 @@ public class Operatore extends Dipendente {
 		stazioniAssociate = null;
 	}
 	
+	public Operatore(String idDipendente) {
+		super(idDipendente);
+		this.tipoOperatore = null;
+		stazioniAssociate = null;
+	}
+	
 	public Operatore() {
 		super(null, null);
 	}

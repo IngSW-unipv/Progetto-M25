@@ -11,6 +11,7 @@ public interface IDipendenteDAO {
 	public ArrayList<Operatore> selectManutentoriNonAssegnati();
 	public ArrayList<Operatore> selectByTipoOperatore(Operatore input);
 	public boolean selectByEmailPassword(Dipendente input);
+	public String selectIdByEmailPassword(Dipendente input);
 	public String getNewIdDipendente();
 	public boolean insertDipendente(Dipendente d);
 }

@@ -41,6 +41,17 @@ public abstract class Dipendente {
 		this.password = password;
 		this.stipendio = 0;
 	}
+	
+	public Dipendente(String idDipendente) {
+		super();
+		this.idDipendente = idDipendente;
+		this.nome = null;
+		this.cognome = null;
+		this.cf = null;
+		this.email = null;
+		this.password = null;
+		this.stipendio = 0;
+	}
 
 	public String getIdDipendente() {
 		return idDipendente;

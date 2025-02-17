@@ -314,7 +314,7 @@ public class DipendenteDAO implements IDipendenteDAO {
 			rs1 = st1.executeQuery();
 			
 			result = rs1.absolute(1);
-			System.out.println("reeeeeeeeeeees: " + result);
+			//System.out.println("reeeeeeeeeeees: " + result);
 
 		} catch (IndexOutOfBoundsException e1) {
 			System.err.println("");
@@ -330,6 +330,40 @@ public class DipendenteDAO implements IDipendenteDAO {
 
 		DBConnection.closeConnection(conn);
 		return result;
+	}
+	
+	@Override
+	public String selectIdByEmailPassword(Dipendente input) {
+
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+		String id = "";
+		
+		try {
+			String query = "SELECT IDDIPENDENTE FROM DIPENDENTI WHERE EMAIL=? AND PASSWORD=?";
+
+			st1 = conn.prepareStatement(query);
+			st1.setString(1, input.getEmail());
+			st1.setString(2, input.getPassword());
+			
+			rs1 = st1.executeQuery();
+			
+			while(rs1.next()) {
+				id = rs1.getString(1);
+			}
+
+		} catch (IndexOutOfBoundsException e1) {
+			System.err.println("");
+		}catch (ClassCastException e1) {
+			System.err.println("Errore in fase di casting del dipendente");
+		} catch (Exception e1) {
+			System.err.println("Errore in fase di autenticazione");
+			e1.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return id;
 	}
 
 	public static void main(String[] args) {
