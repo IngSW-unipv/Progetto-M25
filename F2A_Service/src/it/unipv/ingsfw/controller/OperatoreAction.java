@@ -1,81 +1,85 @@
 package it.unipv.ingsfw.controller;
 
-import java.awt.Color;
+import java.awt.Button;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JOptionPane;
-
-import com.sun.tools.javac.Main;
-
 import it.unipv.ingsfw.model.users.DipendenteDAO;
 import it.unipv.ingsfw.model.users.Operatore;
 import it.unipv.ingsfw.view.operatore.MainFrameOperatore;
+import it.unipv.ingsfw.view.operatore.MenuListenerAdapter;
 import it.unipv.ingsfw.view.operatore.viewLogin.GUILoginOperatore;
 
 public class OperatoreAction {
 
-	Operatore op; // facade model
-	private GUILoginOperatore g; // facade view
-	private MainFrameOperatore m; // facade view
+    private Operatore op; // Model
+    private GUILoginOperatore g; // Login View
+    private MainFrameOperatore m; // Main View
+    int i = 0;
 
-	/**
-	 * @param op
-	 * @param o
-	 */
-	public OperatoreAction(Operatore op, GUILoginOperatore g) {
-		super();
-		this.op = op;
-		this.g = g;
-		// this.m = new MainFrameOperatore(op);
-		addListeners();
-	}
+    public OperatoreAction(Operatore op, GUILoginOperatore g) {
+        this.op = op;
+        this.g = g;
+        addLoginListener();
+    }
 
-	public OperatoreAction(Operatore op, MainFrameOperatore m) {
-		super();
-		this.op = op;
-		this.m = m;
-		addListeners2();
-	}
+    public OperatoreAction(Operatore op, MainFrameOperatore m) {
+        this.op = op;
+        this.m = m;
+        addMainListeners();
+    }
 
-	private void addListeners() {
-		g.getPannello().getLoginButton().addActionListener(new ActionListener() {
+    private void addLoginListener() {
+        g.getPannello().getLoginButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (g.getPannello().getLoginButton().getActionCommand().equalsIgnoreCase("accesso")) {
+                    boolean isValid = op.verificaCredenzialiAccesso(
+                        g.getPannello().getUserText().getText(),
+                        g.getPannello().getPassText().getText());
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (g.getPannello().getLoginButton().getActionCommand().equalsIgnoreCase("accesso")) {
+                    if (isValid) {
+                        JOptionPane.showMessageDialog(g, "Benvenuto!", "Accesso", JOptionPane.INFORMATION_MESSAGE);
+                        g.dispose();
+                        DipendenteDAO d = new DipendenteDAO();
+                        MainFrameOperatore loginOp = new MainFrameOperatore(new Operatore(
+                            d.selectIdByEmailPassword(new Operatore(g.getPannello().getUserText().getText(), g.getPannello().getPassText().getText()))));
+                        loginOp.setVisible(true);
+                    } else {
+                        JOptionPane.showMessageDialog(g, "Credenziali errate", "Errore", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+    }
 
-					Boolean b = op.verificaCredenzialiAccesso(g.getPannello().getUserText().getText(),
-							g.getPannello().getPassText().getText());
-					//System.out.println(b);
-					if (b) {
-						JOptionPane.showMessageDialog(g, "Benvenuto!", "Pop-up", JOptionPane.OK_CANCEL_OPTION);
-						// JOptionPane.showInputDialog(g);
-						g.dispose();
-						DipendenteDAO d = new DipendenteDAO();
-						MainFrameOperatore loginOp = new MainFrameOperatore(new Operatore(
-								d.selectIdByEmailPassword(new Operatore(g.getPannello().getUserText().getText(),
-										g.getPannello().getPassText().getText()))));
-						loginOp.setVisible(true);
-					} else {
-						JOptionPane.showMessageDialog(g, "Credenziali errate", "Errore", JOptionPane.ERROR_MESSAGE);
-					}
-					// g.getPannello().getUserText().setText("");
-					// g.getPannello().getPassText().setText("");
+    private void addMainListeners() {
+        // Refresh delle stazioni
+        m.getMenu().getRefreshButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                m.aggiornaStazioni();
+            }
+        });
+
+        // Navigazione tra le schermate con CardLayout
+        m.getMenu().getGestioneStazioni().addMenuListener(new MenuListenerAdapter(() -> m.getCardLayout().show(m.getPannello(), "Stazioni")));
+        m.getMenu().getControlloMacchinari().addMenuListener(new MenuListenerAdapter(() -> m.getCardLayout().show(m.getPannello(), "Macchinari")));
+        m.getMenu().getModificaProfilo().addMenuListener(new MenuListenerAdapter(() -> m.getCardLayout().show(m.getPannello(), "Profilo")));
+        
+        
+		for (; i < m.getBottoni().size(); i++) {
+			m.getBottoni().get(i).addActionListener(new ActionListener() {
+				int j = i;
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					System.out.println(j);
+					op.avviaStazione(j);
 				}
-			}
-		});
-	}
-
-	private void addListeners2() {
-		/*
-		 * m.getPannello().getScelta().addActionListener(new ActionListener() {
-		 * 
-		 * @Override public void actionPerformed(ActionEvent e) {
-		 * m.getPannello().getSelectedRadioButton();
-		 * 
-		 * } });
-		 */
-	}
-
+			});
+		}
+        
+        
+    }
 }

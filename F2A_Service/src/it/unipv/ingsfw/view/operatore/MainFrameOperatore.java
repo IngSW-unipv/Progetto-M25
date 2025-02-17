@@ -10,18 +10,24 @@ import it.unipv.ingsfw.model.lavorazioneCapi.ObservableStazioneLavoroDAO;
 import it.unipv.ingsfw.model.lavorazioneCapi.StatoStazione;
 import it.unipv.ingsfw.model.users.Operatore;
 import it.unipv.ingsfw.view.operatore.viewLogin.GUILoginOperatore;
-import it.unipv.ingsfw.view.operatore.viewLogin.InsertPanel;
 
 public class MainFrameOperatore extends JFrame {
-    BarraMenu menu;
-    JPanel pannello;
-    Container c;
+    private BarraMenu menu;
+    private JPanel pannello;
+    private JPanel pannelloStazioni;
+    private JPanel pannelloMacchinari;
+    private JPanel pannelloProfilo;
+    private Container c;
     private final List<JButton> bottoni = new ArrayList<>();
-    private final List<JPanel> indicatori = new ArrayList<>();
-    ButtonGroup group;
+    private ButtonGroup group;
+    private Operatore op;
+    
+    private CardLayout cardLayout;
 
     public MainFrameOperatore(Operatore o) throws HeadlessException {
-    	super();
+        super();
+        this.op = o;
+
         Toolkit kit = Toolkit.getDefaultToolkit();
         Dimension screenSize = kit.getScreenSize();
         int screenHeight = screenSize.height;
@@ -32,58 +38,113 @@ public class MainFrameOperatore extends JFrame {
         setIconImage(img);
         setTitle("MainFrame");
 
+        cardLayout = new CardLayout();
+        pannello = new JPanel(cardLayout);
+
+        // Creazione pannelli
+        pannelloStazioni = new JPanel();
+        pannelloStazioni.setLayout(new BoxLayout(pannelloStazioni, BoxLayout.Y_AXIS));
+
+        pannelloMacchinari = new JPanel();
+        pannelloMacchinari.add(new JLabel("Gestione Macchinari - In costruzione"));
+
+        pannelloProfilo = new JPanel();
+        pannelloProfilo.add(new JLabel("Modifica Profilo - In costruzione"));
+
+        // Aggiunta pannelli al CardLayout
+        pannello.add(pannelloStazioni, "Stazioni");
+        pannello.add(pannelloMacchinari, "Macchinari");
+        pannello.add(pannelloProfilo, "Profilo");
+
+        // Creazione menu personalizzato
         menu = new BarraMenu();
         setJMenuBar(menu);
 
-        pannello = new JPanel();
-        pannello.setLayout(new BoxLayout(pannello, BoxLayout.Y_AXIS));
         c = getContentPane();
         c.setLayout(new BorderLayout());
         c.add(menu, BorderLayout.NORTH);
         c.add(pannello, BorderLayout.WEST);
-        
-        aggiornaStazioni(o);
 
-        OperatoreAction opAction1 = new OperatoreAction(o, this);
+        aggiornaStazioni();
+        new OperatoreAction(o, this);
     }
-    
     
 
     public BarraMenu getMenu() {
 		return menu;
 	}
 
-
-
 	public void setMenu(BarraMenu menu) {
 		this.menu = menu;
 	}
-
-
 
 	public JPanel getPannello() {
 		return pannello;
 	}
 
-
-
-	public void setPannello(StationsPanel pannello) {
+	public void setPannello(JPanel pannello) {
 		this.pannello = pannello;
 	}
 
+	public JPanel getPannelloStazioni() {
+		return pannelloStazioni;
+	}
 
+	public void setPannelloStazioni(JPanel pannelloStazioni) {
+		this.pannelloStazioni = pannelloStazioni;
+	}
+
+	public JPanel getPannelloMacchinari() {
+		return pannelloMacchinari;
+	}
+
+	public void setPannelloMacchinari(JPanel pannelloMacchinari) {
+		this.pannelloMacchinari = pannelloMacchinari;
+	}
+
+	public JPanel getPannelloProfilo() {
+		return pannelloProfilo;
+	}
+
+	public void setPannelloProfilo(JPanel pannelloProfilo) {
+		this.pannelloProfilo = pannelloProfilo;
+	}
 
 	public Container getC() {
 		return c;
 	}
 
-
-
 	public void setC(Container c) {
 		this.c = c;
 	}
 
+	public ButtonGroup getGroup() {
+		return group;
+	}
 
+	public void setGroup(ButtonGroup group) {
+		this.group = group;
+	}
+
+	public Operatore getOp() {
+		return op;
+	}
+
+	public void setOp(Operatore op) {
+		this.op = op;
+	}
+
+	public CardLayout getCardLayout() {
+		return cardLayout;
+	}
+
+	public void setCardLayout(CardLayout cardLayout) {
+		this.cardLayout = cardLayout;
+	}
+
+	public List<JButton> getBottoni() {
+		return bottoni;
+	}
 
 	private void updateButtonColor(JButton button, StatoStazione stato) {
         Color color;
@@ -96,33 +157,30 @@ public class MainFrameOperatore extends JFrame {
         button.setBackground(color);
     }
 
-	 public void aggiornaStazioni(Operatore op) {
-	        ObservableStazioneLavoroDAO staz = new ObservableStazioneLavoroDAO();
-	        ArrayList<ObservableStazioneLavoro> stazioni = staz.selectStazioniByOperatore(op);
-	        
-	        pannello.removeAll();
-	        bottoni.clear();
-	        group = new ButtonGroup(); 
+    public void aggiornaStazioni() {
+        ObservableStazioneLavoroDAO staz = new ObservableStazioneLavoroDAO();
+        ArrayList<ObservableStazioneLavoro> stazioni = staz.selectStazioniByOperatore(this.op);
 
-	        for (ObservableStazioneLavoro stazione : stazioni) {
-	            JPanel panel = new JPanel();
-	            //panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-	            
-	            JLabel label = new JLabel("Stazione " + stazione.getIdStazione());
-	            JButton button = new JButton();
-	            button.setPreferredSize(new Dimension(30, 30));
-	            
-	            updateButtonColor(button, stazione.getStatoStazione());
-	            bottoni.add(button);
-	            panel.add(label);
-	            panel.add(button);
-	            pannello.add(panel);
-	            
-	            stazione.addObserver((o, arg) -> updateButtonColor(button, stazione.getStatoStazione()));
-	        }
+        pannelloStazioni.removeAll();
+        bottoni.clear();
+        group = new ButtonGroup();
 
-	        pannello.revalidate();
-	        pannello.repaint();
+        for (ObservableStazioneLavoro stazione : stazioni) {
+            JPanel panel = new JPanel();
+            JLabel label = new JLabel("Stazione " + stazione.getIdStazione());
+            JButton button = new JButton();
+            button.setPreferredSize(new Dimension(30, 30));
+
+            updateButtonColor(button, stazione.getStatoStazione());
+            bottoni.add(button);
+            panel.add(label);
+            panel.add(button);
+            group.add(button);
+            pannelloStazioni.add(panel);
+        }
+
+        pannelloStazioni.revalidate();
+        pannelloStazioni.repaint();
     }
 
     public static void main(String[] args) {

@@ -60,6 +60,8 @@ public class ObservableStazioneLavoro extends Observable {
 
 	public void setStatoStazione(StatoStazione statoStazione) {
 		this.statoStazione = statoStazione;
+		setChanged();
+        notifyObservers();
 	}
 
 	public double getLivelloProdottoLavaggio() {
