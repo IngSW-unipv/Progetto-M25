@@ -69,6 +69,7 @@ public class CapoDAO implements ICapoDAO {
 
 	@Override
 	public ArrayList<Capo> selectCapoByStatoETipo(Capo input) {
+		
 		ArrayList<Capo> result = new ArrayList<>();
 
 		conn = DBConnection.startConnection(conn);
@@ -79,7 +80,7 @@ public class CapoDAO implements ICapoDAO {
 		Cliente cl;
 
 		try {
-			String query = "SELECT * FROM CAPI WHERE STATO=? AND IDLAVAGGIO =? ORDER BY DATAULTIMACONSEGNA LIMIT 50";
+			String query = "SELECT * FROM CAPI C WHERE C.STATO=? AND C.IDLAVAGGIO =? AND NOT EXISTS (SELECT * FROM LAVORAZIONI L WHERE L.IDC = C.IDC) ORDER BY DATAULTIMACONSEGNA LIMIT 50";
 
 			st1 = conn.prepareStatement(query);
 			st1.setString(1, input.getStatoCapo().toString());

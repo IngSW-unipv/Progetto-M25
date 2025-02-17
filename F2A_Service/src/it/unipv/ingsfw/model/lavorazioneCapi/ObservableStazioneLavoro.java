@@ -61,7 +61,7 @@ public class ObservableStazioneLavoro extends Observable {
 	public void setStatoStazione(StatoStazione statoStazione) {
 		this.statoStazione = statoStazione;
 		setChanged();
-        notifyObservers();
+		notifyObservers();
 	}
 
 	public double getLivelloProdottoLavaggio() {
@@ -85,7 +85,7 @@ public class ObservableStazioneLavoro extends Observable {
 		}
 		return false;
 	}
-	
+
 	public void setListaCapiDaLavorare(ArrayList<Capo> listaCapi) {
 		listaCapiDaLavorare = listaCapi;
 	}
@@ -111,15 +111,26 @@ public class ObservableStazioneLavoro extends Observable {
 	}
 
 	public boolean checkPresenzaCapi() {
+		boolean esitoCaricamento = false;
 		LavorazioneDAO lav = LavorazioneDAO.getInstance();
 
+		// prelevo capi dalla tabella lavorazione a db nel caso in cui ci siano già dei
+		// capi pronti per la lavorazione
 		ArrayList<Capo> listaCapi = lav.checkPresenzaCapiInStazione(this);
 
 		if (listaCapi.size() != 0) {
 			this.listaCapiDaLavorare = listaCapi;
-			return true;
+			esitoCaricamento = true;
+		} else {
+			// nel caso in cui non ci fossero dei capi già assegnati a db allora andiamo a
+			// prelevare, sempre da db, i capi in attesa di lavorazione e con la medesima
+			// tipologia di lavaggio della stazione
+			
+			CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
+			setListaCapiDaLavorare(new Capo(StatoCapo.IN_LAVORAZIONE, cat.selectCatenaByStazione(this).getTipoLavaggio()));
+			esitoCaricamento = true;
 		}
-		return false;
+		return esitoCaricamento;
 	}
 
 	public boolean caricamentoLavorazioni() {
@@ -157,9 +168,11 @@ public class ObservableStazioneLavoro extends Observable {
 
 		CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
 
-		ArrayList<ObservableStazioneLavoro> stazioni = cat.selectStazioniByCatena(new CatenaLavorazione(this.getIdCatena()));
+		ArrayList<ObservableStazioneLavoro> stazioni = cat
+				.selectStazioniByCatena(new CatenaLavorazione(this.getIdCatena()));
 
-		if (this.getTipo().toString().equals("STIRATURA") || cat.selectCatenaByStazione(this).getTipoLavaggio().toString().equals("PELLE")) {
+		if (this.getTipo().toString().equals("STIRATURA")
+				|| cat.selectCatenaByStazione(this).getTipoLavaggio().toString().equals("PELLE")) {
 
 			CapoDAO cap = new CapoDAO();
 
