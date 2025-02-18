@@ -8,7 +8,9 @@ import java.awt.Image;
 import java.awt.MenuBar;
 import java.awt.Toolkit;
 
+import javax.swing.Box;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
@@ -34,13 +36,15 @@ public class GUILoginOperatore extends JFrame{
 		setIconImage(img);
 		setTitle("Login Operatore");
 		
-        
+        JLabel cred = new JLabel("Inserisci le tue credenziali");
 		pannello = new InsertPanel();
 		//ButtonPanel b = new ButtonPanel();
 		c = getContentPane();
+		c.add(cred);
 		c.add(pannello);
 		//c.add(b);
 		setLayout(new BorderLayout());
+		add(cred, BorderLayout.NORTH);
 		add(pannello, BorderLayout.CENTER);
 		//add(b, BorderLayout.SOUTH);
 		OperatoreAction opAction = new OperatoreAction(o, this);

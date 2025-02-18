@@ -78,12 +78,24 @@ public class ObservableStazioneLavoro extends Observable {
 
 	public boolean setListaCapiDaLavorare(Capo c) {
 		CapoDAO capi = new CapoDAO();
+		LavorazioneDAO lav = LavorazioneDAO.getInstance();
 
 		if (statoStazione.toString().equals("READY")) {
-			listaCapiDaLavorare = capi.selectCapoByStatoETipo(c);
-			return true;
+			// modificare per far prelevare solo i capi SOSPESI nella tabella lavorazione,
+			// per avere quelli che hanno subito la lavorazione precedente se la stazione
+			// non è di tipo lavaggio
+			if(tipo.toString().equalsIgnoreCase("LAVAGGIO")) {
+				listaCapiDaLavorare = capi.selectCapoByStatoETipo(c);
+			} else {
+				listaCapiDaLavorare = lav.checkPresenzaCapiInStazione(this);
+			}
+			
 		}
-		return false;
+		
+		if(listaCapiDaLavorare.size() == 0) {
+			return false;
+		}
+		return true;
 	}
 
 	public void setListaCapiDaLavorare(ArrayList<Capo> listaCapi) {
@@ -125,10 +137,13 @@ public class ObservableStazioneLavoro extends Observable {
 			// nel caso in cui non ci fossero dei capi già assegnati a db allora andiamo a
 			// prelevare, sempre da db, i capi in attesa di lavorazione e con la medesima
 			// tipologia di lavaggio della stazione
-			
+
 			CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
-			setListaCapiDaLavorare(new Capo(StatoCapo.IN_LAVORAZIONE, cat.selectCatenaByStazione(this).getTipoLavaggio()));
-			esitoCaricamento = true;
+			esitoCaricamento = setListaCapiDaLavorare(new Capo(StatoCapo.IN_LAVORAZIONE, cat.selectCatenaByStazione(this).getTipoLavaggio()));
+		}
+
+		for (Capo c : listaCapi) {
+			System.out.println(c);
 		}
 		return esitoCaricamento;
 	}
@@ -137,9 +152,10 @@ public class ObservableStazioneLavoro extends Observable {
 		LavorazioneDAO lav = LavorazioneDAO.getInstance();
 
 		boolean esitoCaricamento = false;
-		for (Capo c : listaCapiDaLavorare)
+		for (Capo c : listaCapiDaLavorare) {
 			esitoCaricamento = lav.addLavorazione(this, c);
-
+			System.out.println(c);
+		}
 		return esitoCaricamento;
 	}
 
@@ -168,11 +184,12 @@ public class ObservableStazioneLavoro extends Observable {
 
 		CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
 
-		ArrayList<ObservableStazioneLavoro> stazioni = cat
-				.selectStazioniByCatena(new CatenaLavorazione(this.getIdCatena()));
+		ArrayList<ObservableStazioneLavoro> stazioni = cat.selectStazioniByCatena(new CatenaLavorazione(this.getIdCatena()));
+		
+		for(ObservableStazioneLavoro s : stazioni)
+			System.out.println(s.getIdStazione());
 
-		if (this.getTipo().toString().equals("STIRATURA")
-				|| cat.selectCatenaByStazione(this).getTipoLavaggio().toString().equals("PELLE")) {
+		if (this.getTipo().toString().equals("STIRATURA") || cat.selectCatenaByStazione(this).getTipoLavaggio().toString().equals("PELLE")) {
 
 			CapoDAO cap = new CapoDAO();
 
@@ -182,7 +199,12 @@ public class ObservableStazioneLavoro extends Observable {
 			}
 
 		} else {
-			int numStazioneSuccessiva = stazioni.indexOf(this) + 1;
+			
+			String sub = this.getIdStazione().substring(3);
+			// System.out.println(sub);
+			int numStazioneSuccessiva = Integer.parseInt(sub) - Integer.parseInt(sub) + 1;
+			// System.out.println(newIdStazione);
+			//System.out.println(stazioni.get(numStazioneSuccessiva).getIdStazione());
 			stazioni.get(numStazioneSuccessiva).setListaCapiDaLavorare(this.listaCapiDaLavorare);
 			stazioni.get(numStazioneSuccessiva).caricamentoLavorazioniSospese();
 		}

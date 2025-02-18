@@ -390,7 +390,7 @@ public class DipendenteDAO implements IDipendenteDAO {
 
 		} catch (IndexOutOfBoundsException e1) {
 			System.err.println("");
-		}catch (ClassCastException e1) {
+		} catch (ClassCastException e1) {
 			System.err.println("Errore in fase di casting del dipendente");
 		} catch (Exception e1) {
 			System.err.println("Errore in fase di autenticazione");
