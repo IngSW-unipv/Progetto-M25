@@ -1,7 +1,6 @@
 package it.unipv.ingsfw.model.users;
 
 public class Corriere extends Dipendente {
-	
 	private StatoCorriere statoCorriere;
 
 	public Corriere(String idDipendente, String nome, String cognome, String cf, String email, String password,
@@ -28,4 +27,6 @@ public class Corriere extends Dipendente {
 	public String toString() {
 		return super.toString() + "\nStatoCorriere " + statoCorriere;
 	}
+	
+	
 }
