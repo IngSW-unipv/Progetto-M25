@@ -538,7 +538,7 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 		ObservableStazioneLavoro s0 = null;
 
 		try {
-			String query = "SELECT * FROM STAZIONILAVORO WHERE IDSTAZIONE IN (SELECT IDSTAZIONE FROM ASSEGNAZIONI WHERE IDDIPENDENTE =?)";
+			String query = "SELECT * FROM STAZIONILAVORO WHERE IDSTAZIONE IN (SELECT IDSTAZIONE FROM ASSEGNAZIONI WHERE IDDIPENDENTE =? AND DATAFINEASSEGNAZIONE IS NULL)";
 			st1 = conn.prepareStatement(query);
 			st1.setString(1, o.getIdDipendente());
 

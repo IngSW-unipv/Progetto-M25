@@ -158,14 +158,29 @@ public class ObservableStazioneLavoro extends Observable {
 		}
 		return esitoCaricamento;
 	}
+	
+	public boolean aggiornamentoLavorazioni() {
+		LavorazioneDAO lav = LavorazioneDAO.getInstance();
+
+		boolean esitoCaricamento = false;
+		for (Capo c : listaCapiDaLavorare) {
+			esitoCaricamento = lav.updateLavorazione(this, c);
+			//System.out.println(c);
+		}
+		System.out.println("AGGIORNAMENTO TABELLA LAVORAZIONI CON DATA");
+		return esitoCaricamento;
+	}
 
 	public boolean caricamentoLavorazioniSospese() {
 		LavorazioneDAO lav = LavorazioneDAO.getInstance();
 
 		boolean esitoCaricamento = false;
+		
+		//System.out.println("this: " + this.getIdStazione());
+		
 		for (Capo c : listaCapiDaLavorare)
 			esitoCaricamento = lav.addLavorazioneSospesa(this, c);
-
+			
 		return esitoCaricamento;
 	}
 
@@ -200,12 +215,19 @@ public class ObservableStazioneLavoro extends Observable {
 
 		} else {
 			
-			String sub = this.getIdStazione().substring(3);
+			//String sub = this.getIdStazione().substring(3);
+			int numPrimaStazione = Integer.parseInt(stazioni.get(0).getIdStazione().substring(3));
+			
+			String newIdStazione = this.getIdStazione();
+			String sub = newIdStazione.substring(3);
 			// System.out.println(sub);
-			int numStazioneSuccessiva = Integer.parseInt(sub) - Integer.parseInt(sub) + 1;
-			// System.out.println(newIdStazione);
+			int num = Integer.parseInt(sub);
+			
+			int numStazioneSuccessiva = num - numPrimaStazione + 1;
+			System.out.println("NUM STAZIONE SUCCESSIVA: " + numStazioneSuccessiva);
 			//System.out.println(stazioni.get(numStazioneSuccessiva).getIdStazione());
 			stazioni.get(numStazioneSuccessiva).setListaCapiDaLavorare(this.listaCapiDaLavorare);
+			//System.out.println("bbbbbbbbbbbbbb");
 			stazioni.get(numStazioneSuccessiva).caricamentoLavorazioniSospese();
 		}
 

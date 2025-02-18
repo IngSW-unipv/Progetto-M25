@@ -112,6 +112,9 @@ public class LavorazioneDAO implements ILavorazioneDAO {
 
 			st1.executeUpdate();
 
+		} catch(SQLIntegrityConstraintViolationException e) {
+			System.err.println("chiave duplicata");
+			esito = false;
 		} catch (Exception e) {
 			e.printStackTrace();
 			esito = false;

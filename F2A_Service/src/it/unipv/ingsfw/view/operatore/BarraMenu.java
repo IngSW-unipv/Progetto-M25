@@ -18,14 +18,12 @@ public class BarraMenu extends JMenuBar{
 		super();
 		setLayout(new BorderLayout());
 		JMenuBar menuBar = new JMenuBar();
+		refreshButton = new JMenu("Aggiorna stazioni");
         gestioneStazioni = new JMenu("Gestione Stazioni");
         controlloMacchinari = new JMenu("Controllo Macchinari");
         modificaProfilo = new JMenu("Modifica Profilo");
         
-        refreshButton = new JMenu("Aggiorna stazioni");
         menuBar.add(refreshButton);
-        
-        
         menuBar.add(gestioneStazioni);
         menuBar.add(controlloMacchinari);
         menuBar.add(modificaProfilo);

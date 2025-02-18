@@ -25,6 +25,8 @@ public class OperatoreAction {
     public OperatoreAction(Operatore op, MainFrameOperatore m) {
         this.op = op;
         this.m = m;
+        op.setStazioniAssociate();
+        m.aggiornaStazioni();
         addMainListeners();
     }
 
@@ -60,14 +62,17 @@ public class OperatoreAction {
     	DipendenteDAO d = new DipendenteDAO();
     	
     	
-        // Refresh delle stazioni
-        m.getMenu().getRefreshButton().addActionListener(new ActionListener() {
+        // EX Refresh delle stazioni
+        /*m.getMenu().getRefreshButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 m.aggiornaStazioni();
             }
-        });
+        });*/
 
+    	// Refresh delle stazioni
+        m.getMenu().getRefreshButton().addMenuListener(new MenuListenerAdapter(() -> m.aggiornaStazioni()));
+        
         // Navigazione tra le schermate con CardLayout
         m.getMenu().getGestioneStazioni().addMenuListener(new MenuListenerAdapter(() -> m.getCardLayout().show(m.getPannello(), "Stazioni")));
         m.getMenu().getControlloMacchinari().addMenuListener(new MenuListenerAdapter(() -> m.getCardLayout().show(m.getPannello(), "Macchinari")));
@@ -82,7 +87,8 @@ public class OperatoreAction {
 					System.out.println(j);
 					op.setTipoOperatore(d.selectTipoOperatoreById(op));
 					try {
-						op.avviaStazione(j);
+						//if(!op.getStazioniAssociate().get(j).getStatoStazione().toString().equalsIgnoreCase("MAINTENANCE"))
+							op.avviaStazione(j);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}

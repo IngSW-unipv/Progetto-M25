@@ -65,7 +65,7 @@ public class MainFrameOperatore extends JFrame {
         c.add(menu, BorderLayout.NORTH);
         c.add(pannello, BorderLayout.WEST);
 
-        aggiornaStazioni();
+        //aggiornaStazioni();
         new OperatoreAction(o, this);
     }
     
@@ -164,6 +164,7 @@ public class MainFrameOperatore extends JFrame {
         pannelloStazioni.removeAll();
         bottoni.clear();
         group = new ButtonGroup();
+        JLabel noStazioni;
 
         for (ObservableStazioneLavoro stazione : stazioni) {
             JPanel panel = new JPanel();
@@ -178,6 +179,14 @@ public class MainFrameOperatore extends JFrame {
             group.add(button);
             pannelloStazioni.add(panel);
         }
+        
+        if(stazioni.size() == 0) {
+        	JPanel panelNoStazioni = new JPanel();
+        	noStazioni = new JLabel("NESSUNA STAZIONE ASSEGNATA, AGGIORNA LA PAGINA");
+        	panelNoStazioni.add(noStazioni);
+        	pannelloStazioni.add(panelNoStazioni);
+        }
+        
 
         pannelloStazioni.revalidate();
         pannelloStazioni.repaint();

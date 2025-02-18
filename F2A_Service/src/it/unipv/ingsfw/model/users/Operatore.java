@@ -114,24 +114,22 @@ public class Operatore extends Dipendente {
 			
 			dao.changeStatoStazione(stazioniAssociate.get(index));
 			
-			if(!stazioniAssociate.get(index).getTipo().toString().equalsIgnoreCase("LAVAGGIO")) {
-				stazioniAssociate.get(index).caricamentoLavorazioni();
-			}
+			//if(!stazioniAssociate.get(index).getTipo().toString().equalsIgnoreCase("LAVAGGIO")) {stazioniAssociate.get(index).caricamentoLavorazioni();}
 
 			// attendere qualche secondo ....
 			
-			for(int i = 0; i < 10000000; i++) {
-				
-			}
+			//for(int i = 0; i < 10000000; i++) {}
 			
 			//COMMENTI SOTTOSTANTI DA TOGLIERE PER POTER EFFETTUARE UNA LAVORAZIONE COMPLETA ALL'INTERNO DELLA STAZIONE
 
 			stazioniAssociate.get(index).messaInStandBy();
 			
-			System.out.println("Lavorazione completata");
+			System.out.println("Lavorazione completata\n----------------------------------------------------------------------");
 
 			
 			dao.changeStatoStazione(stazioniAssociate.get(index));
+			stazioniAssociate.get(index).aggiornamentoLavorazioni();
+			
 			stazioniAssociate.get(index).removeCapiStazione();
 
 			
