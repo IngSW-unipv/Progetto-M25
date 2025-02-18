@@ -104,7 +104,7 @@ public class Operatore extends Dipendente {
 	
 	//uso attributo index utile per passare da GUI a esecuzione del metodo
 
-	public void avviaStazione(int index) throws Exception{
+	public boolean avviaStazione(int index) throws Exception{
 		ObservableStazioneLavoroDAO dao = new ObservableStazioneLavoroDAO();
 		
 		setStazioniAssociate();
@@ -131,11 +131,12 @@ public class Operatore extends Dipendente {
 			stazioniAssociate.get(index).aggiornamentoLavorazioni();
 			
 			stazioniAssociate.get(index).removeCapiStazione();
-
+			return true;
 			
 
 		}else {
 			System.err.println("Capi assenti");
+			return false;
 			
 		}
 	}

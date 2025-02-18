@@ -45,9 +45,6 @@ public class OperatoreAction {
                         DipendenteDAO d = new DipendenteDAO();
                         op = new Operatore(d.selectIdByEmailPassword(new Operatore(g.getPannello().getUserText().getText(), g.getPannello().getPassText().getText())));
                         MainFrameOperatore loginOp = new MainFrameOperatore(op);
-                        
-                        
-                        
                         loginOp.setVisible(true);
                     } else {
                         JOptionPane.showMessageDialog(g, "Credenziali errate", "Errore", JOptionPane.ERROR_MESSAGE);
@@ -58,44 +55,32 @@ public class OperatoreAction {
     }
 
     private void addMainListeners() {
-    	
-    	DipendenteDAO d = new DipendenteDAO();
-    	
-    	
-        // EX Refresh delle stazioni
-        /*m.getMenu().getRefreshButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                m.aggiornaStazioni();
-            }
-        });*/
+        DipendenteDAO d = new DipendenteDAO();
 
-    	// Refresh delle stazioni
         m.getMenu().getRefreshButton().addMenuListener(new MenuListenerAdapter(() -> m.aggiornaStazioni()));
-        
-        // Navigazione tra le schermate con CardLayout
         m.getMenu().getGestioneStazioni().addMenuListener(new MenuListenerAdapter(() -> m.getCardLayout().show(m.getPannello(), "Stazioni")));
         m.getMenu().getControlloMacchinari().addMenuListener(new MenuListenerAdapter(() -> m.getCardLayout().show(m.getPannello(), "Macchinari")));
         m.getMenu().getModificaProfilo().addMenuListener(new MenuListenerAdapter(() -> m.getCardLayout().show(m.getPannello(), "Profilo")));
-        
-        
-		for (; i < m.getBottoni().size(); i++) {
-			m.getBottoni().get(i).addActionListener(new ActionListener() {
-				int j = i;
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					System.out.println(j);
-					op.setTipoOperatore(d.selectTipoOperatoreById(op));
-					try {
-						//if(!op.getStazioniAssociate().get(j).getStatoStazione().toString().equalsIgnoreCase("MAINTENANCE"))
-							op.avviaStazione(j);
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-				}
-			});
-		}
-        
-        
+
+        for (; i < m.getBottoni().size(); i++) {
+            m.getBottoni().get(i).addActionListener(new ActionListener() {
+                int j = i;
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.out.println(j);
+                    op.setTipoOperatore(d.selectTipoOperatoreById(op));
+                    try {
+                        if(op.avviaStazione(j)) {
+                        	 JOptionPane.showMessageDialog(g, "Lavorazione conclusa con successo", "Avviso", JOptionPane.INFORMATION_MESSAGE);
+                        	 //GESTIRE L'ESECUZIONE DI UNA LAVORAZIONE GIA' LANCIATA E GIA' ESEGUITA
+                        }else {
+                        	JOptionPane.showMessageDialog(g, "Lavorazione fallita", "Errore", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
+        }
     }
 }

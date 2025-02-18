@@ -15,4 +15,5 @@ public interface IDipendenteDAO {
 	public String getNewIdDipendente();
 	public boolean insertDipendente(Dipendente d);
 	public TipoOperatore selectTipoOperatoreById(Dipendente input);
+	public Operatore selectOperatoreByEmailPassword(Dipendente input);
 }
