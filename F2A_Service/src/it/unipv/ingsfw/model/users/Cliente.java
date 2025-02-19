@@ -5,7 +5,7 @@ public class Cliente {
 	private String idCliente;
 	private String nome;
 	private String cognome;
-	private String telefono;
+	private String cf;
 	private String email;
 	private String password;
 
@@ -13,16 +13,16 @@ public class Cliente {
 	 * @param idCliente
 	 * @param nome
 	 * @param cognome
-	 * @param telefono
+	 * @param cf
 	 * @param email
 	 * @param password
 	 */
-	public Cliente(String idCliente, String nome, String cognome, String telefono, String email, String password) {
+	public Cliente(String idCliente, String nome, String cognome, String cf, String email, String password) {
 		super();
 		this.idCliente = idCliente;
 		this.nome = nome;
 		this.cognome = cognome;
-		this.telefono = telefono;
+		this.cf = cf;
 		this.email = email;
 		this.password = password;
 	}
@@ -32,7 +32,7 @@ public class Cliente {
 		this.idCliente = idCliente;
 		this.nome = null;
 		this.cognome = null;
-		this.telefono = null;
+		this.cf = null;
 		this.email = null;
 		this.password = null;
 	}
@@ -61,12 +61,12 @@ public class Cliente {
 		this.cognome = cognome;
 	}
 
-	public String getTelefono() {
-		return telefono;
+	public String getCf() {
+		return cf;
 	}
 
-	public void setTelefono(String telefono) {
-		this.telefono = telefono;
+	public void setCf(String cf) {
+		this.cf = cf;
 	}
 
 	public String getEmail() {
@@ -87,8 +87,8 @@ public class Cliente {
 
 	@Override
 	public String toString() {
-		return "Cliente "+ idCliente + "\nNome: " + nome + "\nCognome: " + cognome + "\nTelefono: "
-				+ telefono + "\nEmail: " + email + "\nPassword " + password;
+		return "Cliente "+ idCliente + "\nNome: " + nome + "\nCognome: " + cognome + "\nCf: "
+				+ cf + "\nEmail: " + email + "\nPassword " + password;
 	}
 
 }
