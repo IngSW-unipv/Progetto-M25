@@ -7,13 +7,18 @@ public class Negozio extends Tappa {
 
 	public Totem totem;
 	
-	public Negozio(String idTappa, boolean stato, String indirizzo, Totem totem) {
+	/**public Negozio(String idTappa, StatoTappa stato, String indirizzo, Totem totem) {
 		super(idTappa, stato, indirizzo);
 		this.totem = totem;
+	}**/
+	
+	public Negozio(String idTappa, StatoTappa stato, String indirizzo) {
+		super(idTappa, stato, indirizzo);
+		this.totem = null;
 	}
 	
 	public Negozio(String idTappa) {
-		super(idTappa, false, null);
+		super(idTappa, StatoTappa.NON_ATTRAVERSATA, null);
 		this.totem = null;
 	}
 

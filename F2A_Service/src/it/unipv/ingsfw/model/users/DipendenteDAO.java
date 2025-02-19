@@ -96,7 +96,7 @@ public class DipendenteDAO implements IDipendenteDAO {
 	}
 	
 	//uso corriere fittizio per passare l'id del corriere
-	//AGGIUNTO IN DATA 18/02
+	//Modificato IN DATA 19/02
 	
 	@Override
 	public Corriere selectCorriereById(Corriere cF) {
@@ -107,10 +107,11 @@ public class DipendenteDAO implements IDipendenteDAO {
 
 		try {
 
-			String query = "SELECT * FROM DIPENDENTI WHERE TIPO='CORRIERE' and IdDipendente='"+IdDip+"'";
+			String query = "SELECT * FROM DIPENDENTI WHERE TIPO='CORRIERE' and IdDipendente=?";
 
 			st1 = conn.prepareStatement(query);
-			rs1 = st1.executeQuery(query);
+			st1.setString(1, IdDip);
+			rs1 = st1.executeQuery();
 
 			while (rs1.next()) {
 

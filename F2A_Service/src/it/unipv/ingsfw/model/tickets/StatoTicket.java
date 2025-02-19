@@ -2,10 +2,10 @@ package it.unipv.ingsfw.model.tickets;
 
 public enum StatoTicket {
 	//ASSEGNATO, PRESO_IN_CARICO, COMPLETATO
-	ASSEGNATO("Assegnato"),
-	PRESO_IN_CARICO("Preso in carico"),
-	COMPLETATO("Completato")
-    ;
+	//AGGIUNTO IN DATA 19/02
+	ASSEGNATO("ASSEGNATO"),
+	PRESO_IN_CARICO("PRESA_IN_CARICO"),
+	COMPLETATO("COMPLETATO");
 
     private final String tipologia;
 

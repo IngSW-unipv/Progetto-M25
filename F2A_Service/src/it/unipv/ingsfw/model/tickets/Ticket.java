@@ -10,6 +10,8 @@ public class Ticket {
 	private Mezzo mezzo;
 	private Itinerario itinerario;
 	private Corriere corriere;
+	//"DataPresaInCarico" e "dataTerminazione" sono presenti a DB e vengono aggiornate quando cambia lo stato del ticket
+	//OSS: al momento non sussiste la necessità di averle come attributi nella suddetta classe
 	
 	/**
 	 * @param idTicket
@@ -61,7 +63,7 @@ public class Ticket {
 	
 	@Override
 	public String toString() {
-		return  "\nTicket " + idTicket + "\nTipologia: " + tipologia + "\nStato: " + stato;
+		return  "\nTicket " + idTicket + "\nTipologia: " + tipologia + "\nStato: " + stato+"\n\n Info Corriere: "+corriere+"\n \n Info Itinerario: "+itinerario;
 	}
 
 	public Mezzo getMezzo() {

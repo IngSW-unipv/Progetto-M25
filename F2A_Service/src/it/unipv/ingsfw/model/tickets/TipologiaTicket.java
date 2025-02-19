@@ -1,9 +1,9 @@
 package it.unipv.ingsfw.model.tickets;
-
+//MODIFICATO IN DATA 19/02
 public enum TipologiaTicket {
 	//RITIRO, CONSEGNA
-	RITIRO("Ritiro"),
-	CONSEGNA("Consegna")
+	RITIRO("RITIRO"),
+	CONSEGNA("CONSEGNA")
     ;
 
     private final String tipologia;

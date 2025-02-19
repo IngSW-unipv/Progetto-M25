@@ -1,0 +1,10 @@
+/Cliente.class
+/ClienteDAO.class
+/Corriere.class
+/Dipendente.class
+/DipendenteDAO.class
+/IClienteDAO.class
+/IDipendenteDAO.class
+/Operatore.class
+/StatoCorriere.class
+/TipoOperatore.class

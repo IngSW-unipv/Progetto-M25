@@ -3,7 +3,7 @@ package it.unipv.ingsfw.model.negozio;
 public abstract class Tappa {
 	
 	private String idTappa;
-	private boolean stato;
+	private StatoTappa stato;    //di default "NON_ATTRAVERSATA"
 	private String indirizzo;
 	
 	
@@ -12,10 +12,10 @@ public abstract class Tappa {
 	 * @param stato
 	 * @param indirizzo
 	 */
-	public Tappa(String idTappa, boolean stato, String indirizzo) {
+	public Tappa(String idTappa, StatoTappa stato, String indirizzo) {
 		super();
 		this.idTappa = idTappa;
-		this.stato = stato;
+		this.setStato(StatoTappa.NON_ATTRAVERSATA);
 		this.indirizzo = indirizzo;
 	}
 
@@ -30,15 +30,6 @@ public abstract class Tappa {
 	}
 
 
-	public boolean isStato() {
-		return stato;
-	}
-
-
-	public void setStato(boolean stato) {
-		this.stato = stato;
-	}
-
 
 	public String getIndirizzo() {
 		return indirizzo;
@@ -47,5 +38,15 @@ public abstract class Tappa {
 
 	public void setIndirizzo(String indirizzo) {
 		this.indirizzo = indirizzo;
+	}
+
+
+	public StatoTappa getStato() {
+		return stato;
+	}
+
+
+	public void setStato(StatoTappa stato) {
+		this.stato = stato;
 	}
 }
