@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import it.unipv.ingsfw.jdbc.DBConnection;
-import it.unipv.ingsfw.model.TipoLavaggio;
 import it.unipv.ingsfw.model.users.DipendenteDAO;
 import it.unipv.ingsfw.model.users.Operatore;
 
@@ -557,6 +556,46 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 		DBConnection.closeConnection(conn);
 		return result;
 		
+	}
+	
+	@Override
+	public boolean chiusuraAssegnazioneOperatoreNoto(ObservableStazioneLavoro s, Operatore o) {
+
+		//System.out.println(idNewAssegnazione);
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+
+		boolean esito = true;
+
+		try {
+
+			long millis = System.currentTimeMillis();
+			java.sql.Date date = new java.sql.Date(millis);
+			// System.out.println(date);
+
+			String query = "UPDATE ASSEGNAZIONI SET DATAFINEASSEGNAZIONE=? WHERE IDSTAZIONE =? AND IDDIPENDENTE =?";
+			st1 = conn.prepareStatement(query);
+			
+			st1.setDate(1, date);
+			st1.setString(2, s.getIdStazione());
+			st1.setString(3, o.getIdDipendente());
+			
+			st1.executeUpdate();
+
+		}catch (SQLIntegrityConstraintViolationException e) {
+			System.err.println("IdAssegnazione già esistente");
+			esito = false;
+		} catch (SQLException e) {
+			System.err.println("Errore in fase di elaborazione query");
+			e.printStackTrace();
+			esito = false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			esito = false;
+		}
+
+		DBConnection.closeConnection(conn);
+		return esito;
 	}
 
 	public static void main(String[] args) throws IndexOutOfBoundsException{

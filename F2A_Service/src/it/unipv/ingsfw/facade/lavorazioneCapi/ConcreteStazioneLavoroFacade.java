@@ -199,4 +199,17 @@ public ArrayList<ObservableStazioneLavoro> selectAll(){
 		return lista;
 		
 	}
+	
+	public boolean chiusuraAssegnazioneOperatoreNoto(ObservableStazioneLavoro s, Operatore o) {
+		
+		boolean esito = false;
+
+		try {
+			esito = observableStazioneLavoroDAO.chiusuraAssegnazioneOperatoreNoto(s, o);
+		} catch (Exception e) {
+			System.err.println("Errore aggiornamento chiusura assegnazione");
+		}
+		return esito;
+		
+	}
 }

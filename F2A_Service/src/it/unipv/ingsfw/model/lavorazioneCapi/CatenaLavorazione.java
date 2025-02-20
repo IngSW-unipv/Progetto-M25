@@ -1,5 +1,7 @@
 package it.unipv.ingsfw.model.lavorazioneCapi;
 import java.util.ArrayList;
+
+import it.unipv.ingsfw.facade.F2aFacade;
 import it.unipv.ingsfw.model.Capo;
 import it.unipv.ingsfw.model.CapoDAO;
 import it.unipv.ingsfw.model.StatoCapo;
@@ -75,10 +77,10 @@ public class CatenaLavorazione {
 	}
 
 	public boolean addStazioneLavoro(ObservableStazioneLavoro newStazione) {
-		ObservableStazioneLavoroDAO stazione = new ObservableStazioneLavoroDAO();
+		//ObservableStazioneLavoroDAO stazione = new ObservableStazioneLavoroDAO();
 
 		if (listaStazioni.size() <= 2 && !tipoLavaggio.equals(TipoLavaggio.PELLE) && !tipoStazioneAlreadyExists(newStazione)) {
-			if (stazione.insertStazioneWithKnownCatena(newStazione, this)) {
+			if (F2aFacade.getInstance().getStazioneLavoroFacade().insertStazioneWithKnownCatena(newStazione, this)) {
 				listaStazioni.add(newStazione);
 				return true;
 			}
@@ -89,9 +91,9 @@ public class CatenaLavorazione {
 	}
 
 	public boolean riempimentoListaStazioniDaDB() {
-		CatenaLavorazioneDAO catena = new CatenaLavorazioneDAO();
+		//CatenaLavorazioneDAO catena = new CatenaLavorazioneDAO();
 		if (listaStazioni.size() == 0) {
-			listaStazioni = catena.selectStazioniByCatena(this);
+			listaStazioni = F2aFacade.getInstance().getCatenaLavorazioneFacade().selectStazioniByCatena(this);
 			return true;
 		}
 		return false;
@@ -107,12 +109,12 @@ public class CatenaLavorazione {
 	
 	public static void main(String[] args) {
 		
-		CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
+		//CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
 		CatenaLavorazione newCat = new CatenaLavorazione("CAT002", TipoLavaggio.BIANCHI);
 		//cat.insertCatena(newCat);
 		
-		CapoDAO cap = new CapoDAO();
-		ArrayList<Capo> capi = cap.selectCapoByStatoETipo(new Capo(StatoCapo.IN_LAVORAZIONE, newCat.getTipoLavaggio()));
+		//CapoDAO cap = new CapoDAO();
+		ArrayList<Capo> capi = F2aFacade.getInstance().getCapoFacade().selectCapoByStatoETipo(new Capo(StatoCapo.IN_LAVORAZIONE, newCat.getTipoLavaggio()));
 		
 		for(Capo c : capi)
 			System.out.println(c);
@@ -146,7 +148,7 @@ public class CatenaLavorazione {
 		
 		for(Capo c : capi) {
 			c.setStatoCapo(StatoCapo.IN_CONSEGNA);
-			cap.updateStatoCapo(c);
+			F2aFacade.getInstance().getCapoFacade().updateStatoCapo(c);
 		}
 			
 			

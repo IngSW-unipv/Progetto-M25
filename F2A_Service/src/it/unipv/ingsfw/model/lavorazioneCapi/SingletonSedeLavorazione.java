@@ -2,6 +2,8 @@ package it.unipv.ingsfw.model.lavorazioneCapi;
 
 import java.util.ArrayList;
 
+import it.unipv.ingsfw.facade.F2aFacade;
+
 public class SingletonSedeLavorazione {
 
 	private String idSede;
@@ -47,8 +49,8 @@ public class SingletonSedeLavorazione {
 
 	// deve restituire un booleano
 	public boolean addCatenaLavorazione(CatenaLavorazione catena) {
-		CatenaLavorazioneDAO cl = new CatenaLavorazioneDAO();
-		if (cl.insertCatena(catena)) {
+		//CatenaLavorazioneDAO cl = new CatenaLavorazioneDAO();
+		if (F2aFacade.getInstance().getCatenaLavorazioneFacade().insertCatena(catena)) {
 			listaCatene.add(catena);
 			return true;
 		}

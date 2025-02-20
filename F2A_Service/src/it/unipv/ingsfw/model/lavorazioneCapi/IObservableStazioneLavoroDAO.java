@@ -20,4 +20,5 @@ public interface IObservableStazioneLavoroDAO {
 	public boolean assegnazioneOperatoreNoto(ObservableStazioneLavoro s, Operatore o);
 	public boolean changeStatoStazione(ObservableStazioneLavoro s);
 	public ArrayList<ObservableStazioneLavoro> selectStazioniByOperatore(Operatore o);
+	public boolean chiusuraAssegnazioneOperatoreNoto(ObservableStazioneLavoro s, Operatore o);
 }

@@ -3,6 +3,7 @@ package it.unipv.ingsfw.model.lavorazioneCapi;
 import java.util.ArrayList;
 import java.util.Observable;
 
+import it.unipv.ingsfw.facade.F2aFacade;
 import it.unipv.ingsfw.model.Capo;
 import it.unipv.ingsfw.model.CapoDAO;
 import it.unipv.ingsfw.model.StatoCapo;
@@ -76,7 +77,9 @@ public class ObservableStazioneLavoro extends Observable {
 		return listaCapiDaLavorare;
 	}
 
-	public boolean setListaCapiDaLavorare(Capo c) {
+	//vecchia versione prima dell'implementazione dei dao
+	
+	/*public boolean setListaCapiDaLavorare(Capo c) {
 		CapoDAO capi = new CapoDAO();
 		LavorazioneDAO lav = LavorazioneDAO.getInstance();
 
@@ -88,6 +91,29 @@ public class ObservableStazioneLavoro extends Observable {
 				listaCapiDaLavorare = capi.selectCapoByStatoETipo(c);
 			} else {
 				listaCapiDaLavorare = lav.checkPresenzaCapiInStazione(this);
+			}
+
+		}
+
+		if (listaCapiDaLavorare.size() == 0) {
+			return false;
+		}
+		return true;
+	}*/
+	
+	
+	public boolean setListaCapiDaLavorare(Capo c) {
+		//CapoDAO capi = new CapoDAO();
+		//LavorazioneDAO lav = LavorazioneDAO.getInstance();
+
+		if (statoStazione.toString().equals("READY")) {
+			// modificare per far prelevare solo i capi SOSPESI nella tabella lavorazione,
+			// per avere quelli che hanno subito la lavorazione precedente se la stazione
+			// non è di tipo lavaggio
+			if (tipo.toString().equalsIgnoreCase("LAVAGGIO")) {
+				listaCapiDaLavorare = F2aFacade.getInstance().getCapoFacade().selectCapoByStatoETipo(c);
+			} else {
+				listaCapiDaLavorare = F2aFacade.getInstance().getLavorazioneFacade().checkPresenzaCapiInStazione(this);
 			}
 
 		}
@@ -133,11 +159,11 @@ public class ObservableStazioneLavoro extends Observable {
 
 	public boolean checkPresenzaCapi() {
 		boolean esitoCaricamento = false;
-		LavorazioneDAO lav = LavorazioneDAO.getInstance();
+		//LavorazioneDAO lav = LavorazioneDAO.getInstance();
 
 		// prelevo capi dalla tabella lavorazione a db nel caso in cui ci siano già dei
 		// capi pronti per la lavorazione
-		ArrayList<Capo> listaCapi = lav.checkPresenzaCapiInStazione(this);
+		ArrayList<Capo> listaCapi = F2aFacade.getInstance().getLavorazioneFacade().checkPresenzaCapiInStazione(this);
 
 		if (listaCapi.size() != 0) {
 			this.listaCapiDaLavorare = listaCapi;
@@ -147,9 +173,9 @@ public class ObservableStazioneLavoro extends Observable {
 			// prelevare, sempre da db, i capi in attesa di lavorazione e con la medesima
 			// tipologia di lavaggio della stazione
 
-			CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
+			//CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
 			esitoCaricamento = setListaCapiDaLavorare(
-					new Capo(StatoCapo.IN_LAVORAZIONE, cat.selectCatenaByStazione(this).getTipoLavaggio()));
+					new Capo(StatoCapo.IN_LAVORAZIONE, F2aFacade.getInstance().getCatenaLavorazioneFacade().selectCatenaByStazione(this).getTipoLavaggio()));
 		}
 
 		for (Capo c : listaCapi) {
@@ -159,22 +185,22 @@ public class ObservableStazioneLavoro extends Observable {
 	}
 
 	public boolean caricamentoLavorazioni() {
-		LavorazioneDAO lav = LavorazioneDAO.getInstance();
+		//LavorazioneDAO lav = LavorazioneDAO.getInstance();
 
 		boolean esitoCaricamento = false;
 		for (Capo c : listaCapiDaLavorare) {
-			esitoCaricamento = lav.addLavorazione(this, c);
+			esitoCaricamento = F2aFacade.getInstance().getLavorazioneFacade().addLavorazione(this, c);
 			System.out.println(c);
 		}
 		return esitoCaricamento;
 	}
 
 	public boolean aggiornamentoLavorazioni() {
-		LavorazioneDAO lav = LavorazioneDAO.getInstance();
+		//LavorazioneDAO lav = LavorazioneDAO.getInstance();
 
 		boolean esitoCaricamento = false;
 		for (Capo c : listaCapiDaLavorare) {
-			esitoCaricamento = lav.updateLavorazione(this, c);
+			esitoCaricamento = F2aFacade.getInstance().getLavorazioneFacade().updateLavorazione(this, c);
 			// System.out.println(c);
 		}
 		System.out.println("AGGIORNAMENTO TABELLA LAVORAZIONI CON DATA");
@@ -182,14 +208,14 @@ public class ObservableStazioneLavoro extends Observable {
 	}
 
 	public boolean caricamentoLavorazioniSospese() {
-		LavorazioneDAO lav = LavorazioneDAO.getInstance();
+		//LavorazioneDAO lav = LavorazioneDAO.getInstance();
 
 		boolean esitoCaricamento = false;
 
 		// System.out.println("this: " + this.getIdStazione());
 
 		for (Capo c : listaCapiDaLavorare)
-			esitoCaricamento = lav.addLavorazioneSospesa(this, c);
+			esitoCaricamento = F2aFacade.getInstance().getLavorazioneFacade().addLavorazioneSospesa(this, c);
 
 		return esitoCaricamento;
 	}
@@ -200,28 +226,27 @@ public class ObservableStazioneLavoro extends Observable {
 	}
 
 	public String getIdCatena() {
-		ObservableStazioneLavoroDAO obs = new ObservableStazioneLavoroDAO();
-		String idCatena = obs.selectIdCatenaByStazione(this);
+		//ObservableStazioneLavoroDAO obs = new ObservableStazioneLavoroDAO();
+		String idCatena = F2aFacade.getInstance().getStazioneLavoroFacade().selectIdCatenaByStazione(this);
 		return idCatena;
 	}
 
 	public boolean removeCapiStazione() {
 
-		CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
+		//CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
 
-		ArrayList<ObservableStazioneLavoro> stazioni = cat
-				.selectStazioniByCatena(new CatenaLavorazione(this.getIdCatena()));
+		ArrayList<ObservableStazioneLavoro> stazioni = F2aFacade.getInstance().getCatenaLavorazioneFacade().selectStazioniByCatena(new CatenaLavorazione(this.getIdCatena()));
 
 		for (ObservableStazioneLavoro s : stazioni)
 			System.out.println(s.getIdStazione());
 
-		if (this.getTipo().toString().equals("STIRATURA") || cat.selectCatenaByStazione(this).getTipoLavaggio().toString().equals("PELLE")) {
+		if (this.getTipo().toString().equals("STIRATURA") || F2aFacade.getInstance().getCatenaLavorazioneFacade().selectCatenaByStazione(this).getTipoLavaggio().toString().equals("PELLE")) {
 
-			CapoDAO cap = new CapoDAO();
+			//CapoDAO cap = new CapoDAO();
 
 			for (Capo c : this.getListaCapiDaLavorare()) {
 				c.setStatoCapo(StatoCapo.IN_CONSEGNA);
-				cap.updateStatoCapo(c);
+				F2aFacade.getInstance().getCapoFacade().updateStatoCapo(c);
 			}
 
 		} else {

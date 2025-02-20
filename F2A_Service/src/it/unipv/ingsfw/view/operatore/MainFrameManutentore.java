@@ -12,11 +12,11 @@ import it.unipv.ingsfw.model.users.DipendenteDAO;
 import it.unipv.ingsfw.model.users.Operatore;
 import it.unipv.ingsfw.view.operatore.viewLogin.GUILoginOperatore;
 
-public class MainFrameOperatore extends JFrame {
+public class MainFrameManutentore extends JFrame {
 	private BarraMenu menu;
 	private JPanel pannello;
 	private JPanel pannelloStazioni;
-	private JPanel pannelloMacchinari;
+	private JPanel pannelloGuasti;
 	private JPanel pannelloProfilo;
 	private Container c;
 	private final List<JButton> bottoni = new ArrayList<>();
@@ -25,7 +25,7 @@ public class MainFrameOperatore extends JFrame {
 
 	private CardLayout cardLayout;
 
-	public MainFrameOperatore(Operatore o) throws HeadlessException {
+	public MainFrameManutentore(Operatore o) throws HeadlessException {
 		super();
 		this.op = o;
 
@@ -37,25 +37,25 @@ public class MainFrameOperatore extends JFrame {
 		setLocation(screenWidth / 4, screenHeight / 4);
 		Image img = kit.getImage("properties/Logo_F2A_zoom.PNG");
 		setIconImage(img);
-		setTitle("MainFrame responsabile");
+		setTitle("MainFrame manutentore");
 
 		cardLayout = new CardLayout();
 		pannello = new JPanel(cardLayout);
 
 		// Creazione pannelli
+		pannelloGuasti = new JPanel();
+		pannelloGuasti.setLayout(new BoxLayout(pannelloGuasti, BoxLayout.Y_AXIS));
+		
 		pannelloStazioni = new JPanel();
-		pannelloStazioni.setLayout(new BoxLayout(pannelloStazioni, BoxLayout.Y_AXIS));
-
-		pannelloMacchinari = new JPanel();
-		pannelloMacchinari.add(new JLabel("Gestione Macchinari - In costruzione"));
+		pannelloStazioni.add(new JLabel("GESTIONE STAZIONI LAVORO NON DISPONIBILE"));
 		
 
 		pannelloProfilo = new JPanel();
 		pannelloProfilo.add(new JLabel("Gestione Profilo - In costruzione"));
 
 		// Aggiunta pannelli al CardLayout
+		pannello.add(pannelloGuasti, "Macchinari");
 		pannello.add(pannelloStazioni, "Stazioni");
-		pannello.add(pannelloMacchinari, "Macchinari");
 		pannello.add(pannelloProfilo, "Profilo");
 
 		// Creazione menu personalizzato
@@ -95,12 +95,12 @@ public class MainFrameOperatore extends JFrame {
 		this.pannelloStazioni = pannelloStazioni;
 	}
 
-	public JPanel getPannelloMacchinari() {
-		return pannelloMacchinari;
+	public JPanel getPannelloGuasti() {
+		return pannelloGuasti;
 	}
 
-	public void setPannelloMacchinari(JPanel pannelloMacchinari) {
-		this.pannelloMacchinari = pannelloMacchinari;
+	public void setPannelloGuasti(JPanel pannelloGuasti) {
+		this.pannelloGuasti = pannelloGuasti;
 	}
 
 	public JPanel getPannelloProfilo() {
@@ -162,7 +162,7 @@ public class MainFrameOperatore extends JFrame {
 		ObservableStazioneLavoroDAO staz = new ObservableStazioneLavoroDAO();
 		ArrayList<ObservableStazioneLavoro> stazioni = staz.selectStazioniByOperatore(this.op);
 
-		pannelloStazioni.removeAll();
+		pannelloGuasti.removeAll();
 		bottoni.clear();
 		group = new ButtonGroup();
 		JLabel noStazioni;
@@ -178,7 +178,7 @@ public class MainFrameOperatore extends JFrame {
 			panel.add(label);
 			panel.add(button);
 			group.add(button);
-			pannelloStazioni.add(panel);
+			pannelloGuasti.add(panel);
 			button.setEnabled(true);
 		}
 
@@ -186,18 +186,18 @@ public class MainFrameOperatore extends JFrame {
 			JPanel panelNoStazioni = new JPanel();
 			noStazioni = new JLabel("NESSUNA STAZIONE ASSEGNATA, AGGIORNA LA PAGINA");
 			panelNoStazioni.add(noStazioni);
-			pannelloStazioni.add(panelNoStazioni);
+			pannelloGuasti.add(panelNoStazioni);
 		}
 
-		pannelloStazioni.revalidate();
-		pannelloStazioni.repaint();
+		pannelloGuasti.revalidate();
+		pannelloGuasti.repaint();
 	}
 
 
 	public static void main(String[] args) {
 		Operatore op = new Operatore();
 		SwingUtilities.invokeLater(() -> {
-			MainFrameOperatore loginOp = new MainFrameOperatore(op);
+			MainFrameManutentore loginOp = new MainFrameManutentore(op);
 			loginOp.setDefaultCloseOperation(EXIT_ON_CLOSE);
 			loginOp.setVisible(true);
 		});

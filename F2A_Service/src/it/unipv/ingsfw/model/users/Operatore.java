@@ -100,12 +100,14 @@ public class Operatore extends Dipendente {
 			stazioniAssociate = F2aFacade.getInstance().getStazioneLavoroFacade().selectStazioniByOperatore(this);
 
 		} else {
-
+			tipoOperatore = F2aFacade.getInstance().getDipendentiFacade().selectTipoOperatoreById(this);
+			System.out.println("scelta operatore");
 			switch (tipoOperatore) {
 			case RESPONSABILE_STAZIONE:
 
 				ArrayList<ObservableStazioneLavoro> obsReady = F2aFacade.getInstance().getStazioneLavoroFacade().selectStazioniReadyNonAssegnate();
 
+				//massimo 3 stazioni assegnate per responsabile
 				for (int i = 0; i < 3; i++) {
 					stazioniAssociate.add(obsReady.get(i));
 					F2aFacade.getInstance().getStazioneLavoroFacade().assegnazioneOperatoreNoto(obsReady.get(i), this);
@@ -114,10 +116,17 @@ public class Operatore extends Dipendente {
 				break;
 
 			case MANUTENTORE:
-
+				
+				//massimo anche qua 3 stazioni guaste a manutentore
+				
 				ArrayList<ObservableStazioneLavoro> obsMain = F2aFacade.getInstance().getStazioneLavoroFacade().selectStazioniMaintenanceNonAssegnate();
-				stazioniAssociate.add(obsMain.get(0));
-				F2aFacade.getInstance().getStazioneLavoroFacade().assegnazioneOperatoreNoto(obsMain.get(0), this);
+
+				for (int i = 0; i < 3; i++) {
+					stazioniAssociate.add(obsMain.get(i));
+					F2aFacade.getInstance().getStazioneLavoroFacade().assegnazioneOperatoreNoto(obsMain.get(i), this);
+				}
+				
+				
 
 				break;
 			}
@@ -225,16 +234,18 @@ public class Operatore extends Dipendente {
 	}*/
 	
 	
-	public void avviaStazione(int index) throws Exception {
-	ObservableStazioneLavoroDAO dao = new ObservableStazioneLavoroDAO();
+	//metodo di avvio della stazione di lavoro assegnata ad un responsabile
+	
+	public boolean avviaStazione(int index) throws Exception {
+	//ObservableStazioneLavoroDAO dao = new ObservableStazioneLavoroDAO();
 
 	setStazioniAssociate();
 	if (stazioniAssociate.get(index).checkPresenzaCapi()) {
 		System.out.println("aaaaaaaaaaaaaa");
 		stazioniAssociate.get(index).messaInLavorazione(index);
 
-		dao.changeStatoStazione(stazioniAssociate.get(index));
-		
+		F2aFacade.getInstance().getStazioneLavoroFacade().changeStatoStazione(stazioniAssociate.get(index));
+		return true;
 		//Thread.sleep(2000);
 		
 		
@@ -250,15 +261,16 @@ public class Operatore extends Dipendente {
 
 	} else {
 		System.err.println("Capi assenti");
+		return false;
 
 	}
 }
 
-	public void fermaStazione(int index) throws Exception {
-		//ObservableStazioneLavoroDAO dao = new ObservableStazioneLavoroDAO();
 	
-		// COMMENTI SOTTOSTANTI DA TOGLIERE PER POTER EFFETTUARE UNA LAVORAZIONE
-		// COMPLETA ALL'INTERNO DELLA STAZIONE
+	//metodo eseguito in chiusura di una lavorazione da parte di un responsabile presso una stazione di lavoro
+	
+	public boolean fermaStazione(int index) throws Exception {
+		//ObservableStazioneLavoroDAO dao = new ObservableStazioneLavoroDAO();
 	
 		stazioniAssociate.get(index).messaInStandBy(index);
 	
@@ -268,7 +280,7 @@ public class Operatore extends Dipendente {
 		F2aFacade.getInstance().getStazioneLavoroFacade().changeStatoStazione(stazioniAssociate.get(index));
 		stazioniAssociate.get(index).aggiornamentoLavorazioni();
 	
-		stazioniAssociate.get(index).removeCapiStazione();
+		return stazioniAssociate.get(index).removeCapiStazione();
 	}
 	
 	
@@ -276,6 +288,16 @@ public class Operatore extends Dipendente {
 		//DipendenteDAO dip = new DipendenteDAO();
 		boolean t = F2aFacade.getInstance().getDipendentiFacade().selectByEmailPassword(new Operatore(email, password));
 		return t;
+	}
+	
+	
+	public boolean correzioneGuasto(int index) {
+		setStazioniAssociate();
+		//possibile gestione con try/catch per eventuali eccezioni in seguito a non corretta risoluzione di un guasto
+		stazioniAssociate.get(index).messaInStandBy(index);
+		F2aFacade.getInstance().getStazioneLavoroFacade().changeStatoStazione(stazioniAssociate.get(index));
+		
+		return true;
 	}
 
 	public static void main(String[] args) {
