@@ -11,18 +11,26 @@ import it.unipv.ingsfw.model.tickets.TipologiaTicket;
 
 import it.unipv.ingsfw.jdbc.DBConnection;
 import it.unipv.ingsfw.model.users.Corriere;
+import it.unipv.ingsfw.model.users.DipendenteDAO;
 
 import java.util.ArrayList;
 
 public class TicketDAO implements ITicketDAO {
-	Connection connessione;
 	
-	/**
-	 * 
-	 */
-	public TicketDAO() {
+	Connection connessione;
+	private static TicketDAO instance = null;
+
+	private TicketDAO() {
 		super();
-		// TODO Auto-generated constructor stub
+	}
+	
+	public static TicketDAO getInstance() {
+		if (instance == null) {
+			instance = new TicketDAO();
+			System.out.println("Create new instance");
+		} else
+			System.out.println("Instance already available");
+		return instance;
 	}
 
 	

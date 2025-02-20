@@ -11,12 +11,24 @@ import it.unipv.ingsfw.jdbc.DBConnection;
 
 public class ClienteDAO implements IClienteDAO {
 	private Connection conn;
-	public ClienteDAO() {
+	
+
+	private static ClienteDAO instance = null;
+
+	private ClienteDAO() {
 		super();
 		// this.schema = "PROVA";
 		// conn=DBConnection.startConnection(conn,schema);
 	}
-
+	
+	public static ClienteDAO getInstance() {
+		if (instance == null) {
+			instance = new ClienteDAO();
+			System.out.println("Create new instance");
+		} else
+			System.out.println("Instance already available");
+		return instance;
+	}
 	
 	@Override
 	public ArrayList<Cliente> selectAll() {

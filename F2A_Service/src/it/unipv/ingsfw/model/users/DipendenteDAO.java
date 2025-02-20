@@ -8,15 +8,24 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import it.unipv.ingsfw.jdbc.DBConnection;
+import it.unipv.ingsfw.model.lavorazioneCapi.LavorazioneDAO;
 
 public class DipendenteDAO implements IDipendenteDAO {
 
 	private Connection conn;
+	private static DipendenteDAO instance = null;
 
-	public DipendenteDAO() {
+	private DipendenteDAO() {
 		super();
-		// this.schema = "PROVA";
-		// conn=DBConnection.startConnection(conn,schema);
+	}
+	
+	public static DipendenteDAO getInstance() {
+		if (instance == null) {
+			instance = new DipendenteDAO();
+			System.out.println("Create new instance");
+		} else
+			System.out.println("Instance already available");
+		return instance;
 	}
 
 	@Override

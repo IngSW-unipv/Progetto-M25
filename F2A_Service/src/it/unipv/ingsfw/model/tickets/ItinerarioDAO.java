@@ -10,8 +10,23 @@ import it.unipv.ingsfw.model.negozio.Negozio;
 import it.unipv.ingsfw.model.negozio.StatoTappa;
 import it.unipv.ingsfw.model.negozio.Tappa;
 
-public class ItinerarioDAO implements IItinearioDAO {
+public class ItinerarioDAO implements IItinerarioDAO {
+	
 	Connection conn;
+	private static ItinerarioDAO instance = null;
+
+	private ItinerarioDAO() {
+		super();
+	}
+	
+	public static ItinerarioDAO getInstance() {
+		if (instance == null) {
+			instance = new ItinerarioDAO();
+			System.out.println("Create new instance");
+		} else
+			System.out.println("Instance already available");
+		return instance;
+	}
 	
 	@Override
 	public ArrayList<Itinerario> selectAll() {

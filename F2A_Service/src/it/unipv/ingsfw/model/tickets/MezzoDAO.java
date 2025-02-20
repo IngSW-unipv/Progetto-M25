@@ -9,7 +9,22 @@ import it.unipv.ingsfw.jdbc.DBConnection;
 import it.unipv.ingsfw.model.users.Corriere;
 
 public class MezzoDAO implements IMezzoDAO {
+	
 	Connection conn;
+	private static MezzoDAO instance = null;
+
+	private MezzoDAO() {
+		super();
+	}
+	
+	public static MezzoDAO getInstance() {
+		if (instance == null) {
+			instance = new MezzoDAO();
+			System.out.println("Create new instance");
+		} else
+			System.out.println("Instance already available");
+		return instance;
+	}
 
 	@Override
 	public ArrayList<Mezzo> selectAll() {

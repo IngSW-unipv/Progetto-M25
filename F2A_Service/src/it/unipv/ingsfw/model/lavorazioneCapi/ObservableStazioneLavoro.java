@@ -60,8 +60,8 @@ public class ObservableStazioneLavoro extends Observable {
 
 	public void setStatoStazione(StatoStazione statoStazione) {
 		this.statoStazione = statoStazione;
-		setChanged();
-		notifyObservers();
+		//setChanged();
+		//notifyObservers(this);
 	}
 
 	public double getLivelloProdottoLavaggio() {
@@ -84,15 +84,15 @@ public class ObservableStazioneLavoro extends Observable {
 			// modificare per far prelevare solo i capi SOSPESI nella tabella lavorazione,
 			// per avere quelli che hanno subito la lavorazione precedente se la stazione
 			// non è di tipo lavaggio
-			if(tipo.toString().equalsIgnoreCase("LAVAGGIO")) {
+			if (tipo.toString().equalsIgnoreCase("LAVAGGIO")) {
 				listaCapiDaLavorare = capi.selectCapoByStatoETipo(c);
 			} else {
 				listaCapiDaLavorare = lav.checkPresenzaCapiInStazione(this);
 			}
-			
+
 		}
-		
-		if(listaCapiDaLavorare.size() == 0) {
+
+		if (listaCapiDaLavorare.size() == 0) {
 			return false;
 		}
 		return true;
@@ -110,16 +110,25 @@ public class ObservableStazioneLavoro extends Observable {
 
 	// metodo per modifica stato macchinario in maniera più automatizzata e generale
 
-	public void messaInLavorazione() {
+	public void messaInLavorazione(int index) {
 		statoStazione = StatoStazione.WORKING;
+		setChanged();
+		System.out.println("Stato cambiato 1 , notifico gli osservatori...");
+	    notifyObservers(index);
 	}
 
-	public void messaInStandBy() {
+	public void messaInStandBy(int index) {
 		statoStazione = StatoStazione.READY;
+		setChanged();
+		System.out.println("Stato cambiato 2 , notifico gli osservatori...");
+	    notifyObservers(index);
 	}
 
-	public void messaInManutenzione() {
+	public void messaInManutenzione(int index) {
 		statoStazione = StatoStazione.MAINTENANCE;
+		setChanged();
+		System.out.println("Stato cambiato 3 , notifico gli osservatori...");
+	    notifyObservers(index);
 	}
 
 	public boolean checkPresenzaCapi() {
@@ -139,7 +148,8 @@ public class ObservableStazioneLavoro extends Observable {
 			// tipologia di lavaggio della stazione
 
 			CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
-			esitoCaricamento = setListaCapiDaLavorare(new Capo(StatoCapo.IN_LAVORAZIONE, cat.selectCatenaByStazione(this).getTipoLavaggio()));
+			esitoCaricamento = setListaCapiDaLavorare(
+					new Capo(StatoCapo.IN_LAVORAZIONE, cat.selectCatenaByStazione(this).getTipoLavaggio()));
 		}
 
 		for (Capo c : listaCapi) {
@@ -158,14 +168,14 @@ public class ObservableStazioneLavoro extends Observable {
 		}
 		return esitoCaricamento;
 	}
-	
+
 	public boolean aggiornamentoLavorazioni() {
 		LavorazioneDAO lav = LavorazioneDAO.getInstance();
 
 		boolean esitoCaricamento = false;
 		for (Capo c : listaCapiDaLavorare) {
 			esitoCaricamento = lav.updateLavorazione(this, c);
-			//System.out.println(c);
+			// System.out.println(c);
 		}
 		System.out.println("AGGIORNAMENTO TABELLA LAVORAZIONI CON DATA");
 		return esitoCaricamento;
@@ -175,12 +185,12 @@ public class ObservableStazioneLavoro extends Observable {
 		LavorazioneDAO lav = LavorazioneDAO.getInstance();
 
 		boolean esitoCaricamento = false;
-		
-		//System.out.println("this: " + this.getIdStazione());
-		
+
+		// System.out.println("this: " + this.getIdStazione());
+
 		for (Capo c : listaCapiDaLavorare)
 			esitoCaricamento = lav.addLavorazioneSospesa(this, c);
-			
+
 		return esitoCaricamento;
 	}
 
@@ -195,13 +205,14 @@ public class ObservableStazioneLavoro extends Observable {
 		return idCatena;
 	}
 
-	public void removeCapiStazione() {
+	public boolean removeCapiStazione() {
 
 		CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
 
-		ArrayList<ObservableStazioneLavoro> stazioni = cat.selectStazioniByCatena(new CatenaLavorazione(this.getIdCatena()));
-		
-		for(ObservableStazioneLavoro s : stazioni)
+		ArrayList<ObservableStazioneLavoro> stazioni = cat
+				.selectStazioniByCatena(new CatenaLavorazione(this.getIdCatena()));
+
+		for (ObservableStazioneLavoro s : stazioni)
 			System.out.println(s.getIdStazione());
 
 		if (this.getTipo().toString().equals("STIRATURA") || cat.selectCatenaByStazione(this).getTipoLavaggio().toString().equals("PELLE")) {
@@ -214,24 +225,25 @@ public class ObservableStazioneLavoro extends Observable {
 			}
 
 		} else {
-			
-			//String sub = this.getIdStazione().substring(3);
+
+			// String sub = this.getIdStazione().substring(3);
 			int numPrimaStazione = Integer.parseInt(stazioni.get(0).getIdStazione().substring(3));
-			
+
 			String newIdStazione = this.getIdStazione();
 			String sub = newIdStazione.substring(3);
 			// System.out.println(sub);
 			int num = Integer.parseInt(sub);
-			
+
 			int numStazioneSuccessiva = num - numPrimaStazione + 1;
 			System.out.println("NUM STAZIONE SUCCESSIVA: " + numStazioneSuccessiva);
-			//System.out.println(stazioni.get(numStazioneSuccessiva).getIdStazione());
+			// System.out.println(stazioni.get(numStazioneSuccessiva).getIdStazione());
 			stazioni.get(numStazioneSuccessiva).setListaCapiDaLavorare(this.listaCapiDaLavorare);
-			//System.out.println("bbbbbbbbbbbbbb");
+			// System.out.println("bbbbbbbbbbbbbb");
 			stazioni.get(numStazioneSuccessiva).caricamentoLavorazioniSospese();
 		}
 
 		this.svuotaStazione();
+		return true;
 
 	}
 

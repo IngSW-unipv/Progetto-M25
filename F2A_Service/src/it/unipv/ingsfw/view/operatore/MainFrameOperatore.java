@@ -179,6 +179,7 @@ public class MainFrameOperatore extends JFrame {
 			panel.add(button);
 			group.add(button);
 			pannelloStazioni.add(panel);
+			button.setEnabled(true);
 		}
 
 		if (stazioni.size() == 0) {

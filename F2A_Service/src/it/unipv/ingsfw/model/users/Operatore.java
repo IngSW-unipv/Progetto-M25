@@ -23,19 +23,19 @@ public class Operatore extends Dipendente {
 		this.tipoOperatore = tipoOperatore;
 		stazioniAssociate = new ArrayList<ObservableStazioneLavoro>();
 	}
-	
+
 	public Operatore(String email, String password) {
 		super(email, password);
 		this.tipoOperatore = null;
 		stazioniAssociate = new ArrayList<ObservableStazioneLavoro>();
 	}
-	
+
 	public Operatore(String idDipendente) {
 		super(idDipendente);
 		this.tipoOperatore = null;
 		stazioniAssociate = new ArrayList<ObservableStazioneLavoro>();
 	}
-	
+
 	public Operatore() {
 		super(null, null);
 	}
@@ -61,14 +61,14 @@ public class Operatore extends Dipendente {
 	// stazione guasta alla volta
 
 	public void setStazioniAssociate() {
-		
+
 		ObservableStazioneLavoroDAO staz = new ObservableStazioneLavoroDAO();
-		
-		if(staz.selectStazioniByOperatore(this).size() != 0) {
+
+		if (staz.selectStazioniByOperatore(this).size() != 0) {
 			stazioniAssociate = staz.selectStazioniByOperatore(this);
-			
-		}else {
-			
+
+		} else {
+
 			switch (tipoOperatore) {
 			case RESPONSABILE_STAZIONE:
 
@@ -90,7 +90,6 @@ public class Operatore extends Dipendente {
 				break;
 			}
 		}
-		
 
 	}
 
@@ -101,49 +100,147 @@ public class Operatore extends Dipendente {
 
 	// metodo per mandare in stato di working una stazione di lavorazione, andando
 	// prima a controllare se questa contiene effettivamente dei capi da lavorare
-	
-	//uso attributo index utile per passare da GUI a esecuzione del metodo
 
-	public boolean avviaStazione(int index) throws Exception{
+	// uso attributo index utile per passare da GUI a esecuzione del metodo
+
+	/*public boolean avviaStazione(int index) throws Exception {
 		ObservableStazioneLavoroDAO dao = new ObservableStazioneLavoroDAO();
-		
+
 		setStazioniAssociate();
 		if (stazioniAssociate.get(index).checkPresenzaCapi()) {
 			System.out.println("aaaaaaaaaaaaaa");
 			stazioniAssociate.get(index).messaInLavorazione();
-			
-			dao.changeStatoStazione(stazioniAssociate.get(index));
-			
-			//if(!stazioniAssociate.get(index).getTipo().toString().equalsIgnoreCase("LAVAGGIO")) {stazioniAssociate.get(index).caricamentoLavorazioni();}
 
-			// attendere qualche secondo ....
-			
-			//for(int i = 0; i < 10000000; i++) {}
-			
-			//COMMENTI SOTTOSTANTI DA TOGLIERE PER POTER EFFETTUARE UNA LAVORAZIONE COMPLETA ALL'INTERNO DELLA STAZIONE
+			dao.changeStatoStazione(stazioniAssociate.get(index));
+			stazioniAssociate.get(index).notificaAObserver();
+
+			// if(!stazioniAssociate.get(index).getTipo().toString().equalsIgnoreCase("LAVAGGIO"))
+			// {stazioniAssociate.get(index).caricamentoLavorazioni();}
+
+			Thread.sleep(5000);
+
+			// COMMENTI SOTTOSTANTI DA TOGLIERE PER POTER EFFETTUARE UNA LAVORAZIONE
+			// COMPLETA ALL'INTERNO DELLA STAZIONE
 
 			stazioniAssociate.get(index).messaInStandBy();
-			
+
 			System.out.println("Lavorazione completata\n----------------------------------------------------------------------");
 
-			
 			dao.changeStatoStazione(stazioniAssociate.get(index));
 			stazioniAssociate.get(index).aggiornamentoLavorazioni();
-			
-			stazioniAssociate.get(index).removeCapiStazione();
-			return true;
-			
 
-		}else {
+			stazioniAssociate.get(index).removeCapiStazione();
+			stazioniAssociate.get(index).notificaAObserver();
+			
+			return true;
+
+		} else {
 			System.err.println("Capi assenti");
 			return false;
+
+		}
+	}*/
+	
+	/*public boolean avviaStazione(int index) throws Exception {
+		ObservableStazioneLavoroDAO dao = new ObservableStazioneLavoroDAO();
+
+		setStazioniAssociate();
+		if (stazioniAssociate.get(index).checkPresenzaCapi()) {
+			System.out.println("aaaaaaaaaaaaaa");
+			stazioniAssociate.get(index).messaInLavorazione();
+
+			dao.changeStatoStazione(stazioniAssociate.get(index));
+			stazioniAssociate.get(index).notificaAObserver();
 			
+			
+			Thread.sleep(2000);
+			
+			
+
+			// if(!stazioniAssociate.get(index).getTipo().toString().equalsIgnoreCase("LAVAGGIO"))
+			// {stazioniAssociate.get(index).caricamentoLavorazioni();}
+
+			// attendere qualche secondo ....
+
+			// for(int i = 0; i < 10000000; i++) {}
+
+			// COMMENTI SOTTOSTANTI DA TOGLIERE PER POTER EFFETTUARE UNA LAVORAZIONE
+			// COMPLETA ALL'INTERNO DELLA STAZIONE
+			return true;
+
+		} else {
+			System.err.println("Capi assenti");
+			return false;
+
 		}
 	}
+
+	public boolean fermaStazione(int index) throws Exception {
+		ObservableStazioneLavoroDAO dao = new ObservableStazioneLavoroDAO();
+
+		// COMMENTI SOTTOSTANTI DA TOGLIERE PER POTER EFFETTUARE UNA LAVORAZIONE
+		// COMPLETA ALL'INTERNO DELLA STAZIONE
+
+		stazioniAssociate.get(index).messaInStandBy();
+
+		System.out.println("Lavorazione completata\n----------------------------------------------------------------------");
+
+		dao.changeStatoStazione(stazioniAssociate.get(index));
+		stazioniAssociate.get(index).aggiornamentoLavorazioni();
+
+		return stazioniAssociate.get(index).removeCapiStazione();
+	}*/
+	
+	
+	public void avviaStazione(int index) throws Exception {
+	ObservableStazioneLavoroDAO dao = new ObservableStazioneLavoroDAO();
+
+	setStazioniAssociate();
+	if (stazioniAssociate.get(index).checkPresenzaCapi()) {
+		System.out.println("aaaaaaaaaaaaaa");
+		stazioniAssociate.get(index).messaInLavorazione(index);
+
+		dao.changeStatoStazione(stazioniAssociate.get(index));
+		
+		//Thread.sleep(2000);
+		
+		
+		// if(!stazioniAssociate.get(index).getTipo().toString().equalsIgnoreCase("LAVAGGIO"))
+		// {stazioniAssociate.get(index).caricamentoLavorazioni();}
+
+		// attendere qualche secondo ....
+
+		// for(int i = 0; i < 10000000; i++) {}
+
+		// COMMENTI SOTTOSTANTI DA TOGLIERE PER POTER EFFETTUARE UNA LAVORAZIONE
+		// COMPLETA ALL'INTERNO DELLA STAZIONE
+
+	} else {
+		System.err.println("Capi assenti");
+
+	}
+}
+
+	public void fermaStazione(int index) throws Exception {
+		ObservableStazioneLavoroDAO dao = new ObservableStazioneLavoroDAO();
+	
+		// COMMENTI SOTTOSTANTI DA TOGLIERE PER POTER EFFETTUARE UNA LAVORAZIONE
+		// COMPLETA ALL'INTERNO DELLA STAZIONE
+	
+		stazioniAssociate.get(index).messaInStandBy(index);
+	
+		System.out.println("Lavorazione completata\n----------------------------------------------------------------------");
+	
+		dao.changeStatoStazione(stazioniAssociate.get(index));
+		stazioniAssociate.get(index).aggiornamentoLavorazioni();
+	
+		stazioniAssociate.get(index).removeCapiStazione();
+	}
+	
 	
 	public boolean verificaCredenzialiAccesso(String email, String password) {
 		DipendenteDAO dip = new DipendenteDAO();
-		boolean t = dip.selectByEmailPassword(new Operatore(email,password));
+		boolean t = dip.selectByEmailPassword(new Operatore(email, password));
 		return t;
 	}
 
@@ -152,7 +249,7 @@ public class Operatore extends Dipendente {
 		DipendenteDAO dip = new DipendenteDAO();
 		ArrayList<Operatore> listaOp = dip.selectResponsabiliStazioneNonAssegnati();
 		ArrayList<Operatore> listaOpMan = dip.selectManutentoriNonAssegnati();
-		
+
 		for (Operatore o : listaOp)
 			System.out.println(o);
 

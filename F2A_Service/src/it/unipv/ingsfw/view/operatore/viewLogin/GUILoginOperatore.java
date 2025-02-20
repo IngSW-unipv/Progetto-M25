@@ -47,7 +47,7 @@ public class GUILoginOperatore extends JFrame{
 		add(cred, BorderLayout.NORTH);
 		add(pannello, BorderLayout.CENTER);
 		//add(b, BorderLayout.SOUTH);
-		OperatoreAction opAction = new OperatoreAction(o, this);
+		new OperatoreAction(o, this);
 	}
 
 	public InsertPanel getPannello() {

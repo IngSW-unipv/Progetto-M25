@@ -3,3 +3,24 @@ DBURL = jdbc:mysql://127.0.0.1:3306/%s
 db_usn = root
 db_psw = 
 schema = f2a_service?serverTimezone=UTC
+
+dao.idipendededao = it.unipv.ingsfw.dao.implementazioni.DipendenteDAO
+dao.ilavorazionedao = it.unipv.ingsfw.dao.implementazioni.LavorazioneDAO
+dao.iclientedao = it.unipv.ingsfw.dao.implementazioni.ClienteDAO
+dao.inegoziodao = it.unipv.ingsfw.dao.implementazioni.NegozioDAO
+dao.icatenalavorazionedao = it.unipv.ingsfw.dao.implementazioni.CatenaLavorazioneDAO
+dao.iobservablestazionelavorodao = it.unipv.ingsfw.dao.implementazioni.ObservableStazioneLavoroDAO
+dao.icapodao = it.unipv.ingsfw.dao.implementazioni.CapoDAO
+dao.ilavaggiodao = it.unipv.ingsfw.dao.implementazioni.LavaggioDAO
+dao.imezzodao = it.unipv.ingsfw.dao.implementazioni.MezzoDAO
+dao.iitinerariodao = it.unipv.ingsfw.dao.implementazioni.ItinerarioDAO
+dao.iticketdao = it.unipv.ingsfw.dao.implementazioni.TicketDAO
+
+facade.catenalavorazione = it.unipv.ingsfw.facade.lavorazioneCapi.ConcreteCatenaLavorazioneFacade
+facade.stazionelavoro = it.unipv.ingsfw.facade.lavorazioneCapi.ConcreteStazioneLavoroFacade
+facade.negozio = it.unipv.ingsfw.facade.negozio.ConcreteNegozioFacade
+facade.itinerario = it.unipv.ingsfw.facade.tickets.ConcreteItinerarioFacade
+facade.mezzo = it.unipv.ingsfw.facade.tickets.ConcreteMezzoFacade
+facade.ticket = it.unipv.ingsfw.facade.tickets.ConcreteTicketsFacade
+facade.cliente = it.unipv.ingsfw.facade.users.clienti.ConcreteClientiFacade
+facade.dipendente = it.unipv.ingsfw.facade.users.dipendenti.ConcreteDipendentiFacade

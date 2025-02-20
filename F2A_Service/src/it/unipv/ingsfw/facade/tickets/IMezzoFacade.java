@@ -1,10 +1,13 @@
-package it.unipv.ingsfw.model.tickets;
-//MODIFICATO IN DATA 19/02
+package it.unipv.ingsfw.facade.tickets;
+
 import java.util.ArrayList;
 
-public interface IMezzoDAO {
+import it.unipv.ingsfw.model.tickets.Mezzo;
+
+public interface IMezzoFacade {
+
 	public ArrayList<Mezzo> selectAll();
 	public ArrayList<Mezzo> selectByCapienza(Mezzo fornInput);
 	public boolean insertMezzo(Mezzo m);
-	public Mezzo selectById(Mezzo m);
+	Mezzo selectById(Mezzo m);
 }
