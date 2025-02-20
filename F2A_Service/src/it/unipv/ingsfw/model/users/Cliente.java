@@ -1,5 +1,7 @@
 package it.unipv.ingsfw.model.users;
 
+import it.unipv.ingsfw.facade.F2aFacade;
+
 public class Cliente {
 
 	private String idCliente;
@@ -90,5 +92,42 @@ public class Cliente {
 		return "Cliente "+ idCliente + "\nNome: " + nome + "\nCognome: " + cognome + "\nCf: "
 				+ cf + "\nEmail: " + email + "\nPassword " + password;
 	}
+	
+	
+	//modifica verificaCredenzialiAccesso per far ritornare true se credenziali esistono (esiste Cliente)
+	public boolean verificaCredenzialiAccesso(String email, String password) {
+		boolean t=true;
+		boolean f=false;
+		Cliente cl = new Cliente(null, null, null, null, email, password);
+		Cliente c = F2aFacade.getInstance().getClientiFacade().selectClienteByEmailEPassword(cl);
+		if(c!=null) 
+			return t;
+		return f;	
+	}
+	
+	
+	
+	
+	/*public static void main(String[] args) {
 
+//test verificaCredenzialiAccesso
+ 
+		Cliente cl=new Cliente(null);
+		
+        // Dati di test (email e password da verificare)
+        String email = "Stefano.Rossi@f2aservice.com";
+        String password = "Admin";
+
+        // Verifica le credenziali
+        boolean risultato = cl.verificaCredenzialiAccesso(email, password);
+
+        // Output del risultato
+        if (risultato) {
+            System.out.println("Credenziali corrette. Accesso consentito.");
+        } else {
+            System.out.println("Credenziali errate. Accesso negato.");
+        }
+    }*/
+	
+	
 }
