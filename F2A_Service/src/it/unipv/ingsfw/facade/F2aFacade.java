@@ -5,6 +5,7 @@ import java.util.Properties;
 import it.unipv.ingsfw.facade.capo.ConcreteCapoFacade;
 import it.unipv.ingsfw.facade.lavaggio.ConcreteLavaggioFacade;
 import it.unipv.ingsfw.facade.lavorazioneCapi.ConcreteCatenaLavorazioneFacade;
+import it.unipv.ingsfw.facade.lavorazioneCapi.ConcreteLavorazioneFacade;
 import it.unipv.ingsfw.facade.lavorazioneCapi.ConcreteStazioneLavoroFacade;
 import it.unipv.ingsfw.facade.negozio.ConcreteNegozioFacade;
 import it.unipv.ingsfw.facade.tickets.ConcreteItinerarioFacade;
@@ -30,6 +31,7 @@ public class F2aFacade {
     private ConcreteDipendentiFacade dipendentiFacade;
     private ConcreteCapoFacade capoFacade;
     private ConcreteLavaggioFacade lavaggioFacade;
+    private ConcreteLavorazioneFacade lavorazioneFacade;
     
 
     private F2aFacade() {
@@ -43,8 +45,9 @@ public class F2aFacade {
             this.ticketsFacade = (ConcreteTicketsFacade) loadClass("ticket").getDeclaredConstructor().newInstance();
             this.clientiFacade = (ConcreteClientiFacade) loadClass("cliente").getDeclaredConstructor().newInstance();
             this.dipendentiFacade = (ConcreteDipendentiFacade) loadClass("dipendente").getDeclaredConstructor().newInstance();
-            this.capoFacade = (ConcreteCapoFacade) loadClass("dipendente").getDeclaredConstructor().newInstance();
-            this.lavaggioFacade = (ConcreteLavaggioFacade) loadClass("dipendente").getDeclaredConstructor().newInstance();
+            this.capoFacade = (ConcreteCapoFacade) loadClass("capo").getDeclaredConstructor().newInstance();
+            this.lavaggioFacade = (ConcreteLavaggioFacade) loadClass("lavaggio").getDeclaredConstructor().newInstance();
+            this.lavorazioneFacade = (ConcreteLavorazioneFacade) loadClass("lavorazione").getDeclaredConstructor().newInstance();
         }catch (Exception e){
             //throw new RuntimeException(e);
             System.out.println(e.getMessage());
@@ -99,7 +102,9 @@ public class F2aFacade {
 		return lavaggioFacade;
 	}
 	
-	
+	public ConcreteLavorazioneFacade getLavorazioneFacade() {
+		return lavorazioneFacade;
+	}
 
     
 }

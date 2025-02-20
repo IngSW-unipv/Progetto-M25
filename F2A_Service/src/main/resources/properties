@@ -6,3 +6,6 @@ facade.mezzo = it.unipv.ingsfw.facade.tickets.ConcreteMezzoFacade
 facade.ticket = it.unipv.ingsfw.facade.tickets.ConcreteTicketsFacade
 facade.cliente = it.unipv.ingsfw.facade.users.clienti.ConcreteClientiFacade
 facade.dipendente = it.unipv.ingsfw.facade.users.dipendenti.ConcreteDipendentiFacade
+facade.capo = it.unipv.ingsfw.facade.capo.ConcreteCapoFacade
+facade.lavaggio = it.unipv.ingsfw.facade.lavaggio.ConcreteLavaggioFacade
+facade.lavorazione = it.unipv.ingsfw.facade.lavorazioneCapi.ConcreteLavorazioneFacade
