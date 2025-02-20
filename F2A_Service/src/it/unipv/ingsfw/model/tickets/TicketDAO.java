@@ -20,7 +20,7 @@ public class TicketDAO implements ITicketDAO {
 	Connection connessione;
 	private static TicketDAO instance = null;
 
-	private TicketDAO() {
+	public TicketDAO() {
 		super();
 	}
 	

@@ -25,6 +25,39 @@ public class DaoFactory {
     private static final Properties properties = new Properties();
 	
 
+    static {
+        try (InputStream input = DaoFactory.class.getResourceAsStream("/main/resources/properties_dao")) {
+            if (input == null) {
+                throw new RuntimeException("File properties non trovato");
+            }
+            properties.load(input);
+            //System.out.println("Contenuto di properties: " + properties);
+        } catch (IOException e) {
+            throw new RuntimeException("Errore nel caricamento del file di configurazione", e);
+        }
+    }
+
+    public static <T> T get(Class<T> clazz) {
+        if (loadedDao.containsKey(clazz)) {
+            return clazz.cast(loadedDao.get(clazz));
+        }
+
+        String className = properties.getProperty("dao." + clazz.getSimpleName().toLowerCase());
+        if (className == null) {
+            throw new RuntimeException("Classe non trovata nel file di configurazione per " + clazz.getSimpleName());
+        }
+
+        try {
+            Class<?> retClass = Class.forName(className);
+            Object instance = retClass.getDeclaredConstructor().newInstance();
+            //System.out.println(instance);
+            loadedDao.put(clazz, instance);
+            return clazz.cast(instance);
+        } catch (Exception e) {
+            throw new RuntimeException("Errore nell'istanza della classe " + className, e);
+        }
+    }
+    
 	public static IDipendenteDAO getDipendenteDAO() {
 		return get(IDipendenteDAO.class);
 	}
@@ -69,34 +102,4 @@ public class DaoFactory {
 		return get(ITicketDAO.class);
 	}
 
-	static {
-        try (InputStream input = DaoFactory.class.getResourceAsStream("properties/properties")) {
-            if (input == null) {
-                throw new RuntimeException("File app.properties non trovato");
-            }
-            properties.load(input);
-        } catch (IOException e) {
-            throw new RuntimeException("Errore nel caricamento del file di configurazione", e);
-        }
-    }
-
-    public static <T> T get(Class<T> clazz) {
-        if (loadedDao.containsKey(clazz)) {
-            return clazz.cast(loadedDao.get(clazz));
-        }
-
-        String className = properties.getProperty("dao." + clazz.getSimpleName().toLowerCase());
-        if (className == null) {
-            throw new RuntimeException("Classe non trovata nel file di configurazione per " + clazz.getSimpleName());
-        }
-
-        try {
-            Class<?> retClass = Class.forName(className);
-            Object instance = retClass.getDeclaredConstructor().newInstance();
-            loadedDao.put(clazz, instance);
-            return clazz.cast(instance);
-        } catch (Exception e) {
-            throw new RuntimeException("Errore nell'istanza della classe " + className, e);
-        }
-    }
 	}

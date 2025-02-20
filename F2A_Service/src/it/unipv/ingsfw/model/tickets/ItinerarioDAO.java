@@ -15,7 +15,7 @@ public class ItinerarioDAO implements IItinerarioDAO {
 	Connection conn;
 	private static ItinerarioDAO instance = null;
 
-	private ItinerarioDAO() {
+	public ItinerarioDAO() {
 		super();
 	}
 	

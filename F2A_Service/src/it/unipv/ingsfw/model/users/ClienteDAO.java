@@ -15,7 +15,7 @@ public class ClienteDAO implements IClienteDAO {
 
 	private static ClienteDAO instance = null;
 
-	private ClienteDAO() {
+	public ClienteDAO() {
 		super();
 		// this.schema = "PROVA";
 		// conn=DBConnection.startConnection(conn,schema);

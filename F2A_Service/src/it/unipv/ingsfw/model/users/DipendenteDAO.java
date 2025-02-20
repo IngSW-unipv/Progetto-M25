@@ -15,7 +15,7 @@ public class DipendenteDAO implements IDipendenteDAO {
 	private Connection conn;
 	private static DipendenteDAO instance = null;
 
-	private DipendenteDAO() {
+	public DipendenteDAO() {
 		super();
 	}
 	

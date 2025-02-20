@@ -13,7 +13,7 @@ public class MezzoDAO implements IMezzoDAO {
 	Connection conn;
 	private static MezzoDAO instance = null;
 
-	private MezzoDAO() {
+	public MezzoDAO() {
 		super();
 	}
 	

@@ -2,6 +2,7 @@ package it.unipv.ingsfw.model.users;
 
 import java.util.ArrayList;
 
+import it.unipv.ingsfw.facade.F2aFacade;
 import it.unipv.ingsfw.model.Capo;
 import it.unipv.ingsfw.model.CapoDAO;
 import it.unipv.ingsfw.model.StatoCapo;
@@ -60,7 +61,7 @@ public class Operatore extends Dipendente {
 	// aggiunto anche il caso del manutentore a cui però viene assegnata una sola
 	// stazione guasta alla volta
 
-	public void setStazioniAssociate() {
+	/*public void setStazioniAssociate() {
 
 		ObservableStazioneLavoroDAO staz = new ObservableStazioneLavoroDAO();
 
@@ -91,7 +92,39 @@ public class Operatore extends Dipendente {
 			}
 		}
 
+	}*/
+	
+	public void setStazioniAssociate() {
+
+		if (F2aFacade.getInstance().getStazioneLavoroFacade().selectStazioniByOperatore(this).size() != 0) {
+			stazioniAssociate = F2aFacade.getInstance().getStazioneLavoroFacade().selectStazioniByOperatore(this);
+
+		} else {
+
+			switch (tipoOperatore) {
+			case RESPONSABILE_STAZIONE:
+
+				ArrayList<ObservableStazioneLavoro> obsReady = F2aFacade.getInstance().getStazioneLavoroFacade().selectStazioniReadyNonAssegnate();
+
+				for (int i = 0; i < 3; i++) {
+					stazioniAssociate.add(obsReady.get(i));
+					F2aFacade.getInstance().getStazioneLavoroFacade().assegnazioneOperatoreNoto(obsReady.get(i), this);
+				}
+
+				break;
+
+			case MANUTENTORE:
+
+				ArrayList<ObservableStazioneLavoro> obsMain = F2aFacade.getInstance().getStazioneLavoroFacade().selectStazioniMaintenanceNonAssegnate();
+				stazioniAssociate.add(obsMain.get(0));
+				F2aFacade.getInstance().getStazioneLavoroFacade().assegnazioneOperatoreNoto(obsMain.get(0), this);
+
+				break;
+			}
+		}
+
 	}
+	
 
 	@Override
 	public String toString() {
@@ -222,7 +255,7 @@ public class Operatore extends Dipendente {
 }
 
 	public void fermaStazione(int index) throws Exception {
-		ObservableStazioneLavoroDAO dao = new ObservableStazioneLavoroDAO();
+		//ObservableStazioneLavoroDAO dao = new ObservableStazioneLavoroDAO();
 	
 		// COMMENTI SOTTOSTANTI DA TOGLIERE PER POTER EFFETTUARE UNA LAVORAZIONE
 		// COMPLETA ALL'INTERNO DELLA STAZIONE
@@ -231,7 +264,8 @@ public class Operatore extends Dipendente {
 	
 		System.out.println("Lavorazione completata\n----------------------------------------------------------------------");
 	
-		dao.changeStatoStazione(stazioniAssociate.get(index));
+		//dao.changeStatoStazione(stazioniAssociate.get(index));
+		F2aFacade.getInstance().getStazioneLavoroFacade().changeStatoStazione(stazioniAssociate.get(index));
 		stazioniAssociate.get(index).aggiornamentoLavorazioni();
 	
 		stazioniAssociate.get(index).removeCapiStazione();
@@ -239,16 +273,16 @@ public class Operatore extends Dipendente {
 	
 	
 	public boolean verificaCredenzialiAccesso(String email, String password) {
-		DipendenteDAO dip = new DipendenteDAO();
-		boolean t = dip.selectByEmailPassword(new Operatore(email, password));
+		//DipendenteDAO dip = new DipendenteDAO();
+		boolean t = F2aFacade.getInstance().getDipendentiFacade().selectByEmailPassword(new Operatore(email, password));
 		return t;
 	}
 
 	public static void main(String[] args) {
 
-		DipendenteDAO dip = new DipendenteDAO();
-		ArrayList<Operatore> listaOp = dip.selectResponsabiliStazioneNonAssegnati();
-		ArrayList<Operatore> listaOpMan = dip.selectManutentoriNonAssegnati();
+		//DipendenteDAO dip = new DipendenteDAO();
+		ArrayList<Operatore> listaOp = F2aFacade.getInstance().getDipendentiFacade().selectResponsabiliStazioneNonAssegnati();
+		ArrayList<Operatore> listaOpMan = F2aFacade.getInstance().getDipendentiFacade().selectManutentoriNonAssegnati();
 
 		for (Operatore o : listaOp)
 			System.out.println(o);

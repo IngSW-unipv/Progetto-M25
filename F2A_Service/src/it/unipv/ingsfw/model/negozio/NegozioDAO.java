@@ -9,7 +9,7 @@ public class NegozioDAO implements INegozioDAO {
 	Connection connessione;
 	private static NegozioDAO instance = null;
 
-	private NegozioDAO() {
+	public NegozioDAO() {
 		super();
 	}
 	

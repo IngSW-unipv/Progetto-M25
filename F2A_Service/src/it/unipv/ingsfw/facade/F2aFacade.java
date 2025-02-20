@@ -2,14 +2,14 @@ package it.unipv.ingsfw.facade;
 
 import java.util.Properties;
 
-import it.unipv.ingsfw.facade.lavorazioneCapi.ICatenaLavorazioneFacade;
-import it.unipv.ingsfw.facade.lavorazioneCapi.IStazioneLavoroFacade;
-import it.unipv.ingsfw.facade.negozio.INegozioFacade;
-import it.unipv.ingsfw.facade.tickets.IItinerarioFacade;
-import it.unipv.ingsfw.facade.tickets.IMezzoFacade;
-import it.unipv.ingsfw.facade.tickets.ITicketsFacade;
-import it.unipv.ingsfw.facade.users.clienti.IClientiFacade;
-import it.unipv.ingsfw.facade.users.dipendenti.IDipendentiFacade;
+import it.unipv.ingsfw.facade.lavorazioneCapi.ConcreteCatenaLavorazioneFacade;
+import it.unipv.ingsfw.facade.lavorazioneCapi.ConcreteStazioneLavoroFacade;
+import it.unipv.ingsfw.facade.negozio.ConcreteNegozioFacade;
+import it.unipv.ingsfw.facade.tickets.ConcreteItinerarioFacade;
+import it.unipv.ingsfw.facade.tickets.ConcreteMezzoFacade;
+import it.unipv.ingsfw.facade.tickets.ConcreteTicketsFacade;
+import it.unipv.ingsfw.facade.users.clienti.ConcreteClientiFacade;
+import it.unipv.ingsfw.facade.users.dipendenti.ConcreteDipendentiFacade;
 
 public class F2aFacade {
 
@@ -18,27 +18,27 @@ public class F2aFacade {
         return instance;
     }
 
-    private ICatenaLavorazioneFacade catenaLavorazioneFacade;
-    private IStazioneLavoroFacade stazioneLavoroFacade;
-    private INegozioFacade negozioFacade;
-    private IItinerarioFacade itinerarioFacade;
-    private IMezzoFacade mezzoFacade;
-    private ITicketsFacade ticketsFacade;
-    private IClientiFacade clientiFacade;
-    private IDipendentiFacade dipendentiFacade;
+    private ConcreteCatenaLavorazioneFacade catenaLavorazioneFacade;
+    private ConcreteStazioneLavoroFacade stazioneLavoroFacade;
+    private ConcreteNegozioFacade negozioFacade;
+    private ConcreteItinerarioFacade itinerarioFacade;
+    private ConcreteMezzoFacade mezzoFacade;
+    private ConcreteTicketsFacade ticketsFacade;
+    private ConcreteClientiFacade clientiFacade;
+    private ConcreteDipendentiFacade dipendentiFacade;
     
 
     private F2aFacade() {
 
         try{
-            this.catenaLavorazioneFacade = (ICatenaLavorazioneFacade) loadClass("catenalavorazione").getDeclaredConstructor().newInstance();
-            this.stazioneLavoroFacade = (IStazioneLavoroFacade) loadClass("stazionelavoro").getDeclaredConstructor().newInstance();
-            this.negozioFacade = (INegozioFacade) loadClass("negozio").getDeclaredConstructor().newInstance();
-            this.itinerarioFacade = (IItinerarioFacade) loadClass("itinerario").getDeclaredConstructor().newInstance();
-            this.mezzoFacade = (IMezzoFacade) loadClass("mezzo").getDeclaredConstructor().newInstance();
-            this.ticketsFacade = (ITicketsFacade) loadClass("ticket").getDeclaredConstructor().newInstance();
-            this.clientiFacade = (IClientiFacade) loadClass("cliente").getDeclaredConstructor().newInstance();
-            this.dipendentiFacade = (IDipendentiFacade) loadClass("dipendente").getDeclaredConstructor().newInstance();
+            this.catenaLavorazioneFacade = (ConcreteCatenaLavorazioneFacade) loadClass("catenalavorazione").getDeclaredConstructor().newInstance();
+            this.stazioneLavoroFacade = (ConcreteStazioneLavoroFacade) loadClass("stazionelavoro").getDeclaredConstructor().newInstance();
+            this.negozioFacade = (ConcreteNegozioFacade) loadClass("negozio").getDeclaredConstructor().newInstance();
+            this.itinerarioFacade = (ConcreteItinerarioFacade) loadClass("itinerario").getDeclaredConstructor().newInstance();
+            this.mezzoFacade = (ConcreteMezzoFacade) loadClass("mezzo").getDeclaredConstructor().newInstance();
+            this.ticketsFacade = (ConcreteTicketsFacade) loadClass("ticket").getDeclaredConstructor().newInstance();
+            this.clientiFacade = (ConcreteClientiFacade) loadClass("cliente").getDeclaredConstructor().newInstance();
+            this.dipendentiFacade = (ConcreteDipendentiFacade) loadClass("dipendente").getDeclaredConstructor().newInstance();
         }catch (Exception e){
             //throw new RuntimeException(e);
             System.out.println(e.getMessage());
@@ -47,41 +47,41 @@ public class F2aFacade {
 
     private Class<?> loadClass(String propertyName) throws Exception {
         Properties properties  = new Properties();
-        properties.load(F2aFacade.class.getResourceAsStream("properties/properties"));
+        properties.load(F2aFacade.class.getResourceAsStream("/main/resources/properties"));
         return Class.forName(properties.getProperty("facade."+propertyName));
     }
 
 	
 
-	public ICatenaLavorazioneFacade getCatenaLavorazioneFacade() {
+	public ConcreteCatenaLavorazioneFacade getCatenaLavorazioneFacade() {
 		return catenaLavorazioneFacade;
 	}
 
-	public IStazioneLavoroFacade getStazioneLavoroFacade() {
+	public ConcreteStazioneLavoroFacade getStazioneLavoroFacade() {
 		return stazioneLavoroFacade;
 	}
 
-	public INegozioFacade getNegozioFacade() {
+	public ConcreteNegozioFacade getNegozioFacade() {
 		return negozioFacade;
 	}
 
-	public IItinerarioFacade getItinerarioFacade() {
+	public ConcreteItinerarioFacade getItinerarioFacade() {
 		return itinerarioFacade;
 	}
 
-	public IMezzoFacade getMezzoFacade() {
+	public ConcreteMezzoFacade getMezzoFacade() {
 		return mezzoFacade;
 	}
 
-	public ITicketsFacade getTicketsFacade() {
+	public ConcreteTicketsFacade getTicketsFacade() {
 		return ticketsFacade;
 	}
 
-	public IClientiFacade getClientiFacade() {
+	public ConcreteClientiFacade getClientiFacade() {
 		return clientiFacade;
 	}
 
-	public IDipendentiFacade getDipendentiFacade() {
+	public ConcreteDipendentiFacade getDipendentiFacade() {
 		return dipendentiFacade;
 	}
 
