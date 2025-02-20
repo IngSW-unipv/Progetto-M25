@@ -24,7 +24,7 @@ public class DaoFactory {
 	private static final Map<Class<?>, Object> loadedDao = new HashMap<>();
     private static final Properties properties = new Properties();
 	
-
+    
     static {
         try (InputStream input = DaoFactory.class.getResourceAsStream("/main/resources/properties_dao")) {
             if (input == null) {

@@ -60,7 +60,6 @@ public class Ticket {
 		return corriere;
 	}
 	
-	
 	@Override
 	public String toString() {
 		return  "\nTicket " + idTicket + "\nTipologia: " + tipologia + "\nStato: " + stato+"\n\n Info Corriere: "+corriere+"\n \n Info Itinerario: "+itinerario;
