@@ -21,7 +21,7 @@ public class LavorazioneDAO implements ILavorazioneDAO {
 	private Connection conn;
 	private static LavorazioneDAO instance = null;
 
-	private LavorazioneDAO() {
+	public LavorazioneDAO() {
 		super();
 	}
 	

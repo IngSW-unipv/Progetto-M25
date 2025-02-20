@@ -2,6 +2,8 @@ package it.unipv.ingsfw.facade;
 
 import java.util.Properties;
 
+import it.unipv.ingsfw.facade.capo.ConcreteCapoFacade;
+import it.unipv.ingsfw.facade.lavaggio.ConcreteLavaggioFacade;
 import it.unipv.ingsfw.facade.lavorazioneCapi.ConcreteCatenaLavorazioneFacade;
 import it.unipv.ingsfw.facade.lavorazioneCapi.ConcreteStazioneLavoroFacade;
 import it.unipv.ingsfw.facade.negozio.ConcreteNegozioFacade;
@@ -26,6 +28,8 @@ public class F2aFacade {
     private ConcreteTicketsFacade ticketsFacade;
     private ConcreteClientiFacade clientiFacade;
     private ConcreteDipendentiFacade dipendentiFacade;
+    private ConcreteCapoFacade capoFacade;
+    private ConcreteLavaggioFacade lavaggioFacade;
     
 
     private F2aFacade() {
@@ -39,6 +43,8 @@ public class F2aFacade {
             this.ticketsFacade = (ConcreteTicketsFacade) loadClass("ticket").getDeclaredConstructor().newInstance();
             this.clientiFacade = (ConcreteClientiFacade) loadClass("cliente").getDeclaredConstructor().newInstance();
             this.dipendentiFacade = (ConcreteDipendentiFacade) loadClass("dipendente").getDeclaredConstructor().newInstance();
+            this.capoFacade = (ConcreteCapoFacade) loadClass("dipendente").getDeclaredConstructor().newInstance();
+            this.lavaggioFacade = (ConcreteLavaggioFacade) loadClass("dipendente").getDeclaredConstructor().newInstance();
         }catch (Exception e){
             //throw new RuntimeException(e);
             System.out.println(e.getMessage());
@@ -84,6 +90,16 @@ public class F2aFacade {
 	public ConcreteDipendentiFacade getDipendentiFacade() {
 		return dipendentiFacade;
 	}
+
+	public ConcreteCapoFacade getCapoFacade() {
+		return capoFacade;
+	}
+
+	public ConcreteLavaggioFacade getLavaggioFacade() {
+		return lavaggioFacade;
+	}
+	
+	
 
     
 }
