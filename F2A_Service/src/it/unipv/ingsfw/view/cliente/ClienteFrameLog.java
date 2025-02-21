@@ -2,12 +2,8 @@ package it.unipv.ingsfw.view.cliente;
 import java.awt.*;
 import javax.swing.*;
 
-import it.unipv.ingsfw.controller.OperatoreAction;
 import it.unipv.ingsfw.controller.TotemAction;
 import it.unipv.ingsfw.model.users.Cliente;
-import it.unipv.ingsfw.model.users.Operatore;
-import it.unipv.ingsfw.view.operatore.viewLogin.GUILoginOperatore;
-import it.unipv.ingsfw.view.operatore.viewLogin.InsertPanel;
 public class ClienteFrameLog extends JFrame{
 	
 	LoginPanel pannello;

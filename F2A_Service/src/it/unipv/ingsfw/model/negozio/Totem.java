@@ -1,7 +1,11 @@
 package it.unipv.ingsfw.model.negozio;
 import java.util.ArrayList;
+
+import javax.swing.JFrame;
+
 import it.unipv.ingsfw.model.Capo;
 import it.unipv.ingsfw.model.users.Cliente;
+import it.unipv.ingsfw.view.cliente.ClienteFrameRegLog;
 
 public class Totem {
 	
@@ -20,7 +24,10 @@ public class Totem {
 		//this.listaClienti = listaClienti;
 		this.listaCapiDepositati = listaCapiDepositati;
 	}
-
+	
+	public Totem() {
+		
+	}
 	public boolean isStatoSportello() {
 		return statoSportello;
 	}
@@ -54,13 +61,20 @@ public class Totem {
 	}
 	
 	// Metodo per creare un oggetto Cliente
-    public static Cliente creaCliente(String idCliente, String nome, String cognome, String cf, String email, String password) {
-        Cliente cliente = new Cliente(idCliente, nome, cognome, cf, email, password);
-        return cliente; 
+    public Cliente creaCliente(Cliente c) {
+        Cliente cl = new Cliente();
+        return cl; 
     }
     
     
     
-	
+	/*public static void main(String[] args) {
+		Totem t = new Totem();
+		c=(String idCliente, String nome, String cognome, String cf, String email, String password);
+		Cliente cl= t.creaCliente(c);
+		System.out.println(cl);
+	}
+    */
+
 	
 }

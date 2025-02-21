@@ -42,7 +42,7 @@ public class Cliente {
 		this.password = null;
 	}
 
-	public Cliente(String mail, String password) {
+	public Cliente(String email, String password) {
 		this.email=email;
 		this.password=password;
 	}
@@ -107,7 +107,9 @@ public class Cliente {
 		boolean t=true;
 		boolean f=false;
 		Cliente cl = new Cliente(email, password);
+		//System.out.println(cl);
 		Cliente c = F2aFacade.getInstance().getGestioneNegozioFacade().selectClienteByEmailEPassword(cl);
+		//System.out.println(c);
 		if(c!=null) 
 			return t;
 		return f;	
@@ -115,17 +117,17 @@ public class Cliente {
 	
 	
 	
-	
-	/*public static void main(String[] args) {
+	/*
+	public static void main(String[] args) {
 
 //test verificaCredenzialiAccesso
  
-		Cliente cl=new Cliente(null);
+		
 		
         // Dati di test (email e password da verificare)
         String email = "Stefano.Rossi@f2aservice.com";
         String password = "Admin";
-
+        Cliente cl= new Cliente(email, password);
         // Verifica le credenziali
         boolean risultato = cl.verificaCredenzialiAccesso(email, password);
 
@@ -135,7 +137,7 @@ public class Cliente {
         } else {
             System.out.println("Credenziali errate. Accesso negato.");
         }
-    }*/
-	
+    }
+	*/
 	
 }

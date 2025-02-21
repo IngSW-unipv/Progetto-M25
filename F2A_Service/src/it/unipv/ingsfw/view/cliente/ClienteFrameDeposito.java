@@ -1,16 +1,14 @@
 package it.unipv.ingsfw.view.cliente;
 import java.awt.*;
 import javax.swing.*;
-
 import it.unipv.ingsfw.controller.TotemAction;
 import it.unipv.ingsfw.model.users.Cliente;
+public class ClienteFrameDeposito extends JFrame {
 
-public class ClienteFrameReg extends JFrame {
-	
-	RegistrazionePanel pannello;
+	ClienteDepositoPanel pannello;
 	Container c;
-	
-	public ClienteFrameReg (Cliente cl) throws HeadlessException {
+
+	public ClienteFrameDeposito (Cliente cl) throws HeadlessException {
 	/*	setSize (WIDTH, HEIGHT);
 	}
 	public static final int WIDTH =300;
@@ -21,34 +19,29 @@ public class ClienteFrameReg extends JFrame {
 		int screenHeight = screenSize.height;
 		int screenWidth = screenSize.width;
 		setSize (screenWidth/3, screenHeight/3) ; setLocation (screenWidth/4, screenHeight/4);
-		setTitle ("Registrazione");
+		setTitle ("Deposito");
 		
 		
-        JLabel cred = new JLabel("Inserisci le tue credenziali");
-		pannello = new RegistrazionePanel();
-		//ButtonPanel b = new ButtonPanel();
+		
+		
+		
+        JLabel cred = new JLabel("Definisci i seguenti parametri");
+		pannello = new ClienteDepositoPanel();
 		c = getContentPane();
 		c.add(cred);
 		c.add(pannello);
-		//c.add(b);
 		setLayout(new BorderLayout());
 		add(cred, BorderLayout.NORTH);
 		add(pannello, BorderLayout.CENTER);
-		//add(b, BorderLayout.SOUTH);
 		new TotemAction(cl, this);
-		
-		/*RegistrazionePanel b = new RegistrazionePanel();
-		Container c = getContentPane();
-		c.add(b);*/
-		
 		
 	}
 	
-	public RegistrazionePanel getPannello() {
+	public ClienteDepositoPanel getPannello() {
 		return pannello;
 	}
 
-	public void setPannello(RegistrazionePanel pannello) {
+	public void setPannello(ClienteDepositoPanel pannello) {
 		this.pannello = pannello;
 	}
 

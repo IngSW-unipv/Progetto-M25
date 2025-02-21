@@ -130,5 +130,6 @@ public class Capo {
 				+ negozioDeposito.getIdTappa() + "\nNegozioConsegna: " + negozioConsegna.getIdTappa()
 				+ "\nPrezzoScontato: " + prezzoScontato + "\nIdCliente: " + cliente.getIdCliente();
 	}
+	
 
 }
