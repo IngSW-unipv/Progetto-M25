@@ -99,7 +99,7 @@ public class Cliente {
 		boolean t=true;
 		boolean f=false;
 		Cliente cl = new Cliente(null, null, null, null, email, password);
-		Cliente c = F2aFacade.getInstance().getClientiFacade().selectClienteByEmailEPassword(cl);
+		Cliente c = F2aFacade.getInstance().getGestioneNegozioFacade().selectClienteByEmailEPassword(cl);
 		if(c!=null) 
 			return t;
 		return f;	

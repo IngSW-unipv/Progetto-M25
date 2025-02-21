@@ -72,7 +72,7 @@ public class F2aFacade {
 		return stazioneLavoroFacade;
 	}
 
-	public ConcreteGestioneNegozioFacade getNegozioFacade() {
+	public ConcreteGestioneNegozioFacade getGestioneNegozioFacade() {
 		return gestioneNegozioFacade;
 	}
 
@@ -85,7 +85,7 @@ public class F2aFacade {
 		return mezzoFacade;
 	}
 	**/
-	public ConcreteGestioneTicketsFacade getTicketsFacade() {
+	public ConcreteGestioneTicketsFacade getGestioneTicketsFacade() {
 		return gestioneTicketsFacade;
 	}
 
