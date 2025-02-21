@@ -38,7 +38,7 @@ public class ConcreteClientiFacade implements IClientiFacade {
 		return cliente;
 		
 	}
-	public String selectIdByEmailPassword(Cliente input) {
+	public String selectIdClienteByEmailPassword(Cliente input) {
 		
 		String id = "";
 

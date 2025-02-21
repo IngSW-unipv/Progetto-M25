@@ -28,7 +28,10 @@ public class Cliente {
 		this.email = email;
 		this.password = password;
 	}
-	
+
+	public Cliente () {
+		
+	}
 	public Cliente(String idCliente) {
 		super();
 		this.idCliente = idCliente;
@@ -37,6 +40,11 @@ public class Cliente {
 		this.cf = null;
 		this.email = null;
 		this.password = null;
+	}
+
+	public Cliente(String mail, String password) {
+		this.email=email;
+		this.password=password;
 	}
 
 	public String getIdCliente() {
@@ -98,7 +106,7 @@ public class Cliente {
 	public boolean verificaCredenzialiAccesso(String email, String password) {
 		boolean t=true;
 		boolean f=false;
-		Cliente cl = new Cliente(null, null, null, null, email, password);
+		Cliente cl = new Cliente(email, password);
 		Cliente c = F2aFacade.getInstance().getGestioneNegozioFacade().selectClienteByEmailEPassword(cl);
 		if(c!=null) 
 			return t;

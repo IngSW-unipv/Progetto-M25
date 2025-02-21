@@ -1,6 +1,6 @@
 facade.catenalavorazione = it.unipv.ingsfw.facade.lavorazioneCapi.ConcreteCatenaLavorazioneFacade
 facade.stazionelavoro = it.unipv.ingsfw.facade.lavorazioneCapi.ConcreteStazioneLavoroFacade
-facade.negozio = it.unipv.ingsfw.facade.negozio.ConcreteNegozioFacade
+facade.negozio = it.unipv.ingsfw.facade.gestioneNegozio.ConcreteGestioneNegozioFacade
 facade.itinerario = it.unipv.ingsfw.facade.tickets.ConcreteItinerarioFacade
 facade.mezzo = it.unipv.ingsfw.facade.tickets.ConcreteMezzoFacade
 facade.ticket = it.unipv.ingsfw.facade.tickets.ConcreteTicketsFacade
@@ -9,3 +9,4 @@ facade.dipendente = it.unipv.ingsfw.facade.users.dipendenti.ConcreteDipendentiFa
 facade.capo = it.unipv.ingsfw.facade.capo.ConcreteCapoFacade
 facade.lavaggio = it.unipv.ingsfw.facade.lavaggio.ConcreteLavaggioFacade
 facade.lavorazione = it.unipv.ingsfw.facade.lavorazioneCapi.ConcreteLavorazioneFacade
+facade.ticket = it.unipv.ingsfw.facade.gestioneTicket.ConcreteGestioneTicketsFacade
