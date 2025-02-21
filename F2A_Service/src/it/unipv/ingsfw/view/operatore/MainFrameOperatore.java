@@ -12,7 +12,7 @@ import it.unipv.ingsfw.model.users.DipendenteDAO;
 import it.unipv.ingsfw.model.users.Operatore;
 import it.unipv.ingsfw.view.operatore.viewLogin.GUILoginOperatore;
 
-public class MainFrameOperatore extends JFrame {
+public class MainFrameOperatore extends JFrame implements Runnable{
 	private BarraMenu menu;
 	private JPanel pannello;
 	private JPanel pannelloStazioni;
@@ -202,4 +202,16 @@ public class MainFrameOperatore extends JFrame {
 			loginOp.setVisible(true);
 		});
 	}
+	
+	@Override
+	public void run() {
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setVisible(true);
+		
+	}
+	
+	public static void startMainFrameOperatore(Operatore operatore) {
+        Thread t = new Thread(new MainFrameOperatore(operatore));
+        t.start();
+    }
 }

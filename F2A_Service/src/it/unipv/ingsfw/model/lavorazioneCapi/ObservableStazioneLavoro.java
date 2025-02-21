@@ -2,6 +2,7 @@ package it.unipv.ingsfw.model.lavorazioneCapi;
 
 import java.util.ArrayList;
 import java.util.Observable;
+import java.util.Observer;
 
 import it.unipv.ingsfw.facade.F2aFacade;
 import it.unipv.ingsfw.model.Capo;
@@ -15,6 +16,7 @@ public class ObservableStazioneLavoro extends Observable {
 	private StatoStazione statoStazione;
 	private double livelloProdottoLavaggio;
 	private ArrayList<Capo> listaCapiDaLavorare;
+	private ArrayList<Observer> observers = new ArrayList<>(); //arraylist necessario a contenere i diversi observer
 
 	/**
 	 * @param idStazione
@@ -138,23 +140,29 @@ public class ObservableStazioneLavoro extends Observable {
 
 	public void messaInLavorazione(int index) {
 		statoStazione = StatoStazione.WORKING;
-		setChanged();
+		//setChanged();
 		System.out.println("Stato cambiato 1 , notifico gli osservatori...");
-	    notifyObservers(index);
+	    //notifyObservers(index);
+		for(Observer o : observers) {
+			System.out.println(o);
+		}
+		notificaObservers();
 	}
 
 	public void messaInStandBy(int index) {
 		statoStazione = StatoStazione.READY;
-		setChanged();
+		//setChanged();
 		System.out.println("Stato cambiato 2 , notifico gli osservatori...");
-	    notifyObservers(index);
+	    //notifyObservers(index);
+		notificaObservers();
 	}
 
 	public void messaInManutenzione(int index) {
 		statoStazione = StatoStazione.MAINTENANCE;
-		setChanged();
+		//setChanged();
 		System.out.println("Stato cambiato 3 , notifico gli osservatori...");
-	    notifyObservers(index);
+	    //notifyObservers(index);
+		notificaObservers();
 	}
 
 	public boolean checkPresenzaCapi() {
@@ -271,5 +279,23 @@ public class ObservableStazioneLavoro extends Observable {
 		return true;
 
 	}
+	
+	public void assegnazionePostGuasto(int index) {
+		this.messaInManutenzione(index);
+		F2aFacade.getInstance().getStazioneLavoroFacade().changeStatoStazione(this);
+		F2aFacade.getInstance().getStazioneLavoroFacade().assegnazioneManutentoreLibero(this);
+	}
+	
+	//metodi per gestire l'inserimento degli observer nelle diverse stazioni
+	
+	public void aggiungiObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    public void notificaObservers() {
+        for (Observer observer : observers) {
+            observer.update(this, statoStazione);
+        }
+    }
 
 }

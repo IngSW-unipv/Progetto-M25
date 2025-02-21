@@ -1,19 +1,16 @@
 package it.unipv.ingsfw.model.users;
 
 import java.util.ArrayList;
+import java.util.Observer;
 
 import it.unipv.ingsfw.facade.F2aFacade;
 import it.unipv.ingsfw.model.Capo;
-import it.unipv.ingsfw.model.CapoDAO;
 import it.unipv.ingsfw.model.StatoCapo;
 import it.unipv.ingsfw.model.lavorazioneCapi.CatenaLavorazione;
-import it.unipv.ingsfw.model.lavorazioneCapi.CatenaLavorazioneDAO;
-import it.unipv.ingsfw.model.lavorazioneCapi.LavorazioneDAO;
 import it.unipv.ingsfw.model.lavorazioneCapi.ObservableStazioneLavoro;
-import it.unipv.ingsfw.model.lavorazioneCapi.ObservableStazioneLavoroDAO;
 import it.unipv.ingsfw.model.lavorazioneCapi.StatoStazione;
 
-public class Operatore extends Dipendente {
+public class Operatore extends Dipendente{
 
 	private TipoOperatore tipoOperatore;
 	private ArrayList<ObservableStazioneLavoro> stazioniAssociate;
@@ -236,40 +233,40 @@ public class Operatore extends Dipendente {
 	
 	//metodo di avvio della stazione di lavoro assegnata ad un responsabile
 	
-	public boolean avviaStazione(int index) throws Exception {
-	//ObservableStazioneLavoroDAO dao = new ObservableStazioneLavoroDAO();
+	public synchronized int avviaStazione(int index) throws Exception {
+	    // Generatore di numeri pseudocasuali (1 o -1)
+	    //int numeroCasuale = -1;
+	    //System.out.println("Numero casuale generato: " + numeroCasuale);
 
-	setStazioniAssociate();
-	if (stazioniAssociate.get(index).checkPresenzaCapi()) {
-		System.out.println("aaaaaaaaaaaaaa");
-		stazioniAssociate.get(index).messaInLavorazione(index);
+	    setStazioniAssociate();
 
-		F2aFacade.getInstance().getStazioneLavoroFacade().changeStatoStazione(stazioniAssociate.get(index));
-		return true;
-		//Thread.sleep(2000);
-		
-		
-		// if(!stazioniAssociate.get(index).getTipo().toString().equalsIgnoreCase("LAVAGGIO"))
-		// {stazioniAssociate.get(index).caricamentoLavorazioni();}
+	    if (stazioniAssociate.get(index).checkPresenzaCapi()) {
+	        System.out.println("aaaaaaaaaaaaaa");
+	        stazioniAssociate.get(index).messaInLavorazione(index);
 
-		// attendere qualche secondo ....
-
-		// for(int i = 0; i < 10000000; i++) {}
-
-		// COMMENTI SOTTOSTANTI DA TOGLIERE PER POTER EFFETTUARE UNA LAVORAZIONE
-		// COMPLETA ALL'INTERNO DELLA STAZIONE
-
-	} else {
-		System.err.println("Capi assenti");
-		return false;
-
+	        F2aFacade.getInstance().getStazioneLavoroFacade().changeStatoStazione(stazioniAssociate.get(index));
+	        return 1;
+	    } else if (!stazioniAssociate.get(index).checkPresenzaCapi()) {
+	        System.err.println("Capi assenti");
+	        return 0;
+	    } else {
+	        System.err.println("Si è presentato un guasto al macchinario. Assegnazione a manutentore disponibile in corso");
+	        stazioniAssociate.get(index).assegnazionePostGuasto(index);
+	        stazioniAssociate.get(index).notificaObservers();
+	        return -1;
+	    }
 	}
-}
+
+	// Metodo per generare 1 o -1 casualmente
+	private int generaNumero() {
+	    return Math.random() < 0.5 ? -1 : 1;
+	}
+
 
 	
 	//metodo eseguito in chiusura di una lavorazione da parte di un responsabile presso una stazione di lavoro
 	
-	public boolean fermaStazione(int index) throws Exception {
+	public synchronized int fermaStazione(int index) throws Exception {
 		//ObservableStazioneLavoroDAO dao = new ObservableStazioneLavoroDAO();
 	
 		stazioniAssociate.get(index).messaInStandBy(index);
@@ -280,11 +277,12 @@ public class Operatore extends Dipendente {
 		F2aFacade.getInstance().getStazioneLavoroFacade().changeStatoStazione(stazioniAssociate.get(index));
 		stazioniAssociate.get(index).aggiornamentoLavorazioni();
 	
-		return stazioniAssociate.get(index).removeCapiStazione();
+		stazioniAssociate.get(index).removeCapiStazione();
+		return 1;
 	}
 	
 	
-	public boolean verificaCredenzialiAccesso(String email, String password) {
+	public synchronized boolean verificaCredenzialiAccesso(String email, String password) {
 		//DipendenteDAO dip = new DipendenteDAO();
 		boolean t = F2aFacade.getInstance().getDipendentiFacade().selectByEmailPassword(new Operatore(email, password));
 		return t;
@@ -294,7 +292,7 @@ public class Operatore extends Dipendente {
 	public boolean correzioneGuasto(int index) {
 		setStazioniAssociate();
 		//possibile gestione con try/catch per eventuali eccezioni in seguito a non corretta risoluzione di un guasto
-		stazioniAssociate.get(index).messaInStandBy(index);
+		stazioniAssociate.get(index).messaInLavorazione(index);
 		F2aFacade.getInstance().getStazioneLavoroFacade().changeStatoStazione(stazioniAssociate.get(index));
 		
 		return true;

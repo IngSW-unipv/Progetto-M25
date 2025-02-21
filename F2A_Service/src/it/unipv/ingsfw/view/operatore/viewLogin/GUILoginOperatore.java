@@ -14,13 +14,16 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
+import it.unipv.ingsfw.controller.ManutentoreAction;
 import it.unipv.ingsfw.controller.OperatoreAction;
 import it.unipv.ingsfw.model.users.Operatore;
 
-public class GUILoginOperatore extends JFrame{
+public class GUILoginOperatore extends JFrame implements Runnable{
 	
 	InsertPanel pannello;
 	Container c;
+	OperatoreAction op;
+	ManutentoreAction m;
 	/**
 	 * @throws HeadlessException
 	 */
@@ -47,7 +50,8 @@ public class GUILoginOperatore extends JFrame{
 		add(cred, BorderLayout.NORTH);
 		add(pannello, BorderLayout.CENTER);
 		//add(b, BorderLayout.SOUTH);
-		new OperatoreAction(o, this);
+		op = new OperatoreAction(o, this);
+		m = new ManutentoreAction(o,this);
 	}
 
 	public InsertPanel getPannello() {
@@ -61,10 +65,28 @@ public class GUILoginOperatore extends JFrame{
 	public Container getC() {
 		return c;
 	}
-
+	
 	public void setC(Container c) {
 		this.c = c;
 	}
+
+	public OperatoreAction getOp() {
+		return op;
+	}
+
+	public void setOp(OperatoreAction op) {
+		this.op = op;
+	}
+
+	public ManutentoreAction getM() {
+		return m;
+	}
+
+	public void setM(ManutentoreAction m) {
+		this.m = m;
+	}
+
+	
 
 
 	public static void main(String[] args) {
@@ -73,4 +95,25 @@ public class GUILoginOperatore extends JFrame{
 		loginOp.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		loginOp.setVisible(true);
 	}
+
+	@Override
+	public void run() {
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setVisible(true);
+		
+	}
+	
+	public static void startGUI() {
+		Operatore op = new Operatore();
+        Thread t = new Thread(new GUILoginOperatore(op));
+        try {
+        	 t.start();
+		} catch (IllegalThreadStateException e) {
+			System.err.println("Thread già avviato");
+			e.printStackTrace();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+       ;
+    }
 }

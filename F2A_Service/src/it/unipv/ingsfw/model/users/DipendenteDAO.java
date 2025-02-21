@@ -378,7 +378,7 @@ public class DipendenteDAO implements IDipendenteDAO {
 	}
 	
 	@Override
-	public String selectIdByEmailPassword(Dipendente input) {
+	public synchronized String selectIdByEmailPassword(Dipendente input) {
 
 		conn = DBConnection.startConnection(conn);
 		PreparedStatement st1;
@@ -412,7 +412,7 @@ public class DipendenteDAO implements IDipendenteDAO {
 	}
 	
 	@Override
-	public TipoOperatore selectTipoOperatoreById(Dipendente input) {
+	public synchronized TipoOperatore selectTipoOperatoreById(Dipendente input) {
 		
 		conn = DBConnection.startConnection(conn);
 		PreparedStatement st1;

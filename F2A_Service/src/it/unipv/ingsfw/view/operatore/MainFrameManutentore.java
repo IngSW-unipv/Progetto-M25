@@ -4,15 +4,14 @@ import java.awt.*;
 import javax.swing.*;
 import java.util.List;
 import java.util.ArrayList;
-import it.unipv.ingsfw.controller.OperatoreAction;
+
+import it.unipv.ingsfw.controller.ManutentoreAction;
 import it.unipv.ingsfw.model.lavorazioneCapi.ObservableStazioneLavoro;
 import it.unipv.ingsfw.model.lavorazioneCapi.ObservableStazioneLavoroDAO;
 import it.unipv.ingsfw.model.lavorazioneCapi.StatoStazione;
-import it.unipv.ingsfw.model.users.DipendenteDAO;
 import it.unipv.ingsfw.model.users.Operatore;
-import it.unipv.ingsfw.view.operatore.viewLogin.GUILoginOperatore;
 
-public class MainFrameManutentore extends JFrame {
+public class MainFrameManutentore extends JFrame implements Runnable{
 	private BarraMenu menu;
 	private JPanel pannello;
 	private JPanel pannelloStazioni;
@@ -68,7 +67,7 @@ public class MainFrameManutentore extends JFrame {
 		c.add(pannello, BorderLayout.WEST);
 
 		// aggiornaStazioni();
-		new OperatoreAction(o, this);
+		new ManutentoreAction(o, this);
 	}
 
 	public BarraMenu getMenu() {
@@ -202,4 +201,16 @@ public class MainFrameManutentore extends JFrame {
 			loginOp.setVisible(true);
 		});
 	}
+
+	@Override
+	public void run() {
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setVisible(true);
+		
+	}
+	
+	public static void startMainFrameManutentore(Operatore operatore) {
+        Thread t = new Thread(new MainFrameManutentore(operatore));
+        t.start();
+    }
 }
