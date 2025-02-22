@@ -41,11 +41,14 @@ public class Cliente {
 		this.email = null;
 		this.password = null;
 	}
+	
 
 	public Cliente(String email, String password) {
 		this.email=email;
 		this.password=password;
 	}
+	
+
 
 	public String getIdCliente() {
 		return idCliente;
@@ -102,6 +105,16 @@ public class Cliente {
 	}
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	/*
+	
+	
 	//modifica verificaCredenzialiAccesso per far ritornare true se credenziali esistono (esiste Cliente)
 	public boolean verificaCredenzialiAccesso(String email, String password) {
 		boolean t=true;
@@ -114,6 +127,16 @@ public class Cliente {
 			return t;
 		return f;	
 	}
+	
+	
+	
+	
+	*/
+	
+	
+	
+	
+	
 	
 	
 	

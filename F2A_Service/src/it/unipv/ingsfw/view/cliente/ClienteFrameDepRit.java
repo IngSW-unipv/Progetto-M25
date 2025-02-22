@@ -1,19 +1,17 @@
-package it.unipv.ingsfw.view.cliente;
 
+package it.unipv.ingsfw.view.cliente;
 import java.awt.*;
 import javax.swing.*;
 import it.unipv.ingsfw.controller.TotemAction;
+//import it.unipv.ingsfw.model.negozio.Totem;
 
 public class ClienteFrameDepRit extends JFrame{ 
 
 	ButtonDepRitPanel bdrp;
 	
 	public ClienteFrameDepRit () {
-	/*	setSize (WIDTH, HEIGHT);
-	}
-	public static final int WIDTH =300;
-	public static final int HEIGHT =200;
-	*/
+	
+
 		Toolkit kit = Toolkit.getDefaultToolkit ();
 		Dimension screenSize = kit.getScreenSize ();
 		int screenHeight = screenSize.height;

@@ -1,8 +1,10 @@
 package it.unipv.ingsfw.model.negozio;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JFrame;
 
+import it.unipv.ingsfw.facade.F2aFacade;
 import it.unipv.ingsfw.model.Capo;
 import it.unipv.ingsfw.model.users.Cliente;
 import it.unipv.ingsfw.view.cliente.ClienteFrameRegLog;
@@ -60,21 +62,89 @@ public class Totem {
 		return totem;
 	}
 	
-	// Metodo per creare un oggetto Cliente
-    public Cliente creaCliente(Cliente c) {
-        Cliente cl = new Cliente();
-        return cl; 
-    }
     
     
-    
-	/*public static void main(String[] args) {
-		Totem t = new Totem();
-		c=(String idCliente, String nome, String cognome, String cf, String email, String password);
-		Cliente cl= t.creaCliente(c);
-		System.out.println(cl);
+	//verificaCredenzialiAccesso true se credenziali esistono (esiste Cliente)
+	public boolean verificaCredenzialiAccesso() {
+		Cliente c = F2aFacade.getInstance().getGestioneNegozioFacade().selectClienteByEmailEPassword(this.cliente);
+		if(c!=null) 
+			return true;
+		return false;	
 	}
-    */
-
 	
+	public ArrayList<Negozio> getNegoziAttivi(){	
+		ArrayList<Negozio> n= F2aFacade.getInstance().getGestioneNegozioFacade().selectAllNegozio();
+		return n;
+	}
+	
+	public HashMap<Integer, String> getTipologiaLavaggi(){
+		HashMap<Integer, String> lav = F2aFacade.getInstance().getLavaggioFacade().selectAll();
+				return lav;
+	}
+	
+	public String getLavaggio(String tipo) {
+		return tipo;	
+	}
+	
+	
+	
+    
+    /*
+	public static void main(String[] args) {
+		Totem t = new Totem();
+		Cliente cl= t.creaCliente("id", "del", "mio", "test", "sperando", "funzioni");
+		System.out.println(cl);
+	}*/
+	
+	/*
+	public static void main(String[] args) {
+		Totem t = new Totem();
+		Cliente cl= t.creaClienteFittizio("sperando", "funzioni");
+		System.out.println(cl);
+	}*/
+	
+	
+	/*
+	public static void main(String[] args) {
+		Totem t = new Totem();
+		ArrayList<Negozio> n1 = t.getNegoziAttivi();
+		System.out.println(n1);
+	}*/
+	
+	
+	
+	/*
+	public static void main(String[] args) {
+		Totem t = new Totem();
+		HashMap<Integer, String> lav =t.getTipologiaLavaggi();
+		System.out.println(lav);
+	}
+	*/
+	
+	
+	/*public static void main(String[] args) {
+
+//test verificaCredenzialiAccesso
+ 
+		
+		
+        // Dati di test (email e password da verificare)
+        String email = "Stefano.Rossi@f2aservice.com";
+        String password = "Admin";
+        Totem t = new Totem();
+        //Cliente cl= new Cliente(email, password);
+        // Verifica le credenziali
+        boolean risultato = t.verificaCredenzialiAccesso(email, password);
+
+        // Output del risultato
+        if (risultato) {
+            System.out.println("Credenziali corrette. Accesso consentito.");
+        } else {
+            System.out.println("Credenziali errate. Accesso negato.");
+        }
+    }*/
+	
+    
 }
+	
+

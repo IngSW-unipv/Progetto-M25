@@ -2,13 +2,14 @@ package it.unipv.ingsfw.view.cliente;
 import java.awt.*;
 import javax.swing.*;
 import it.unipv.ingsfw.controller.TotemAction;
+import it.unipv.ingsfw.model.negozio.Totem;
 import it.unipv.ingsfw.model.users.Cliente;
 public class ClienteFrameDeposito extends JFrame {
 
 	ClienteDepositoPanel pannello;
 	Container c;
 
-	public ClienteFrameDeposito (Cliente cl) throws HeadlessException {
+	public ClienteFrameDeposito (Totem t) throws HeadlessException {
 	/*	setSize (WIDTH, HEIGHT);
 	}
 	public static final int WIDTH =300;
@@ -25,7 +26,7 @@ public class ClienteFrameDeposito extends JFrame {
 		
 		
 		
-        JLabel cred = new JLabel("Definisci i seguenti parametri");
+        JLabel cred = new JLabel("Definisci i seguenti parametri:");
 		pannello = new ClienteDepositoPanel();
 		c = getContentPane();
 		c.add(cred);
@@ -33,7 +34,7 @@ public class ClienteFrameDeposito extends JFrame {
 		setLayout(new BorderLayout());
 		add(cred, BorderLayout.NORTH);
 		add(pannello, BorderLayout.CENTER);
-		new TotemAction(cl, this);
+		new TotemAction(t, this);
 		
 	}
 	

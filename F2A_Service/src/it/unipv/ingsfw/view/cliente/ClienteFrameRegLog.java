@@ -11,11 +11,7 @@ public class ClienteFrameRegLog extends JFrame{
 	ButtonRegLogPanel brlp;
 	
 	public ClienteFrameRegLog () {
-	/*	setSize (WIDTH, HEIGHT);
-	}
-	public static final int WIDTH =300;
-	public static final int HEIGHT =200;
-	*/
+		
 		Toolkit kit = Toolkit.getDefaultToolkit ();
 		Dimension screenSize = kit.getScreenSize ();
 		int screenHeight = screenSize.height;

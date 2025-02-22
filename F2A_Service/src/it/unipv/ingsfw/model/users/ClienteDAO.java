@@ -171,7 +171,6 @@ public class ClienteDAO implements IClienteDAO {
 				int num = Integer.parseInt(sub) + 1;
 				newIdCliente = String.format("CL%03d", num);
 				 System.out.println(newIdCliente);
-
 			}
 		} catch (NumberFormatException e) {
 			e.printStackTrace();

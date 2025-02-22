@@ -3,19 +3,19 @@ import java.awt.*;
 import javax.swing.*;
 
 import it.unipv.ingsfw.controller.TotemAction;
+import it.unipv.ingsfw.model.negozio.Totem;
 import it.unipv.ingsfw.model.users.Cliente;
 public class ClienteFrameLog extends JFrame{
 	
 	LoginPanel pannello;
 	Container c;
 	
-	public ClienteFrameLog (Cliente cl) throws HeadlessException {
+	Totem t;
+	
+	//public ClienteFrameLog (Cliente cl) throws HeadlessException {
+	public ClienteFrameLog (Totem t) throws HeadlessException {
 		super();
-		/*	setSize (WIDTH, HEIGHT);
-		}
-		public static final int WIDTH =300;
-		public static final int HEIGHT =200;
-		 */
+
 		Toolkit kit = Toolkit.getDefaultToolkit ();
 		Dimension screenSize = kit.getScreenSize ();
 		int screenHeight = screenSize.height;
@@ -26,16 +26,17 @@ public class ClienteFrameLog extends JFrame{
 		
 	        JLabel cred = new JLabel("Inserisci le tue credenziali");
 			pannello = new LoginPanel();
-			//ButtonPanel b = new ButtonPanel();
+
 			c = getContentPane();
 			c.add(cred);
 			c.add(pannello);
-			//c.add(b);
+
 			setLayout(new BorderLayout());
 			add(cred, BorderLayout.NORTH);
 			add(pannello, BorderLayout.CENTER);
-			//add(b, BorderLayout.SOUTH);
-			new TotemAction(cl, this);
+
+			//new TotemAction(cl, this);
+			new TotemAction(t, this);
 		}
 
 		public LoginPanel getPannello() {
