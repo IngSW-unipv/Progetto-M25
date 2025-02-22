@@ -73,7 +73,41 @@ public class TicketDAO implements ITicketDAO {
 		DBConnection.closeConnection(connessione);
 		return listaTicket;
 	}
+	
+	public ArrayList<String> selectIDTipoTicketByStatoAndCorriere(Ticket ticketFit) {
+		ArrayList <String> listaAnteprimeTicket = new ArrayList <String>();
+		String anteprimaTicket;
+		StatoTicket stato = ticketFit.getStato();
+		String st = stato.toString();
+		String idDip = ticketFit.getCorriere().getIdDipendente();
+		connessione = DBConnection.startConnection(connessione);
+		PreparedStatement st1;
+		ResultSet rs1;
 
+		try {
+
+			String query = "select IdTicket, TipoTicket from Ticket where stato =? and IdDipendente =?";
+			st1 = connessione.prepareStatement(query);
+			st1.setString(1, st);
+			st1.setString(2, idDip);
+			rs1 = st1.executeQuery();
+
+			while (rs1.next()) {
+				
+				anteprimaTicket = "ID: "+rs1.getString(1)+" TIPOLOGIA: "+rs1.getString(2);
+				//aggiungo all'arrayList di ticket il ticket appena creato (preso da DB)
+				listaAnteprimeTicket.add(anteprimaTicket);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		DBConnection.closeConnection(connessione);
+		return listaAnteprimeTicket;
+	}
+
+	
+	
 	@Override
 	public boolean insertTicket(Ticket t) {
 		// TODO Auto-generated method stub
@@ -85,8 +119,8 @@ public class TicketDAO implements ITicketDAO {
 		
 		//STAMPARE I TICKET ASSEGNATI AD UN CERTO CORRIERE
 		System.out.println("elenco ticket del Corriere D003");
-		Corriere cor = new Corriere("D003",null,null,null,null,null,0);
-		Ticket ticket = new Ticket(null, null, StatoTicket.ASSEGNATO ,null,null,cor);
+		Corriere cor = new Corriere("D003");
+		Ticket ticket = new Ticket(StatoTicket.ASSEGNATO ,cor);
 		TicketDAO td = new TicketDAO();
 		ArrayList <Ticket> listaTicket = td.selectByStatoAndCorriere(ticket);
 		for (Ticket t1 : listaTicket) {

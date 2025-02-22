@@ -22,5 +22,6 @@ public interface IDipendentiFacade {
 	public boolean insertDipendente(Dipendente d);
 	public TipoOperatore selectTipoOperatoreById(Dipendente input);
 	public Operatore selectOperatoreByEmailPassword(Dipendente input);
-	Corriere selectCorriereById(Corriere cF);
+	public Corriere selectCorriereById(Corriere cF);
+	public Corriere selectCorriereByEmailPassword(Corriere input);
 }

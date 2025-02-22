@@ -27,6 +27,19 @@ public class Ticket {
 		this.itinerario=itinerario;
 		this.mezzo=mezzo;
 	}
+	
+	public Ticket (StatoTicket stato, Corriere corriere) {
+		super();
+		this.idTicket = null;
+		this.tipologia = null;
+		this.stato = stato;
+		this.corriere=corriere;
+		this.itinerario=null;
+		this.mezzo=null;
+	}
+	public Ticket() {
+		// TODO Auto-generated constructor stub
+	}
 
 	public String getIdTicket() {
 		return idTicket;

@@ -16,5 +16,7 @@ public interface IDipendenteDAO {
 	public boolean insertDipendente(Dipendente d);
 	public TipoOperatore selectTipoOperatoreById(Dipendente input);
 	public Operatore selectOperatoreByEmailPassword(Dipendente input);
-	Corriere selectCorriereById(Corriere cF);
+	public Corriere selectCorriereById(Corriere cF);
+	public String selectTipoDipendenteById(Dipendente input);
+	public Corriere selectCorriereByEmailPassword(Corriere input);
 }

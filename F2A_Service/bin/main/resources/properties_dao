@@ -1,0 +1,11 @@
+dao.idipendentedao = it.unipv.ingsfw.model.users.DipendenteDAO
+dao.ilavorazionedao = it.unipv.ingsfw.model.lavorazioneCapi.LavorazioneDAO
+dao.iclientedao = it.unipv.ingsfw.model.users.ClienteDAO
+dao.inegoziodao = it.unipv.ingsfw.model.negozio.NegozioDAO
+dao.icatenalavorazionedao = it.unipv.ingsfw.model.lavorazioneCapi.CatenaLavorazioneDAO
+dao.iobservablestazionelavorodao = it.unipv.ingsfw.model.lavorazioneCapi.ObservableStazioneLavoroDAO
+dao.icapodao = it.unipv.ingsfw.model.CapoDAO
+dao.ilavaggiodao = it.unipv.ingsfw.model.LavaggioDAO
+dao.imezzodao = it.unipv.ingsfw.model.tickets.MezzoDAO
+dao.iitinerariodao = it.unipv.ingsfw.model.tickets.ItinerarioDAO
+dao.iticketdao = it.unipv.ingsfw.model.tickets.TicketDAO

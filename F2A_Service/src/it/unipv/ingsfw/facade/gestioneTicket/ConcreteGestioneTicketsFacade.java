@@ -34,6 +34,20 @@ public class ConcreteGestioneTicketsFacade implements ITicketsFacade, IItinerari
 		return lista;
 		
 	}
+	
+	public ArrayList<String> selectIDTipoTicketByStatoAndCorriere(Ticket input){
+		
+		ArrayList<String> lista = new ArrayList<>();
+
+		try {
+			lista = ticketDAO.selectIDTipoTicketByStatoAndCorriere(input);
+		} catch (Exception e) {
+			System.err.println("Errore nel prelevamento dei ticket da db");
+		}
+		return lista;
+		
+	}
+	
 	public boolean insertTicket(Ticket t) {
 		
 		boolean esito = false;

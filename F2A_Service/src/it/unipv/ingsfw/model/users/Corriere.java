@@ -1,13 +1,19 @@
 package it.unipv.ingsfw.model.users;
 
+import java.util.ArrayList;
+
+import it.unipv.ingsfw.facade.F2aFacade;
+import it.unipv.ingsfw.model.lavorazioneCapi.ObservableStazioneLavoro;
+
 public class Corriere extends Dipendente {
 	private StatoCorriere statoCorriere;
 
+	/**
 	public Corriere(String idDipendente, String nome, String cognome, String cf, String email, String password,
 			int stipendio) {
 		super(idDipendente, nome, cognome, cf, email, password, stipendio);
 		this.statoCorriere = StatoCorriere.LIBERO;
-	}
+	}**/
 	
 	public Corriere(String idDipendente, String nome, String cognome, String cf, String email, String password,
 			int stipendio, StatoCorriere statoCorriere) {
@@ -15,11 +21,16 @@ public class Corriere extends Dipendente {
 		this.statoCorriere = statoCorriere;
 	}
 	
+	//non servono altre info, costruttore per la verifica
+	public Corriere(String email, String password) {
+		super(email, password);
+	}
+	
 	//costruttore di copia
-	public Corriere(Corriere elementoDaCopiare) {
+	/**public Corriere(Corriere elementoDaCopiare) {
 		super(elementoDaCopiare.getIdDipendente(), elementoDaCopiare.getNome(), elementoDaCopiare.getCognome(), elementoDaCopiare.getCf(), elementoDaCopiare.getEmail(), elementoDaCopiare.getPassword(), elementoDaCopiare.getStipendio());
 		this.statoCorriere = elementoDaCopiare.statoCorriere;
-	}
+	}**/
 	
 
 	//AGGIUNTO IN DATA 19/02
@@ -27,6 +38,11 @@ public class Corriere extends Dipendente {
 	public Corriere (String idDipendente) {
 		super(idDipendente, null, null, null, null, null, 0);
 		this.statoCorriere = null;
+	}
+	
+	//Costruttore nullo, utile in fase di login
+	public Corriere() {
+		super(null, null);
 	}
 
 	public StatoCorriere getStatoCorriere() {
@@ -49,5 +65,10 @@ public class Corriere extends Dipendente {
 		return c;
 	}
 	
+	public boolean verificaCredenzialiAccesso(String email, String password) {
+		//DipendenteDAO dip = new DipendenteDAO();
+		boolean t = F2aFacade.getInstance().getDipendentiFacade().selectByEmailPassword(new Corriere(email, password));
+		return t;
+	}
 	
 }

@@ -94,6 +94,17 @@ public class ConcreteDipendentiFacade {
 		return lista;
 
 	}
+	
+	public Corriere selectCorriereByEmailPassword(Corriere input) {
+
+		try {
+			input = dipendenteDAO.selectCorriereByEmailPassword(input);
+		} catch (Exception e) {
+			System.err.println("Errore prelevamento del dipendente");
+		}
+		return input;
+
+	}
 
 	public boolean selectByEmailPassword(Dipendente input) {
 
@@ -158,6 +169,17 @@ public class ConcreteDipendentiFacade {
 		}
 		return esito;
 
+	}
+	
+	//aggiunto in data 22/02
+	public String selectTipoDipendenteById(Dipendente input) {
+		String ris = null;
+		try {
+			ris = dipendenteDAO.selectTipoDipendenteById(input);
+		} catch (Exception e) {
+			System.err.println("Errore prelevamento tipologia dipendente");
+		}
+		return ris;
 	}
 
 	public Operatore selectOperatoreByEmailPassword(Dipendente input) {
