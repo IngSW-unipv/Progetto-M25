@@ -16,7 +16,7 @@ public class ObservableStazioneLavoro extends Observable {
 	private StatoStazione statoStazione;
 	private double livelloProdottoLavaggio;
 	private ArrayList<Capo> listaCapiDaLavorare;
-	private ArrayList<Observer> observers = new ArrayList<>(); //arraylist necessario a contenere i diversi observer
+	private ArrayList<Observer> observers; //arraylist necessario a contenere i diversi observer
 
 	/**
 	 * @param idStazione
@@ -31,6 +31,7 @@ public class ObservableStazioneLavoro extends Observable {
 		this.statoStazione = statoStazione;
 		this.livelloProdottoLavaggio = livelloProdottoLavaggio;
 		this.listaCapiDaLavorare = new ArrayList<Capo>();
+		this.observers = new ArrayList<Observer>();
 	}
 
 	public ObservableStazioneLavoro(TipologiaStazione tipo) {
@@ -39,6 +40,7 @@ public class ObservableStazioneLavoro extends Observable {
 		this.statoStazione = null;
 		this.livelloProdottoLavaggio = 0.0;
 		this.listaCapiDaLavorare = null;
+		this.observers = new ArrayList<Observer>();
 	}
 
 	public String getIdStazione() {
@@ -140,13 +142,10 @@ public class ObservableStazioneLavoro extends Observable {
 
 	public void messaInLavorazione(int index) {
 		statoStazione = StatoStazione.WORKING;
+		notificaObservers(index);
 		//setChanged();
 		System.out.println("Stato cambiato 1 , notifico gli osservatori...");
 	    //notifyObservers(index);
-		for(Observer o : observers) {
-			System.out.println(o);
-		}
-		notificaObservers();
 	}
 
 	public void messaInStandBy(int index) {
@@ -154,7 +153,7 @@ public class ObservableStazioneLavoro extends Observable {
 		//setChanged();
 		System.out.println("Stato cambiato 2 , notifico gli osservatori...");
 	    //notifyObservers(index);
-		notificaObservers();
+		notificaObservers(index);
 	}
 
 	public void messaInManutenzione(int index) {
@@ -162,7 +161,7 @@ public class ObservableStazioneLavoro extends Observable {
 		//setChanged();
 		System.out.println("Stato cambiato 3 , notifico gli osservatori...");
 	    //notifyObservers(index);
-		notificaObservers();
+		notificaObservers(index);
 	}
 
 	public boolean checkPresenzaCapi() {
@@ -182,8 +181,7 @@ public class ObservableStazioneLavoro extends Observable {
 			// tipologia di lavaggio della stazione
 
 			//CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
-			esitoCaricamento = setListaCapiDaLavorare(
-					new Capo(StatoCapo.IN_LAVORAZIONE, F2aFacade.getInstance().getCatenaLavorazioneFacade().selectCatenaByStazione(this).getTipoLavaggio()));
+			esitoCaricamento = setListaCapiDaLavorare(new Capo(StatoCapo.IN_LAVORAZIONE, F2aFacade.getInstance().getCatenaLavorazioneFacade().selectCatenaByStazione(this).getTipoLavaggio()));
 		}
 
 		for (Capo c : listaCapi) {
@@ -290,11 +288,18 @@ public class ObservableStazioneLavoro extends Observable {
 	
 	public void aggiungiObserver(Observer observer) {
         observers.add(observer);
+        //System.out.println("OBSERVER: " + observer);
+        for (Observer obs : observers) {
+        	System.out.println("AAA: " + obs);
+        }
     }
 
-    public void notificaObservers() {
+    public void notificaObservers(int index) {
+    	System.out.println("NOTIFICHE");
+    	System.out.println(observers.size());
         for (Observer observer : observers) {
-            observer.update(this, statoStazione);
+        	System.out.println("AAAAAAAAAA");
+            observer.update(this, index);
         }
     }
 

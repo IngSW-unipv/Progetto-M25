@@ -147,6 +147,7 @@ public class MainFrameOperatore extends JFrame implements Runnable{
 		return bottoni;
 	}
 
+	/*
 	private void updateButtonColor(JButton button, StatoStazione stato) {
 		Color color;
 		switch (stato) {
@@ -156,8 +157,9 @@ public class MainFrameOperatore extends JFrame implements Runnable{
 		default -> color = Color.GRAY;
 		}
 		button.setBackground(color);
-	}
+	}*/
 
+	/*
 	public void aggiornaStazioni() {
 		ObservableStazioneLavoroDAO staz = new ObservableStazioneLavoroDAO();
 		ArrayList<ObservableStazioneLavoro> stazioni = staz.selectStazioniByOperatore(this.op);
@@ -191,7 +193,7 @@ public class MainFrameOperatore extends JFrame implements Runnable{
 
 		pannelloStazioni.revalidate();
 		pannelloStazioni.repaint();
-	}
+	}*/
 
 
 	public static void main(String[] args) {

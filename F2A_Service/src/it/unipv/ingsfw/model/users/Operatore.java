@@ -118,12 +118,16 @@ public class Operatore extends Dipendente{
 				
 				ArrayList<ObservableStazioneLavoro> obsMain = F2aFacade.getInstance().getStazioneLavoroFacade().selectStazioniMaintenanceNonAssegnate();
 
-				for (int i = 0; i < 3; i++) {
+				try {
+					for (int i = 0; i < 3; i++) {
 					stazioniAssociate.add(obsMain.get(i));
 					F2aFacade.getInstance().getStazioneLavoroFacade().assegnazioneOperatoreNoto(obsMain.get(i), this);
+					}
+				} catch(IndexOutOfBoundsException e) {
+					System.err.println("Nessuna stazione da manutenere");
+				}catch (Exception e) {
+					e.printStackTrace();
 				}
-				
-				
 
 				break;
 			}
@@ -234,27 +238,31 @@ public class Operatore extends Dipendente{
 	//metodo di avvio della stazione di lavoro assegnata ad un responsabile
 	
 	public synchronized int avviaStazione(int index) throws Exception {
-	    // Generatore di numeri pseudocasuali (1 o -1)
-	    //int numeroCasuale = -1;
-	    //System.out.println("Numero casuale generato: " + numeroCasuale);
 
-	    setStazioniAssociate();
+		int valRitorno = 0;
 
-	    if (stazioniAssociate.get(index).checkPresenzaCapi()) {
-	        System.out.println("aaaaaaaaaaaaaa");
-	        stazioniAssociate.get(index).messaInLavorazione(index);
+		// Generatore di numeri pseudocasuali (1 o -1) per simulare un eventuale guasto
+		int numeroCasuale = generaNumero();
+		System.out.println("Numero casuale generato: " + numeroCasuale);
 
-	        F2aFacade.getInstance().getStazioneLavoroFacade().changeStatoStazione(stazioniAssociate.get(index));
-	        return 1;
-	    } else if (!stazioniAssociate.get(index).checkPresenzaCapi()) {
-	        System.err.println("Capi assenti");
-	        return 0;
-	    } else {
-	        System.err.println("Si è presentato un guasto al macchinario. Assegnazione a manutentore disponibile in corso");
-	        stazioniAssociate.get(index).assegnazionePostGuasto(index);
-	        stazioniAssociate.get(index).notificaObservers();
-	        return -1;
-	    }
+		// setStazioniAssociate();
+		if (stazioniAssociate.get(index).checkPresenzaCapi()) {
+			if (numeroCasuale == 1) {
+				System.out.println("Lavorazione avviata");
+				stazioniAssociate.get(index).messaInLavorazione(index);
+				F2aFacade.getInstance().getStazioneLavoroFacade().changeStatoStazione(stazioniAssociate.get(index));
+				valRitorno = 1;
+			} else {
+				System.err.println("Si è presentato un guasto al macchinario. Assegnazione a manutentore disponibile in corso");
+				stazioniAssociate.get(index).assegnazionePostGuasto(index);
+				// stazioniAssociate.get(index).notificaObservers(index);
+				valRitorno = -1;
+			}
+		} else if (!stazioniAssociate.get(index).checkPresenzaCapi()) {
+			System.err.println("Capi assenti");
+			valRitorno = 0;
+		}
+		return valRitorno;
 	}
 
 	// Metodo per generare 1 o -1 casualmente
@@ -276,7 +284,6 @@ public class Operatore extends Dipendente{
 		//dao.changeStatoStazione(stazioniAssociate.get(index));
 		F2aFacade.getInstance().getStazioneLavoroFacade().changeStatoStazione(stazioniAssociate.get(index));
 		stazioniAssociate.get(index).aggiornamentoLavorazioni();
-	
 		stazioniAssociate.get(index).removeCapiStazione();
 		return 1;
 	}
@@ -290,7 +297,7 @@ public class Operatore extends Dipendente{
 	
 	
 	public boolean correzioneGuasto(int index) {
-		setStazioniAssociate();
+		//setStazioniAssociate();
 		//possibile gestione con try/catch per eventuali eccezioni in seguito a non corretta risoluzione di un guasto
 		stazioniAssociate.get(index).messaInLavorazione(index);
 		F2aFacade.getInstance().getStazioneLavoroFacade().changeStatoStazione(stazioniAssociate.get(index));

@@ -1,14 +1,21 @@
 package it.unipv.ingsfw.controller;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import it.unipv.ingsfw.facade.F2aFacade;
@@ -30,38 +37,16 @@ public class ManutentoreAction implements Observer {
 	public ManutentoreAction(Operatore op, GUILoginOperatore g) {
 		this.op = op;
 		this.g = g;
-
-		new SwingWorker<Void, Void>() {
-			@Override
-			protected Void doInBackground() {
-				addLoginListener();
-				return null;
-			}
-		}.execute();
+		addLoginListener();
 
 	}
 
 	public ManutentoreAction(Operatore op, MainFrameManutentore man) {
 		this.op = op;
 		this.man = man;
-
-		new SwingWorker<Void, Void>() {
-			@Override
-			protected Void doInBackground() { // per esecuzione su background thread
-				op.setStazioniAssociate();
-				return null;
-			}
-
-			@Override
-			protected void done() {
-				man.aggiornaStazioni();
-				addMainListenersManutentore();
-
-			}
-		}.execute(); // per eseguirlo su un worker thread
-		// op.setStazioniAssociate();
-		// man.aggiornaStazioni();
-		// addMainListenersManutentore();
+		 op.setStazioniAssociate();
+		 man.aggiornaStazioni();
+		 addMainListenersManutentore();
 	}
 
 	private void addLoginListener() {
@@ -73,8 +58,7 @@ public class ManutentoreAction implements Observer {
 					new SwingWorker<Boolean, Void>() {
 						@Override
 						protected Boolean doInBackground() throws Exception {
-							return op.verificaCredenzialiAccesso(g.getPannello().getUserText().getText(),
-									g.getPannello().getPassText().getText());
+							return op.verificaCredenzialiAccesso(g.getPannello().getUserText().getText(),g.getPannello().getPassText().getText());
 						}
 
 						@Override
@@ -89,7 +73,9 @@ public class ManutentoreAction implements Observer {
 									op.setTipoOperatore(F2aFacade.getInstance().getDipendentiFacade().selectTipoOperatoreById(op));
 									if (op.getTipoOperatore() == TipoOperatore.MANUTENTORE) {
 										JOptionPane.showMessageDialog(man, "Benvenuto manutentore!", "Accesso", JOptionPane.INFORMATION_MESSAGE);
-										new MainFrameManutentore(op).setVisible(true);
+										MainFrameManutentore loginMan = new MainFrameManutentore(op);
+										loginMan.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+										loginMan.setVisible(true);
 									}
 								} else {
 									JOptionPane.showMessageDialog(g, "Credenziali errate", "Errore", JOptionPane.ERROR_MESSAGE);
@@ -103,39 +89,63 @@ public class ManutentoreAction implements Observer {
 			}
 		});
 	}
+	
+	private void aggiornamenti() {
+		//m.aggiornaStazioni();
+		aggiornaStazioni();
+		assegnazioneListenerBottoni();
+	}
 
 	private void addMainListenersManutentore() {
-		Operatore manutentore = op;
+		//Operatore manutentore = op;
 		// DipendenteDAO d = new DipendenteDAO();
 
-		man.getMenu().getRefreshButton().addMenuListener(new MenuListenerAdapter(() -> man.aggiornaStazioni()));
+		man.getMenu().getRefreshButton().addMenuListener(new MenuListenerAdapter(() -> aggiornamenti()));
 		man.getMenu().getGestioneStazioni().addMenuListener(new MenuListenerAdapter(() -> man.getCardLayout().show(man.getPannello(), "Stazioni")));
 		man.getMenu().getControlloMacchinari().addMenuListener(new MenuListenerAdapter(() -> man.getCardLayout().show(man.getPannello(), "Macchinari")));
 		man.getMenu().getModificaProfilo().addMenuListener(new MenuListenerAdapter(() -> man.getCardLayout().show(man.getPannello(), "Profilo")));
 
-		for (; i < man.getBottoni().size(); i++) {
-			if (manutentore.getStazioniAssociate().get(i) == null || manutentore.getStazioniAssociate().isEmpty()) {
+		
+		for (int i = 0; i < man.getBottoni().size(); i++) {
+			final int index = i; // Crea una variabile final per catturare il valore di i
+			if (op.getStazioniAssociate().get(index) == null || op.getStazioniAssociate().isEmpty()) {
 				System.out.println("Errore: Nessuna stazione associata trovata.");
 			} else {
-				manutentore.getStazioniAssociate().get(i).addObserver(this);
-				System.out.println("Aggiunto observer alla stazione " + i);
+				//responsabile.getStazioniAssociate().get(i).addObserver(this);
+				op.getStazioniAssociate().get(index).aggiungiObserver(this);
+				//op.getStazioniAssociate().get(index).notificaObservers(index);
+				System.out.println("Aggiunto observer alla stazione " + index);
 			}
-			man.getBottoni().get(i).addActionListener(new ActionListener() {
-				int j = i;
+		}
+		
+		assegnazioneListenerBottoni();
+		
+		
+		}
+	
+	
+	private void assegnazioneListenerBottoni() {
+		
+		for (int i = 0; i < man.getBottoni().size(); i++) {
+			final int index = i; // Crea una variabile final per catturare il valore di i
+			
+			man.getBottoni().get(index).addActionListener(new ActionListener() {
+				//int j = i;
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					System.out.println("j: " + j);
-					i = j;
-					JButton button = man.getBottoni().get(j); // Prendi il bottone
+					System.out.println("j: " + index);
+					//i = j;
+					JButton button = man.getBottoni().get(index); // Prendi il bottone
 
 					try {
 						if (button.getBackground().equals(Color.ORANGE)) {
-							if (manutentore.correzioneGuasto(j)) {
-								button.setBackground(Color.GREEN);// Se è arancione, passa a verde
-								JOptionPane.showMessageDialog(man, "Guasto risolto", "Gestione guasto",JOptionPane.INFORMATION_MESSAGE);
-								if (F2aFacade.getInstance().getStazioneLavoroFacade().chiusuraAssegnazioneOperatoreNoto(manutentore.getStazioniAssociate().get(i), manutentore))
-									JOptionPane.showMessageDialog(man, "Assegnazione chiusa", "Chiusura assegnazione",JOptionPane.INFORMATION_MESSAGE);
+							if (op.correzioneGuasto(index)) {
+								//button.setBackground(Color.GREEN);// Se è arancione, passa a verde
+								//JOptionPane.showMessageDialog(man, "Guasto risolto", "Gestione guasto",JOptionPane.INFORMATION_MESSAGE);
+								if (F2aFacade.getInstance().getStazioneLavoroFacade().chiusuraAssegnazioneOperatoreNoto(op.getStazioniAssociate().get(index), op)) {
+									//JOptionPane.showMessageDialog(man, "Assegnazione chiusa", "Chiusura assegnazione",JOptionPane.INFORMATION_MESSAGE);
+								}
 							} else {
 								JOptionPane.showMessageDialog(man, "Anomalia persistente", "Attenzione",JOptionPane.ERROR_MESSAGE);
 							}
@@ -149,6 +159,52 @@ public class ManutentoreAction implements Observer {
 		}
 	}
 
+	private void aggiornaStazioni() {
+        ArrayList<ObservableStazioneLavoro> stazioni = F2aFacade.getInstance().getStazioneLavoroFacade().selectStazioniByOperatore(this.op);
+
+        man.getPannelloGuasti().removeAll();
+        man.getBottoni().clear();
+        man.setGroup(new ButtonGroup());
+        JLabel noGuasti;
+
+        for (ObservableStazioneLavoro stazione : stazioni) {
+            JPanel panel = new JPanel();
+            JLabel label = new JLabel("Stazione " + stazione.getIdStazione());
+            JButton button = new JButton();
+            button.setPreferredSize(new Dimension(30, 30));
+
+            updateButtonColor(button, stazione.getStatoStazione());
+            man.getBottoni().add(button);
+            panel.add(label);
+            panel.add(button);
+            man.getGroup().add(button);
+            man.getPannelloGuasti().add(panel);
+            button.setEnabled(true);
+        }
+
+        if (stazioni.size() == 0) {
+            JPanel panelNoStazioni = new JPanel();
+            noGuasti = new JLabel("NESSUNA STAZIONE ASSEGNATA, AGGIORNA LA PAGINA");
+            panelNoStazioni.add(noGuasti);
+            man.getPannelloGuasti().add(panelNoStazioni);
+        }
+
+        man.getPannelloGuasti().revalidate();
+        man.getPannelloGuasti().repaint();
+    }
+
+    private void updateButtonColor(JButton button, StatoStazione stato) {
+        Color color;
+        switch (stato) {
+            case READY -> color = Color.GREEN;
+            case MAINTENANCE -> color = Color.ORANGE;
+            case WORKING -> color = Color.RED;
+            default -> color = Color.GRAY;
+        }
+        button.setBackground(color);
+    }
+	
+	
 	@Override
 	public void update(Observable o, Object arg) {
 		ObservableStazioneLavoro staz = (ObservableStazioneLavoro) o;
@@ -158,10 +214,10 @@ public class ManutentoreAction implements Observer {
 		JButton button = man.getBottoni().get(c);
 		if (staz.getStatoStazione() == StatoStazione.WORKING) {
 			button.setBackground(Color.RED);
-			JOptionPane.showMessageDialog(man, "Lavorazione avviata con successo", "Avviso",JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(man, "UPDATE: Guasto risolto", "Gestione guasto",JOptionPane.INFORMATION_MESSAGE);
 		} else if (staz.getStatoStazione() == StatoStazione.READY) {
 			button.setBackground(Color.GREEN);
-			JOptionPane.showMessageDialog(man, "Lavorazione conclusa con successo", "Avviso",JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(man, "UPDATE: Assegnazione chiusa", "Avviso",JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
