@@ -117,7 +117,7 @@ public class ObservableStazioneLavoro extends Observable {
 			if (tipo.toString().equalsIgnoreCase("LAVAGGIO")) {
 				listaCapiDaLavorare = F2aFacade.getInstance().getCapoFacade().selectCapoByStatoETipo(c);
 			} else {
-				listaCapiDaLavorare = F2aFacade.getInstance().getLavorazioneFacade().checkPresenzaCapiInStazione(this);
+				listaCapiDaLavorare = F2aFacade.getInstance().getLavorazioneCapiFacade().checkPresenzaCapiInStazione(this);
 			}
 
 		}
@@ -170,7 +170,7 @@ public class ObservableStazioneLavoro extends Observable {
 
 		// prelevo capi dalla tabella lavorazione a db nel caso in cui ci siano già dei
 		// capi pronti per la lavorazione
-		ArrayList<Capo> listaCapi = F2aFacade.getInstance().getLavorazioneFacade().checkPresenzaCapiInStazione(this);
+		ArrayList<Capo> listaCapi = F2aFacade.getInstance().getLavorazioneCapiFacade().checkPresenzaCapiInStazione(this);
 
 		if (listaCapi.size() != 0) {
 			this.listaCapiDaLavorare = listaCapi;
@@ -181,7 +181,7 @@ public class ObservableStazioneLavoro extends Observable {
 			// tipologia di lavaggio della stazione
 
 			//CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
-			esitoCaricamento = setListaCapiDaLavorare(new Capo(StatoCapo.IN_LAVORAZIONE, F2aFacade.getInstance().getCatenaLavorazioneFacade().selectCatenaByStazione(this).getTipoLavaggio()));
+			esitoCaricamento = setListaCapiDaLavorare(new Capo(StatoCapo.IN_LAVORAZIONE, F2aFacade.getInstance().getLavorazioneCapiFacade().selectCatenaByStazione(this).getTipoLavaggio()));
 		}
 
 		for (Capo c : listaCapi) {
@@ -195,7 +195,7 @@ public class ObservableStazioneLavoro extends Observable {
 
 		boolean esitoCaricamento = false;
 		for (Capo c : listaCapiDaLavorare) {
-			esitoCaricamento = F2aFacade.getInstance().getLavorazioneFacade().addLavorazione(this, c);
+			esitoCaricamento = F2aFacade.getInstance().getLavorazioneCapiFacade().addLavorazione(this, c);
 			System.out.println(c);
 		}
 		return esitoCaricamento;
@@ -206,7 +206,7 @@ public class ObservableStazioneLavoro extends Observable {
 
 		boolean esitoCaricamento = false;
 		for (Capo c : listaCapiDaLavorare) {
-			esitoCaricamento = F2aFacade.getInstance().getLavorazioneFacade().updateLavorazione(this, c);
+			esitoCaricamento = F2aFacade.getInstance().getLavorazioneCapiFacade().updateLavorazione(this, c);
 			// System.out.println(c);
 		}
 		System.out.println("AGGIORNAMENTO TABELLA LAVORAZIONI CON DATA");
@@ -221,7 +221,7 @@ public class ObservableStazioneLavoro extends Observable {
 		// System.out.println("this: " + this.getIdStazione());
 
 		for (Capo c : listaCapiDaLavorare)
-			esitoCaricamento = F2aFacade.getInstance().getLavorazioneFacade().addLavorazioneSospesa(this, c);
+			esitoCaricamento = F2aFacade.getInstance().getLavorazioneCapiFacade().addLavorazioneSospesa(this, c);
 
 		return esitoCaricamento;
 	}
@@ -233,7 +233,7 @@ public class ObservableStazioneLavoro extends Observable {
 
 	public String getIdCatena() {
 		//ObservableStazioneLavoroDAO obs = new ObservableStazioneLavoroDAO();
-		String idCatena = F2aFacade.getInstance().getStazioneLavoroFacade().selectIdCatenaByStazione(this);
+		String idCatena = F2aFacade.getInstance().getLavorazioneCapiFacade().selectIdCatenaByStazione(this);
 		return idCatena;
 	}
 
@@ -241,12 +241,12 @@ public class ObservableStazioneLavoro extends Observable {
 
 		//CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
 
-		ArrayList<ObservableStazioneLavoro> stazioni = F2aFacade.getInstance().getCatenaLavorazioneFacade().selectStazioniByCatena(new CatenaLavorazione(this.getIdCatena()));
+		ArrayList<ObservableStazioneLavoro> stazioni = F2aFacade.getInstance().getLavorazioneCapiFacade().selectStazioniByCatena(new CatenaLavorazione(this.getIdCatena()));
 
 		for (ObservableStazioneLavoro s : stazioni)
 			System.out.println(s.getIdStazione());
 
-		if (this.getTipo().toString().equals("STIRATURA") || F2aFacade.getInstance().getCatenaLavorazioneFacade().selectCatenaByStazione(this).getTipoLavaggio().toString().equals("PELLE")) {
+		if (this.getTipo().toString().equals("STIRATURA") || F2aFacade.getInstance().getLavorazioneCapiFacade().selectCatenaByStazione(this).getTipoLavaggio().toString().equals("PELLE")) {
 
 			//CapoDAO cap = new CapoDAO();
 
@@ -280,8 +280,8 @@ public class ObservableStazioneLavoro extends Observable {
 	
 	public void assegnazionePostGuasto(int index) {
 		this.messaInManutenzione(index);
-		F2aFacade.getInstance().getStazioneLavoroFacade().changeStatoStazione(this);
-		F2aFacade.getInstance().getStazioneLavoroFacade().assegnazioneManutentoreLibero(this);
+		F2aFacade.getInstance().getLavorazioneCapiFacade().changeStatoStazione(this);
+		F2aFacade.getInstance().getLavorazioneCapiFacade().assegnazioneManutentoreLibero(this);
 	}
 	
 	//metodi per gestire l'inserimento degli observer nelle diverse stazioni
@@ -289,16 +289,16 @@ public class ObservableStazioneLavoro extends Observable {
 	public void aggiungiObserver(Observer observer) {
         observers.add(observer);
         //System.out.println("OBSERVER: " + observer);
-        for (Observer obs : observers) {
+        /*for (Observer obs : observers) {
         	System.out.println("AAA: " + obs);
-        }
+        }*/
     }
 
     public void notificaObservers(int index) {
     	System.out.println("NOTIFICHE");
     	System.out.println(observers.size());
         for (Observer observer : observers) {
-        	System.out.println("AAAAAAAAAA");
+        	//System.out.println("AAAAAAAAAA");
             observer.update(this, index);
         }
     }

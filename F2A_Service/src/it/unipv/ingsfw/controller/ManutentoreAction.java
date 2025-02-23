@@ -143,7 +143,7 @@ public class ManutentoreAction implements Observer {
 							if (op.correzioneGuasto(index)) {
 								//button.setBackground(Color.GREEN);// Se è arancione, passa a verde
 								//JOptionPane.showMessageDialog(man, "Guasto risolto", "Gestione guasto",JOptionPane.INFORMATION_MESSAGE);
-								if (F2aFacade.getInstance().getStazioneLavoroFacade().chiusuraAssegnazioneOperatoreNoto(op.getStazioniAssociate().get(index), op)) {
+								if (F2aFacade.getInstance().getLavorazioneCapiFacade().chiusuraAssegnazioneOperatoreNoto(op.getStazioniAssociate().get(index), op)) {
 									//JOptionPane.showMessageDialog(man, "Assegnazione chiusa", "Chiusura assegnazione",JOptionPane.INFORMATION_MESSAGE);
 								}
 							} else {
@@ -160,7 +160,7 @@ public class ManutentoreAction implements Observer {
 	}
 
 	private void aggiornaStazioni() {
-        ArrayList<ObservableStazioneLavoro> stazioni = F2aFacade.getInstance().getStazioneLavoroFacade().selectStazioniByOperatore(this.op);
+        ArrayList<ObservableStazioneLavoro> stazioni = F2aFacade.getInstance().getLavorazioneCapiFacade().selectStazioniByOperatore(this.op);
 
         man.getPannelloGuasti().removeAll();
         man.getBottoni().clear();

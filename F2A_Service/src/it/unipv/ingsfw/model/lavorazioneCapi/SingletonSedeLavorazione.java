@@ -50,7 +50,7 @@ public class SingletonSedeLavorazione {
 	// deve restituire un booleano
 	public boolean addCatenaLavorazione(CatenaLavorazione catena) {
 		//CatenaLavorazioneDAO cl = new CatenaLavorazioneDAO();
-		if (F2aFacade.getInstance().getCatenaLavorazioneFacade().insertCatena(catena)) {
+		if (F2aFacade.getInstance().getLavorazioneCapiFacade().insertCatena(catena)) {
 			listaCatene.add(catena);
 			return true;
 		}

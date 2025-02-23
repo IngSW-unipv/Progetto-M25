@@ -8,7 +8,7 @@ import it.unipv.ingsfw.model.users.Operatore;
 
 public interface ICatenaLavorazioneFacade {
 	
-	public ArrayList<CatenaLavorazione> selectAll();
+	public ArrayList<CatenaLavorazione> selectAllCatene();
 	public ArrayList<CatenaLavorazione> selectByTipoLavaggio(CatenaLavorazione input);
 	public boolean insertCatena(CatenaLavorazione c);
 	public boolean checkCatenaAlreadyExists(CatenaLavorazione c);

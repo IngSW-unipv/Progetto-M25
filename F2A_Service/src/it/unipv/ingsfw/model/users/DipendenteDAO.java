@@ -456,13 +456,8 @@ public class DipendenteDAO implements IDipendenteDAO {
 	}
 
 	@Override
-<<<<<<< Updated upstream
 	public synchronized TipoOperatore selectTipoOperatoreById(Dipendente input) {
 		
-=======
-	public TipoOperatore selectTipoOperatoreById(Dipendente input) {
-
->>>>>>> Stashed changes
 		conn = DBConnection.startConnection(conn);
 		PreparedStatement st1;
 		ResultSet rs1;

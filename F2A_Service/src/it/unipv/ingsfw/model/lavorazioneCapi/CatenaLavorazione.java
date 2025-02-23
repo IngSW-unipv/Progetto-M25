@@ -80,7 +80,7 @@ public class CatenaLavorazione {
 		//ObservableStazioneLavoroDAO stazione = new ObservableStazioneLavoroDAO();
 
 		if (listaStazioni.size() <= 2 && !tipoLavaggio.equals(TipoLavaggio.PELLE) && !tipoStazioneAlreadyExists(newStazione)) {
-			if (F2aFacade.getInstance().getStazioneLavoroFacade().insertStazioneWithKnownCatena(newStazione, this)) {
+			if (F2aFacade.getInstance().getLavorazioneCapiFacade().insertStazioneWithKnownCatena(newStazione, this)) {
 				listaStazioni.add(newStazione);
 				return true;
 			}
@@ -93,7 +93,7 @@ public class CatenaLavorazione {
 	public boolean riempimentoListaStazioniDaDB() {
 		//CatenaLavorazioneDAO catena = new CatenaLavorazioneDAO();
 		if (listaStazioni.size() == 0) {
-			listaStazioni = F2aFacade.getInstance().getCatenaLavorazioneFacade().selectStazioniByCatena(this);
+			listaStazioni = F2aFacade.getInstance().getLavorazioneCapiFacade().selectStazioniByCatena(this);
 			return true;
 		}
 		return false;

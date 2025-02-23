@@ -8,7 +8,7 @@ import it.unipv.ingsfw.model.users.Operatore;
 
 public interface IStazioneLavoroFacade {
 	
-	public ArrayList<ObservableStazioneLavoro> selectAll();
+	public ArrayList<ObservableStazioneLavoro> selectAllStazioni();
 	public ArrayList<ObservableStazioneLavoro> selectByStato(ObservableStazioneLavoro input);
 	public boolean insertStazioneWithUnknownCatena(ObservableStazioneLavoro s);
 	public boolean insertStazioneWithKnownCatena(ObservableStazioneLavoro s, CatenaLavorazione c);

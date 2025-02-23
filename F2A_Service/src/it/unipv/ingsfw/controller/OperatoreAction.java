@@ -257,7 +257,7 @@ public class OperatoreAction implements Observer {
 	}*/
 
 	private void aggiornaStazioni() {
-        ArrayList<ObservableStazioneLavoro> stazioni = F2aFacade.getInstance().getStazioneLavoroFacade().selectStazioniByOperatore(this.op);
+        ArrayList<ObservableStazioneLavoro> stazioni = F2aFacade.getInstance().getLavorazioneCapiFacade().selectStazioniByOperatore(this.op);
 
         m.getPannelloStazioni().removeAll();
         m.getBottoni().clear();
