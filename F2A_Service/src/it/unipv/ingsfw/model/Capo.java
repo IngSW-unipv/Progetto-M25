@@ -37,6 +37,7 @@ public class Capo {
 		this.prezzoScontato = prezzoScontato;
 		this.cliente = cliente;
 	}
+	
 
 	public Capo(StatoCapo statoCapo, TipoLavaggio tipoLavaggio) {
 		super();
@@ -50,6 +51,30 @@ public class Capo {
 		this.prezzoScontato = 0.0;
 		this.cliente = null;
 	}
+
+
+
+	public Capo(String idCapo, StatoCapo stato, TipoLavaggio sol1, Date ritiro, Date consegna, Negozio sonr, Negozio sond,
+			Double costo, Cliente cliente) {
+		super();
+		this.idCapo = idCapo;
+		this.statoCapo = stato;
+		this.tipoLavaggio = sol1;
+		this.dataRitiro = null;
+		this.dataUltimaConsegna = consegna;
+		this.negozioDeposito = sond;
+		this.negozioConsegna = sonr;
+		this.prezzoScontato = costo;
+		this.cliente = cliente;
+		
+	}
+	public Capo(String idCapo, StatoCapo stato) {
+		super();
+		this.idCapo = idCapo;
+		this.statoCapo = stato;
+	}
+
+
 
 	public String getIdCapo() {
 		return idCapo;

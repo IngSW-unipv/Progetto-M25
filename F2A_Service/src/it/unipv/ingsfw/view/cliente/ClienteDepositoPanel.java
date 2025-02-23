@@ -5,10 +5,16 @@ import javax.swing.*;
 public class ClienteDepositoPanel extends JPanel {    
     	JLabel dataLabel;
  		JTextField dataText;
+    	JLabel idLabel;
+ 		JTextField idText;
  		JLabel spaceLabel1;
+ 		JButton scegliNegDepButton;
  		JButton verificaDatiButton;
- 		JButton scegliNegButton;
+ 		JButton scegliNegRitButton;
  		JButton scegliLavButton;
+ 		JButton pagaButton;
+ 		JButton esciButton;
+ 		JButton ritiraButton;
  		
  		public ClienteDepositoPanel() {
  		super();
@@ -21,32 +27,110 @@ public class ClienteDepositoPanel extends JPanel {
  		setLocation(screenWidth/4, screenHeight/4);
  		
  		setLayout(new BorderLayout());
- 		dataLabel = new JLabel("inserisce la data entro cui vuoi ritirare il capo: (aaaa-mm-gg)");
+		idLabel = new JLabel("inserire codice cliente per sconto");
+ 	    idText = new JTextField(25);
+ 		spaceLabel1 = new JLabel("    ");
+ 		dataLabel = new JLabel("data ultima per ritiro capo: (aaaa-mm-gg) *");
  	    dataText = new JTextField(25);
  		spaceLabel1 = new JLabel("    ");
- 		scegliNegButton = new JButton("Scegli il negozio per il ritiro");
- 		scegliNegButton.setActionCommand("Negozio");
+ 		scegliNegDepButton = new JButton("Conferma negozio di deposito *");
+ 		scegliNegDepButton.setActionCommand("NegozioDep");
+ 		scegliNegRitButton = new JButton("Scegli il negozio per il ritiro *");
+ 		scegliNegRitButton.setActionCommand("NegozioRit");
  		spaceLabel1 = new JLabel("    ");
- 		scegliLavButton = new JButton("Scegli il tipo di lavaggio");
+ 		scegliLavButton = new JButton("Scegli il tipo di lavaggio *");
  		scegliLavButton.setActionCommand("Lavaggio");
+ 		esciButton = new JButton("Effettua logout");
+ 		esciButton.setActionCommand("Logout");
+ 		ritiraButton = new JButton("Ritira capi");
+ 		ritiraButton.setActionCommand("Ritira");
  		spaceLabel1 = new JLabel("    ");
  		spaceLabel1 = new JLabel("    ");
  		
- 		JPanel areaDati = new JPanel(new GridLayout(6, 1));
+ 		JPanel areaDati = new JPanel(new GridLayout(5, 1));
+ 	    areaDati.add(idLabel);
+ 	    areaDati.add(idText);
  	    areaDati.add(dataLabel);
  	    areaDati.add(dataText);
- 	    areaDati.add(scegliNegButton);
+ 	    areaDati.add(scegliNegDepButton);
+ 	    areaDati.add(scegliNegRitButton);
  	    areaDati.add(scegliLavButton);
  	    add(areaDati, BorderLayout.CENTER);
  	    
  	    
- 	    verificaDatiButton = new JButton("Verifica il riepilogo e paga ");
+ 	    verificaDatiButton = new JButton("Verifica i dati di prenotazione ");
  		verificaDatiButton.setActionCommand("Verifica");
- 		add(verificaDatiButton, BorderLayout.SOUTH);
- 	    
+	    pagaButton = new JButton("Paga e depostia");
+ 		pagaButton.setActionCommand("Paga");
+ 		JPanel verificaPagaArea = new JPanel(new GridLayout(2, 1));
+ 		verificaPagaArea.add(verificaDatiButton);
+ 		verificaPagaArea.add(pagaButton);
+ 		verificaPagaArea.add(ritiraButton);
+ 		verificaPagaArea.add(esciButton);
+ 		add(verificaPagaArea, BorderLayout.SOUTH);
 
 
  	}
+
+
+		public JButton getEsciButton() {
+			return esciButton;
+		}
+
+
+		public void setEsciButton(JButton esciButton) {
+			this.esciButton = esciButton;
+		}
+
+
+		public JButton getRitiraButton() {
+			return ritiraButton;
+		}
+
+
+		public void setRitiraButton(JButton ritiraButton) {
+			this.ritiraButton = ritiraButton;
+		}
+
+
+		public JButton getScegliNegDepButton() {
+			return scegliNegDepButton;
+		}
+
+
+		public void setScegliNegDepButton(JButton scegliNegDepButton) {
+			this.scegliNegDepButton = scegliNegDepButton;
+		}
+
+
+		public JButton getScegliNegRitButton() {
+			return scegliNegRitButton;
+		}
+
+
+		public void setScegliNegRitButton(JButton scegliNegRitButton) {
+			this.scegliNegRitButton = scegliNegRitButton;
+		}
+
+
+		public JLabel getIdLabel() {
+			return idLabel;
+		}
+
+
+		public void setIdLabel(JLabel idLabel) {
+			this.idLabel = idLabel;
+		}
+
+
+		public JTextField getIdText() {
+			return idText;
+		}
+
+
+		public void setIdText(JTextField idText) {
+			this.idText = idText;
+		}
 
 
 		public JButton getScegliLavButton() {
@@ -71,12 +155,12 @@ public class ClienteDepositoPanel extends JPanel {
 		
 
 		public JButton getScegliNegButton() {
-			return scegliNegButton;
+			return scegliNegRitButton;
 		}
 
 
 		public void setScegliNegButton(JButton scegliNegButton) {
-			this.scegliNegButton = scegliNegButton;
+			this.scegliNegRitButton = scegliNegButton;
 		}
 
 
@@ -87,6 +171,16 @@ public class ClienteDepositoPanel extends JPanel {
 
 		public void setVerificaDatiButton(JButton verificaDatiButton) {
 			this.verificaDatiButton = verificaDatiButton;
+		}
+
+
+		public JButton getPagaButton() {
+			return pagaButton;
+		}
+
+
+		public void setPagaButton(JButton pagaButton) {
+			this.pagaButton = pagaButton;
 		}
  	
  	

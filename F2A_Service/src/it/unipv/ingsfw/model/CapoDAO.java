@@ -158,7 +158,7 @@ public class CapoDAO implements ICapoDAO {
 			while (rs1.next()) {
 
 				newIdCapo = rs1.getString(1);
-				String sub = newIdCapo.substring(3);
+				String sub = newIdCapo.substring(1);
 				//System.out.println(sub);
 				int num = Integer.parseInt(sub) + 1;
 				newIdCapo = String.format("C%03d", num);
@@ -241,6 +241,11 @@ public class CapoDAO implements ICapoDAO {
 		java.sql.Date sql = new java.sql.Date(parsed.getTime());
 		boolean t = c.insertCapo(new Capo(c.getNewIdCapo(),StatoCapo.IN_STORE, TipoLavaggio.BIANCHI, null, sql, new Negozio("N002"), new Negozio("N003"), 25.6, new Cliente("CL001")));
 		System.out.println(t);*/
+		
+		CapoDAO c =new CapoDAO();
+		String id=c.getNewIdCapo();
+		System.out.println(id);
+		
 	}
 
 }

@@ -1,11 +1,15 @@
 package it.unipv.ingsfw.model.negozio;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import javax.swing.JFrame;
 
 import it.unipv.ingsfw.facade.F2aFacade;
 import it.unipv.ingsfw.model.Capo;
+import it.unipv.ingsfw.model.StatoCapo;
+import it.unipv.ingsfw.model.TipoLavaggio;
 import it.unipv.ingsfw.model.users.Cliente;
 import it.unipv.ingsfw.view.cliente.ClienteFrameRegLog;
 
@@ -81,13 +85,11 @@ public class Totem {
 		HashMap<Integer, String> lav = F2aFacade.getInstance().getLavaggioFacade().selectAll();
 				return lav;
 	}
-	
-	public String getLavaggio(String tipo) {
-		return tipo;	
+	public boolean generaPrenotazioneCapo(Capo c) throws ParseException {
+		boolean esito=F2aFacade.getInstance().getCapoFacade().insertCapo(c);
+		return esito;
 	}
-	
-	
-	
+
     
     /*
 	public static void main(String[] args) {

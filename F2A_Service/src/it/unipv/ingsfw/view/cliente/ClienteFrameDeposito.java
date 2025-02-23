@@ -3,18 +3,13 @@ import java.awt.*;
 import javax.swing.*;
 import it.unipv.ingsfw.controller.TotemAction;
 import it.unipv.ingsfw.model.negozio.Totem;
-import it.unipv.ingsfw.model.users.Cliente;
 public class ClienteFrameDeposito extends JFrame {
 
 	ClienteDepositoPanel pannello;
 	Container c;
 
 	public ClienteFrameDeposito (Totem t) throws HeadlessException {
-	/*	setSize (WIDTH, HEIGHT);
-	}
-	public static final int WIDTH =300;
-	public static final int HEIGHT =200;
-	*/
+
 		Toolkit kit = Toolkit.getDefaultToolkit ();
 		Dimension screenSize = kit.getScreenSize ();
 		int screenHeight = screenSize.height;
@@ -22,11 +17,7 @@ public class ClienteFrameDeposito extends JFrame {
 		setSize (screenWidth/3, screenHeight/3) ; setLocation (screenWidth/4, screenHeight/4);
 		setTitle ("Deposito");
 		
-		
-		
-		
-		
-        JLabel cred = new JLabel("Definisci i seguenti parametri:");
+        JLabel cred = new JLabel("Definisci i seguenti parametri, quelli indicati con '*' sono campi obbligatori:");
 		pannello = new ClienteDepositoPanel();
 		c = getContentPane();
 		c.add(cred);
