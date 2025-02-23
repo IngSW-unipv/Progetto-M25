@@ -41,6 +41,16 @@ public class Ticket {
 		// TODO Auto-generated constructor stub
 	}
 
+	public Ticket(String idTicket) {
+		super();
+		this.idTicket = idTicket;
+		this.tipologia = null;
+		this.stato = null;
+		this.corriere=null;
+		this.itinerario=null;
+		this.mezzo=null;
+	}
+
 	public String getIdTicket() {
 		return idTicket;
 	}

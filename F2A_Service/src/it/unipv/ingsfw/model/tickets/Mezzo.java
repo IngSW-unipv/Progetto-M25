@@ -65,7 +65,7 @@ public class Mezzo {
 	
 	@Override
 	public String toString() {
-		return  "Mezzo " + idMezzo + "\nCapienza: " + capienza + "\nDisponibilità: " + disponibilita;
+		return  "Id Mezzo: " + idMezzo + "\nCapienza: " + capienza + "\n";
 	}
 	
 }

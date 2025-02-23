@@ -42,9 +42,7 @@ public class ItinerarioDAO implements IItinerarioDAO {
 			Tappa tappa;
 			conn = DBConnection.startConnection(conn);
 			PreparedStatement st1;
-			PreparedStatement st2;
 			ResultSet rs1;
-			ResultSet rs2;
 
 			try {
 				//RISOLTO ERRORE java.lang.NullPointerException: Name is null PONENDO LA CONDIZIONE IS NOT NULL SULLO STATO 
@@ -63,7 +61,7 @@ public class ItinerarioDAO implements IItinerarioDAO {
 					tappa = new Negozio(rs1.getString(1),StatoTappa.valueOf(rs1.getString(2)),rs1.getString(3));
 					i.getListaTappeNegozi().add(tappa);
 				}
-				
+				i.setListaTappeNonAttraversate(i.getListaTappeNegozi());
 			} catch (ClassCastException e) {
 				System.out.println("Errore in fase di casting del dipendente");
 			} catch (Exception e) {

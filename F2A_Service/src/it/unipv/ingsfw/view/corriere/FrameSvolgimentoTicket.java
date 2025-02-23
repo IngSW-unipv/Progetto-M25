@@ -22,38 +22,28 @@ import it.unipv.ingsfw.view.operatore.viewLogin.GUILoginOperatore;
  * anche riferimenti alle classi che gestisccono eventi --> finestra di max
  * livello visualizzata direttamente da S.O.
  **/
-public class MainFrameTicket extends JFrame {
+public class FrameSvolgimentoTicket extends JFrame {
 	// componenti:
-	private BarraMenu menu;
+	//private BarraMenu menu;
 	private JPanel pannello;
 	private JPanel pannelloTicket;
-	private JPanel pannelloProfilo;
 	private Container c;
 	// dichiarare final le variabili a cui si accede con i listeners
 	// private final List<JButton> bottoni = new ArrayList<>();
 	private ButtonGroup group;
 	private Ticket tik;
 	private CardLayout cardLayout;
-	private JButton bottoneScelta;
-	private JButton bottonePresaCaricoTicket;
-
-	public JButton getBottonePresaCaricoTicket() {
-		return bottonePresaCaricoTicket;
-	}
-
-	public void setBottonePresaCaricoTicket(JButton bottonePresaCaricoTicket) {
-		this.bottonePresaCaricoTicket = bottonePresaCaricoTicket;
-	}
-
+	private JButton bottoneRitiroAvvenuto;
+	private JButton bottoneConsegnaAvvenuta;
 	// componenti per visualizzare le informazioni del ticket
-	private JLabel labelId;
 	private JTextArea fieldId;
-	private JLabel labelTipologia;
-	private JLabel labelMezzoAssociato;
-	private JTextArea fieldMezzoAssociato;
-	private JTextArea fieldTipologia;
-	private JLabel labelDescrizione;
-	private JTextArea areaDescrizione;
+	private JLabel labelFieldId;
+	private JTextArea fieldTappaCorrente;
+	private JLabel labelTappaCorrente;
+	private JLabel labelCapiDaRitirarePressoTappa;
+	private JLabel labelCapiDaConsegnarePressoTappa;
+	private JTextArea fieldListaCapiDaRitirarePressoTappa;
+	private JTextArea fieldListaCapiDaConsegnarePressoTappa;
 
 	/**
 	 * ad ogni componentebisogna associare un Listener per il relativo evento in
@@ -61,7 +51,7 @@ public class MainFrameTicket extends JFrame {
 	 * componenti (con metodi specifici del componente)
 	 **/
 
-	public MainFrameTicket(Ticket tik) throws HeadlessException {
+	public FrameSvolgimentoTicket(Ticket tik) throws HeadlessException {
 		super();
 		this.tik = tik;
 
@@ -71,11 +61,11 @@ public class MainFrameTicket extends JFrame {
 		Dimension screenSize = kit.getScreenSize();
 		int screenHeight = screenSize.height;
 		int screenWidth = screenSize.width;
-		setSize(screenWidth / 2, (int) (screenHeight / (1.3)));
-		setLocation(screenWidth / 4, screenHeight / 10);
+		setSize(screenWidth / 2, screenHeight / 2);
+		setLocation(screenWidth / 4, screenHeight / 4);
 		Image img = kit.getImage("properties/Logo_F2A_zoom.PNG");
 		setIconImage(img);
-		setTitle("MainFrame Corriere");
+		setTitle("FrameSvolgimentoTicket");
 		// ------------------------------------------------
 		// layout del panel che mi permette di "sovrapporre" altri componenti a
 		// "finestra"
@@ -83,104 +73,128 @@ public class MainFrameTicket extends JFrame {
 		// istanzio il pannello nel costruttore del frame
 		pannello = new JPanel(cardLayout);
 
-		bottoneScelta = new JButton("Visualizza Ticket Assegnati");
-		bottoneScelta.setActionCommand("Visualizza Ticket Assegnati");
-		
 		// Creazione pannelli
 		pannelloTicket = new JPanel();
 		pannelloTicket.setLayout(new BoxLayout(pannelloTicket, BoxLayout.Y_AXIS));
-		pannelloTicket.add(bottoneScelta, BorderLayout.WEST);
-		// aggiungo bottone utile a prendere in carico il ticket
-		bottonePresaCaricoTicket = new JButton("Prendi In Carico");
-		bottonePresaCaricoTicket.setActionCommand("Prendi In Carico");
-		// inizialmente il bottone non viene mostrato
-		bottonePresaCaricoTicket.setVisible(false);
-		// verrà mostrato solo dopo aver scelto il ticket dal menu a tendina
-		pannelloTicket.add(bottonePresaCaricoTicket, BorderLayout.EAST);
-		pannelloProfilo = new JPanel();
-		pannelloProfilo.add(new JLabel("Gestione Profilo - In costruzione"));
 
 		// Aggiunta pannelli al CardLayout
 		pannello.add(pannelloTicket, "Ticket");
-		pannello.add(pannelloProfilo, "Profilo");
 
 		// Creazione menu personalizzato
-		menu = new BarraMenu();
-		setJMenuBar(menu);
+		//menu = new BarraMenu();
+		setJMenuBar(null);
 
 		// restituisce la reference del JFrame
 		c = getContentPane();
 		c.setLayout(new BorderLayout());
-		c.add(menu, BorderLayout.NORTH);
-		c.add(pannello, BorderLayout.WEST);
+		//c.add(menu, BorderLayout.NORTH);
+		c.add(pannello, BorderLayout.CENTER);
 
-		// creo i componenti per visualizzare le informazioni del ticket
-		labelId = new JLabel("ID Ticket:");
+
+		labelFieldId= new JLabel("TICKET IN SVOLGIMENTO: ");
 		fieldId = new JTextArea(2, 10);
-		fieldId.setEditable(false);
-		labelTipologia = new JLabel("Titolo:");
-		fieldTipologia = new JTextArea(2, 10);
-		fieldTipologia.setEditable(false);
-		labelDescrizione = new JLabel("Descrizione:");
-		areaDescrizione = new JTextArea(3, 15);
-		areaDescrizione.setEditable(false);
-		labelMezzoAssociato = new JLabel("Id Mezzo:");
-		;
-		fieldMezzoAssociato = new JTextArea(2, 10);
-		fieldMezzoAssociato.setEditable(false);
-
-		// aggiungo i componenti al pannello
-		pannelloTicket.add(labelId);
+		labelTappaCorrente= new JLabel("Tappa Corrente: ");
+		fieldTappaCorrente = new JTextArea(2, 10);
+		pannelloTicket.add(labelFieldId);
 		pannelloTicket.add(fieldId);
-		pannelloTicket.add(labelTipologia);
-		pannelloTicket.add(fieldTipologia);
-		pannelloTicket.add(labelDescrizione);
-		pannelloTicket.add(areaDescrizione);
-		pannelloTicket.add(labelMezzoAssociato);
-		pannelloTicket.add(fieldMezzoAssociato);
+		pannelloTicket.add(labelTappaCorrente);
+		pannelloTicket.add(fieldTappaCorrente);
+		labelCapiDaRitirarePressoTappa= new JLabel("Capi Da Ritirare: ");
+		labelCapiDaConsegnarePressoTappa= new JLabel("Capi Da Consegnare: ");
+		fieldListaCapiDaRitirarePressoTappa=new JTextArea (2,10);
+		fieldListaCapiDaConsegnarePressoTappa=new JTextArea (2,10);
+		pannelloTicket.add(labelCapiDaRitirarePressoTappa);
+		pannelloTicket.add(labelCapiDaConsegnarePressoTappa);
+		pannelloTicket.add(fieldListaCapiDaRitirarePressoTappa);
+		pannelloTicket.add(fieldListaCapiDaConsegnarePressoTappa);
+		//inizialmente non visibili
+		fieldListaCapiDaRitirarePressoTappa.setVisible(false);
+		fieldListaCapiDaConsegnarePressoTappa.setVisible(false);
+		labelCapiDaRitirarePressoTappa.setVisible(false);
+		labelCapiDaConsegnarePressoTappa.setVisible(false);
+		
+		bottoneRitiroAvvenuto = new JButton("Ritiro presso tappa corrente avvenuto");
+		bottoneRitiroAvvenuto.setActionCommand("Ritiro presso tappa corrente avvenuto");
+		bottoneConsegnaAvvenuta = new JButton("Consegna presso tappa corrente avvenuta");
+		bottoneConsegnaAvvenuta.setActionCommand("Consegna presso tappa corrente avvenuta");
+		pannelloTicket.add(bottoneRitiroAvvenuto);
+		pannelloTicket.add(bottoneConsegnaAvvenuta);
+		//inizialmente entrambi non visibili, fatti vedere in base al fatto che il ticket è di tipo consegna o di tipo ritiro
+		bottoneRitiroAvvenuto.setVisible(false);
+		bottoneConsegnaAvvenuta.setVisible(false);
 		new TicketAction(tik, this);
 	}
+	
 
-
-	public JLabel getLabelTipologia() {
-		return labelTipologia;
+	public JLabel getLabelCapiDaRitirarePressoTappa() {
+		return labelCapiDaRitirarePressoTappa;
 	}
 
-	public void setLabelTipologia(JLabel labelTipologia) {
-		this.labelTipologia = labelTipologia;
+
+	public void setLabelCapiDaRitirarePressoTappa(JLabel labelCapiDaRitirarePressoTappa) {
+		this.labelCapiDaRitirarePressoTappa = labelCapiDaRitirarePressoTappa;
 	}
 
-	public JLabel getLabelMezzoAssociato() {
-		return labelMezzoAssociato;
+
+	public JLabel getLabelCapiDaConsegnarePressoTappa() {
+		return labelCapiDaConsegnarePressoTappa;
 	}
 
-	public void setLabelMezzoAssociato(JLabel labelMezzoAssociato) {
-		this.labelMezzoAssociato = labelMezzoAssociato;
+
+	public void setLabelCapiDaConsegnarePressoTappa(JLabel labelCapiDaConsegnarePressoTappa) {
+		this.labelCapiDaConsegnarePressoTappa = labelCapiDaConsegnarePressoTappa;
 	}
 
-	public JTextArea getFieldMezzoAssociato() {
-		return fieldMezzoAssociato;
+
+	public JButton getBottoneRitiroAvvenuto() {
+		return bottoneRitiroAvvenuto;
 	}
 
-	public void setFieldMezzoAssociato(JTextArea fieldMezzoAssociato) {
-		this.fieldMezzoAssociato = fieldMezzoAssociato;
+
+	public void setBottoneRitiroAvvenuto(JButton bottoneRitiroAvvenuto) {
+		this.bottoneRitiroAvvenuto = bottoneRitiroAvvenuto;
 	}
 
-	public JTextArea getFieldTipologia() {
-		return fieldTipologia;
+
+	public JButton getBottoneConsegnaAvvenuta() {
+		return bottoneConsegnaAvvenuta;
 	}
 
-	public void setFieldTipologia(JTextArea fieldTipologia) {
-		this.fieldTipologia = fieldTipologia;
+
+	public void setBottoneConsegnaAvvenuta(JButton bottoneConsegnaAvvenuta) {
+		this.bottoneConsegnaAvvenuta = bottoneConsegnaAvvenuta;
 	}
 
-	public JLabel getLabelId() {
-		return labelId;
+
+	public JTextArea getFieldTappaCorrente() {
+		return fieldTappaCorrente;
 	}
 
-	public void setLabelId(JLabel labelId) {
-		this.labelId = labelId;
+
+	public void setFieldTappaCorrente(JTextArea fieldTappaCorrente) {
+		this.fieldTappaCorrente = fieldTappaCorrente;
 	}
+
+
+	public JTextArea getFieldListaCapiDaRitirarePressoTappa() {
+		return fieldListaCapiDaRitirarePressoTappa;
+	}
+
+
+	public void setFieldListaCapiDaRitirarePressoTappa(JTextArea fieldListaCapiDaRitirarePressoTappa) {
+		this.fieldListaCapiDaRitirarePressoTappa = fieldListaCapiDaRitirarePressoTappa;
+	}
+
+
+	public JTextArea getFieldListaCapiDaConsegnarePressoTappa() {
+		return fieldListaCapiDaConsegnarePressoTappa;
+	}
+
+
+	public void setFieldListaCapiDaConsegnarePressoTappa(JTextArea fieldListaCapiDaConsegnarePressoTappa) {
+		this.fieldListaCapiDaConsegnarePressoTappa = fieldListaCapiDaConsegnarePressoTappa;
+	}
+
 
 	public JTextArea getFieldId() {
 		return fieldId;
@@ -188,22 +202,6 @@ public class MainFrameTicket extends JFrame {
 
 	public void setFieldId(JTextArea fieldId) {
 		this.fieldId = fieldId;
-	}
-
-	public JLabel getLabelDescrizione() {
-		return labelDescrizione;
-	}
-
-	public void setLabelDescrizione(JLabel labelDescrizione) {
-		this.labelDescrizione = labelDescrizione;
-	}
-
-	public JTextArea getAreaDescrizione() {
-		return areaDescrizione;
-	}
-
-	public void setAreaDescrizione(JTextArea areaDescrizione) {
-		this.areaDescrizione = areaDescrizione;
 	}
 
 	public Ticket getTik() {
@@ -214,18 +212,10 @@ public class MainFrameTicket extends JFrame {
 		this.tik = tik;
 	}
 
-	public JButton getBottoneScelta() {
-		return bottoneScelta;
-	}
-
-	public void setBottoneScelta(JButton bottoneScelta) {
-		this.bottoneScelta = bottoneScelta;
-	}
-
 	public void setPannelloTicket(JPanel pannelloTicket) {
 		this.pannelloTicket = pannelloTicket;
 	}
-
+/**
 	public BarraMenu getMenu() {
 		return menu;
 	}
@@ -233,7 +223,7 @@ public class MainFrameTicket extends JFrame {
 	public void setMenu(BarraMenu menu) {
 		this.menu = menu;
 	}
-
+**/
 	public JPanel getPannello() {
 		return pannello;
 	}
@@ -248,14 +238,6 @@ public class MainFrameTicket extends JFrame {
 
 	public void setPannelloStazioni(JPanel pannelloTicket) {
 		this.pannelloTicket = pannelloTicket;
-	}
-
-	public JPanel getPannelloProfilo() {
-		return pannelloProfilo;
-	}
-
-	public void setPannelloProfilo(JPanel pannelloProfilo) {
-		this.pannelloProfilo = pannelloProfilo;
 	}
 
 	public Container getC() {
@@ -321,7 +303,7 @@ public class MainFrameTicket extends JFrame {
 		Ticket tik = new Ticket();
 		// evita conflitti quando uso view diverse
 		SwingUtilities.invokeLater(() -> {
-			MainFrameTicket loginOp = new MainFrameTicket(tik);
+			FrameSvolgimentoTicket loginOp = new FrameSvolgimentoTicket(tik);
 			loginOp.setDefaultCloseOperation(EXIT_ON_CLOSE);
 			loginOp.setVisible(true);
 		});

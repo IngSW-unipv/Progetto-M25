@@ -226,6 +226,85 @@ public class CapoDAO implements ICapoDAO {
 
 	}
 
+	@Override
+	public ArrayList<Capo> selectCapiDaRitirareByTappa(Capo input) {
+		
+		ArrayList<Capo> result = new ArrayList<>();
+
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+		//negozio deposito = negozio ritiro != negozio consegna
+		Negozio negDep;
+		Cliente cl;
+
+		try {
+			String query = "SELECT * FROM CAPI C WHERE C.IDNEGOZIODEPOSITO=? AND C.STATO='IN_STORE'";
+
+			st1 = conn.prepareStatement(query);
+			st1.setString(1, input.getNegozioDeposito().getIdTappa());
+
+			rs1 = st1.executeQuery();
+
+			while (rs1.next()) {
+				negDep = new Negozio(rs1.getString(6));
+				Negozio negCons = new Negozio(rs1.getString(7));
+				cl = new Cliente(rs1.getString(9));
+				Capo c = new Capo(rs1.getString(1), StatoCapo.valueOf(rs1.getString(2)),
+						input.getTipoLavaggio(), rs1.getDate(4), rs1.getDate(5), negDep, negCons,
+						rs1.getDouble(8), cl);
+				result.add(c);
+			}
+		} catch (NumberFormatException e) {
+			System.err.println("Parsing non andato a buon fine");
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return result;
+	}
+	
+	@Override
+	public ArrayList<Capo> selectCapiDaConsegnareByTappa(Capo input) {
+		
+		ArrayList<Capo> result = new ArrayList<>();
+
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+		
+		Negozio negCons;
+		Cliente cl;
+
+		try {
+			String query = "SELECT * FROM CAPI C WHERE C.IDNEGOZIOCONSEGNA=? AND C.STATO='IN_STORE'";
+
+			st1 = conn.prepareStatement(query);
+			st1.setString(1, input.getNegozioConsegna().getIdTappa());
+			rs1 = st1.executeQuery();
+
+			while (rs1.next()) {
+				Negozio negDep = new Negozio(rs1.getString(6));
+				negCons = new Negozio(rs1.getString(7));
+				cl = new Cliente(rs1.getString(9));
+				Capo c = new Capo(rs1.getString(1), StatoCapo.valueOf(rs1.getString(2)),
+						input.getTipoLavaggio(), rs1.getDate(4), rs1.getDate(5), negDep, negCons,
+						rs1.getDouble(8), cl);
+				result.add(c);
+			}
+		} catch (NumberFormatException e) {
+			System.err.println("Parsing non andato a buon fine");
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return result;
+	}
+	
 	public static void main(String[] args) throws ParseException {
 		// da testare inserimento corretto data
 

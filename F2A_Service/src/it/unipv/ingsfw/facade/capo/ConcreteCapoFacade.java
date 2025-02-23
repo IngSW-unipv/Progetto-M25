@@ -39,6 +39,33 @@ public class ConcreteCapoFacade implements ICapoFacade {
 		return lista;
 		
 	}
+	
+	public ArrayList<Capo> selectCapiDaRitirareByTappa(Capo input){
+		
+		ArrayList<Capo> lista = new ArrayList<>();
+
+		try {
+			lista = capoDAO.selectCapiDaRitirareByTappa(input);
+		} catch (Exception e) {
+			System.err.println("Errore nel prelevamento dei capi da ritirare per tappa");
+		}
+		return lista;
+		
+	}
+	
+	public ArrayList<Capo> selectCapiDaConsegnareByTappa(Capo input){
+		
+		ArrayList<Capo> lista = new ArrayList<>();
+
+		try {
+			lista = capoDAO.selectCapiDaConsegnareByTappa(input);
+		} catch (Exception e) {
+			System.err.println("Errore nel prelevamento dei capi da ritirare per tappa");
+		}
+		return lista;
+		
+	}
+	
 	public boolean updateStatoCapo(Capo inputSet) {
 		
 		boolean esito = false;

@@ -9,6 +9,7 @@ import it.unipv.ingsfw.model.tickets.ITicketDAO;
 import it.unipv.ingsfw.model.tickets.Itinerario;
 import it.unipv.ingsfw.model.tickets.Mezzo;
 import it.unipv.ingsfw.model.tickets.Ticket;
+import it.unipv.ingsfw.model.tickets.TicketDAO;
 
 public class ConcreteGestioneTicketsFacade implements ITicketsFacade, IItinerarioFacade, IMezzoFacade {
 	
@@ -20,6 +21,17 @@ public class ConcreteGestioneTicketsFacade implements ITicketsFacade, IItinerari
 		ticketDAO=DaoFactory.getTicketDAO();
 		itinerarioDAO=DaoFactory.getItinerarioDAO();
 		mezzoDAO = DaoFactory.getMezzoDAO();
+	}
+	
+	public Ticket selectTicketById(Ticket ticketFit) {
+
+		try {
+			ticketFit = ticketDAO.selectTicketById(ticketFit);
+		} catch (Exception e) {
+			System.err.println("Errore nel prelevamento degli ticket per id presenti a db");
+		}
+		return ticketFit;
+		
 	}
 	
 	public ArrayList<Ticket> selectTicketByStatoAndCorriere(Ticket input){
@@ -45,6 +57,18 @@ public class ConcreteGestioneTicketsFacade implements ITicketsFacade, IItinerari
 			System.err.println("Errore nel prelevamento dei ticket da db");
 		}
 		return lista;
+		
+	}
+	
+	public boolean updateStatoTicket (Ticket t) {
+		boolean esito = false;
+
+		try {
+			esito = ticketDAO.updateStatoTicket(t);
+		} catch (Exception e) {
+			System.err.println("Errore aggiornamento stato ticket");
+		}
+		return esito;
 		
 	}
 	
