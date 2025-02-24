@@ -379,10 +379,11 @@ public class DipendenteDAO implements IDipendenteDAO {
 		DBConnection.closeConnection(conn);
 		return result;
 	}
-	
-	//aggiunto in data 22/02
-	//restituisce tutte le info del corriere a diff selectByEmailPassword che restituisce un booleano
-	//usato in fase di login per reperire le info del corriere da DB
+
+	// aggiunto in data 22/02
+	// restituisce tutte le info del corriere a diff selectByEmailPassword che
+	// restituisce un booleano
+	// usato in fase di login per reperire le info del corriere da DB
 	public Corriere selectCorriereByEmailPassword(Corriere input) {
 
 		conn = DBConnection.startConnection(conn);
@@ -391,9 +392,9 @@ public class DipendenteDAO implements IDipendenteDAO {
 
 		try {
 			String query = "(select distinct d.IdDipendente, nome, cognome, cf, email, password, tipo, stipendio,'OCCUPATO' as StatoCorriere"
-					      + " from Dipendenti d where email=? and password=? AND IdDipendente IN ( SELECT T1.IdDipendente FROM Ticket T1 WHERE T1.stato!='COMPLETATO' and T1.IdDipendente=d.IdDipendente)) "
-					      + "union (select distinct d.IdDipendente, nome, cognome, cf, email, password, tipo, stipendio,'LIBERO' as StatoCorriere"
-					      + " from Dipendenti d where email=? and password=? AND IdDipendente IN ( SELECT T1.IdDipendente FROM Ticket T1 WHERE T1.stato='COMPLETATO' and T1.IdDipendente=d.IdDipendente));";
+					+ " from Dipendenti d where email=? and password=? AND IdDipendente IN ( SELECT T1.IdDipendente FROM Ticket T1 WHERE T1.stato!='COMPLETATO' and T1.IdDipendente=d.IdDipendente)) "
+					+ "union (select distinct d.IdDipendente, nome, cognome, cf, email, password, tipo, stipendio,'LIBERO' as StatoCorriere"
+					+ " from Dipendenti d where email=? and password=? AND IdDipendente IN ( SELECT T1.IdDipendente FROM Ticket T1 WHERE T1.stato='COMPLETATO' and T1.IdDipendente=d.IdDipendente));";
 
 			st1 = conn.prepareStatement(query);
 			st1.setString(1, input.getEmail());
@@ -457,7 +458,7 @@ public class DipendenteDAO implements IDipendenteDAO {
 
 	@Override
 	public synchronized TipoOperatore selectTipoOperatoreById(Dipendente input) {
-		
+
 		conn = DBConnection.startConnection(conn);
 		PreparedStatement st1;
 		ResultSet rs1;
@@ -572,6 +573,5 @@ public class DipendenteDAO implements IDipendenteDAO {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 }

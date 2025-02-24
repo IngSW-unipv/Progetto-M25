@@ -54,6 +54,7 @@ public class Capo {
 
 
 
+
 	public Capo(String idCapo, StatoCapo stato, TipoLavaggio sol1, Date ritiro, Date consegna, Negozio sonr, Negozio sond,
 			Double costo, Cliente cliente) {
 		super();
@@ -74,7 +75,18 @@ public class Capo {
 		this.statoCapo = stato;
 	}
 
-
+	public Capo() {
+		super();
+		this.idCapo = null;
+		this.statoCapo = null;
+		this.tipoLavaggio = null;
+		this.dataRitiro = null;
+		this.dataUltimaConsegna = null;
+		this.negozioDeposito = null;
+		this.negozioConsegna = null;
+		this.prezzoScontato = 0;
+		this.cliente = null;
+	}
 
 	public String getIdCapo() {
 		return idCapo;
@@ -154,6 +166,11 @@ public class Capo {
 				+ dataRitiro + "\nDataUltimaConsegna: " + dataUltimaConsegna + "\nNegozioDeposito: "
 				+ negozioDeposito.getIdTappa() + "\nNegozioConsegna: " + negozioConsegna.getIdTappa()
 				+ "\nPrezzoScontato: " + prezzoScontato + "\nIdCliente: " + cliente.getIdCliente();
+	}
+	
+	public String toStringCor() {
+		return "ID Capo: " + idCapo + "\nTipoLavaggio: " + tipoLavaggio + "\nId NegozioRitiro: "
+				+ negozioDeposito.getIdTappa() + "\nIdCliente: " + cliente.getIdCliente();
 	}
 	
 
