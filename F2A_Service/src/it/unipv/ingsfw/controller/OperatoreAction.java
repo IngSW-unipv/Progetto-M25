@@ -263,6 +263,8 @@ public class OperatoreAction implements Observer {
         m.getBottoni().clear();
         m.setGroup(new ButtonGroup());
         JLabel noStazioni;
+        int numCapi = 0;
+        boolean check = false;
 
         for (ObservableStazioneLavoro stazione : stazioni) {
             JPanel panel = new JPanel();
@@ -270,13 +272,20 @@ public class OperatoreAction implements Observer {
             JButton button = new JButton();
             button.setPreferredSize(new Dimension(30, 30));
 
+            check = stazione.checkPresenzaCapi();
+            
+            if(check) {
+            	numCapi = stazione.getListaCapiDaLavorare().size();
+            }
             updateButtonColor(button, stazione.getStatoStazione());
             m.getBottoni().add(button);
             panel.add(label);
             panel.add(button);
+            panel.add(new JLabel(" | Numero capi assegnati: " + String.valueOf(numCapi)));
             m.getGroup().add(button);
             m.getPannelloStazioni().add(panel);
             button.setEnabled(true);
+            numCapi = 0;
         }
 
         if (stazioni.size() == 0) {
