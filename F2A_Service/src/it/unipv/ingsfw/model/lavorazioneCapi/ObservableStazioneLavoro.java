@@ -142,10 +142,10 @@ public class ObservableStazioneLavoro extends Observable {
 
 	public void messaInLavorazione(int index) {
 		statoStazione = StatoStazione.WORKING;
-		notificaObservers(index);
 		//setChanged();
 		System.out.println("Stato cambiato 1 , notifico gli osservatori...");
 	    //notifyObservers(index);
+		notificaObservers(index);
 	}
 
 	public void messaInStandBy(int index) {
@@ -185,7 +185,7 @@ public class ObservableStazioneLavoro extends Observable {
 		}
 
 		for (Capo c : listaCapi) {
-			System.out.println(c);
+			//System.out.println(c);
 		}
 		return esitoCaricamento;
 	}
@@ -252,6 +252,7 @@ public class ObservableStazioneLavoro extends Observable {
 
 			for (Capo c : this.getListaCapiDaLavorare()) {
 				c.setStatoCapo(StatoCapo.IN_CONSEGNA);
+				F2aFacade.getInstance().getLavorazioneCapiFacade().updateLavorazione(this, c);
 				F2aFacade.getInstance().getCapoFacade().updateStatoCapo(c);
 			}
 
