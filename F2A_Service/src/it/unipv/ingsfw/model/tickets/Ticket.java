@@ -1,5 +1,8 @@
 package it.unipv.ingsfw.model.tickets;
 
+import java.util.ArrayList;
+
+import it.unipv.ingsfw.model.Capo;
 import it.unipv.ingsfw.model.users.Corriere;
 
 public class Ticket {
@@ -10,6 +13,7 @@ public class Ticket {
 	private Mezzo mezzo;
 	private Itinerario itinerario;
 	private Corriere corriere;
+	private ArrayList <Capo> listaCapiRitOCon;
 	//"DataPresaInCarico" e "dataTerminazione" sono presenti a DB e vengono aggiornate quando cambia lo stato del ticket
 	//OSS: al momento non sussiste la necessità di averle come attributi nella suddetta classe
 	
@@ -26,8 +30,17 @@ public class Ticket {
 		this.corriere=corriere;
 		this.itinerario=itinerario;
 		this.mezzo=mezzo;
+		this.listaCapiRitOCon= new ArrayList<Capo>();
 	}
 	
+	public ArrayList<Capo> getListaCapiRitOCon() {
+		return listaCapiRitOCon;
+	}
+
+	public void setListaCapiRitOCon(ArrayList<Capo> listaCapiRitOCon) {
+		this.listaCapiRitOCon = listaCapiRitOCon;
+	}
+
 	public Ticket (StatoTicket stato, Corriere corriere) {
 		super();
 		this.idTicket = null;
@@ -36,9 +49,11 @@ public class Ticket {
 		this.corriere=corriere;
 		this.itinerario=null;
 		this.mezzo=null;
+		this.listaCapiRitOCon= new ArrayList<Capo>();
 	}
 	public Ticket() {
 		// TODO Auto-generated constructor stub
+		this.listaCapiRitOCon= new ArrayList<Capo>();
 	}
 
 	public Ticket(String idTicket) {
@@ -49,6 +64,7 @@ public class Ticket {
 		this.corriere=null;
 		this.itinerario=null;
 		this.mezzo=null;
+		this.listaCapiRitOCon= new ArrayList<Capo>();
 	}
 
 	public String getIdTicket() {

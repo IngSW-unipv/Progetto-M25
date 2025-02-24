@@ -84,13 +84,13 @@ public class Itinerario {
 		Iterator<Tappa> iteratore = listaTappeNonAttraversate.iterator();
 		Tappa t = null;
 		while (iteratore.hasNext()) {
-			System.out.println("CIaooo");
 			t = iteratore.next();
 			if (t.getStato().toString().equalsIgnoreCase("NON_ATTRAVERSATA")) {
 				break;
 			} else {
 				// se la tappa è stata attraversata la rimuove dall'array, e riprende
 				iteratore.remove();
+				System.out.println(listaTappeNonAttraversate.size());
 			}
 			System.out.println(t);
 		}

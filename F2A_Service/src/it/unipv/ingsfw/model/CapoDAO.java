@@ -142,6 +142,47 @@ public class CapoDAO implements ICapoDAO {
 		return esito;
 	}
 	@Override
+	public boolean updateStatoCapoByTappa(Capo inputSet){
+		
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		boolean esito = true;
+
+		try {
+			String query = null;
+			
+			if(inputSet.getNegozioConsegna()==null) {
+				query = "UPDATE CAPI SET STATO =? WHERE IDNEGOZIODEPOSITO = ?";
+				st1 = conn.prepareStatement(query);
+				st1.setString(1, inputSet.getStatoCapo().toString());
+				st1.setString(2, inputSet.getNegozioDeposito().getIdTappa());
+				st1.executeUpdate();
+			}
+			else if(inputSet.getNegozioDeposito()==null) {
+				query = "UPDATE CAPI SET STATO =? WHERE IDNEGOZIOCONSEGNA = ?";
+				st1 = conn.prepareStatement(query);
+				st1.setString(1, inputSet.getStatoCapo().toString());
+				st1.setString(2, inputSet.getNegozioConsegna().getIdTappa());
+				st1.executeUpdate();
+			}
+
+		} catch(SQLTimeoutException e) {
+			System.err.println("Timeout");
+			e.printStackTrace();
+			esito = false;
+		}catch (NumberFormatException e) {
+			System.err.println("Parsing non andato a buon fine");
+			e.printStackTrace();
+			esito = false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			esito = false;
+		}
+
+		DBConnection.closeConnection(conn);
+		return esito;
+	}
+	@Override
 	public String getNewIdCapo() {
 
 		conn = DBConnection.startConnection(conn);
@@ -279,7 +320,7 @@ public class CapoDAO implements ICapoDAO {
 		Cliente cl;
 
 		try {
-			String query = "SELECT * FROM CAPI C WHERE C.IDNEGOZIOCONSEGNA=? AND C.STATO='IN_STORE'";
+			String query = "SELECT * FROM CAPI C WHERE C.IDNEGOZIOCONSEGNA=? AND C.STATO='IN_CONSEGNA'";
 
 			st1 = conn.prepareStatement(query);
 			st1.setString(1, input.getNegozioConsegna().getIdTappa());

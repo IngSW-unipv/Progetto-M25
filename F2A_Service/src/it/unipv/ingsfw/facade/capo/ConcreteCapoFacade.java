@@ -8,15 +8,15 @@ import it.unipv.ingsfw.model.Capo;
 import it.unipv.ingsfw.model.ICapoDAO;
 
 public class ConcreteCapoFacade implements ICapoFacade {
-	
+
 	private final ICapoDAO capoDAO;
 
 	public ConcreteCapoFacade() {
 		capoDAO = DaoFactory.getCapoDAO();
 	}
-	
-	public ArrayList<Capo> selectAll(){
-		
+
+	public ArrayList<Capo> selectAll() {
+
 		ArrayList<Capo> lista = new ArrayList<>();
 
 		try {
@@ -25,10 +25,11 @@ public class ConcreteCapoFacade implements ICapoFacade {
 			System.err.println("Errore nel prelevamento dei capi presenti a db");
 		}
 		return lista;
-		
+
 	}
-	public ArrayList<Capo> selectCapoByStatoETipo(Capo input){
-		
+
+	public ArrayList<Capo> selectCapoByStatoETipo(Capo input) {
+
 		ArrayList<Capo> lista = new ArrayList<>();
 
 		try {
@@ -37,11 +38,11 @@ public class ConcreteCapoFacade implements ICapoFacade {
 			System.err.println("Errore nel prelevamento dei capi per stato e tipo presenti a db");
 		}
 		return lista;
-		
+
 	}
-	
-	public ArrayList<Capo> selectCapiDaRitirareByTappa(Capo input){
-		
+
+	public ArrayList<Capo> selectCapiDaRitirareByTappa(Capo input) {
+
 		ArrayList<Capo> lista = new ArrayList<>();
 
 		try {
@@ -50,11 +51,11 @@ public class ConcreteCapoFacade implements ICapoFacade {
 			System.err.println("Errore nel prelevamento dei capi da ritirare per tappa");
 		}
 		return lista;
-		
+
 	}
-	
-	public ArrayList<Capo> selectCapiDaConsegnareByTappa(Capo input){
-		
+
+	public ArrayList<Capo> selectCapiDaConsegnareByTappa(Capo input) {
+
 		ArrayList<Capo> lista = new ArrayList<>();
 
 		try {
@@ -63,11 +64,11 @@ public class ConcreteCapoFacade implements ICapoFacade {
 			System.err.println("Errore nel prelevamento dei capi da ritirare per tappa");
 		}
 		return lista;
-		
+
 	}
-	
+
 	public boolean updateStatoCapo(Capo inputSet) {
-		
+
 		boolean esito = false;
 
 		try {
@@ -76,10 +77,24 @@ public class ConcreteCapoFacade implements ICapoFacade {
 			System.err.println("Errore update stato capo");
 		}
 		return esito;
-		
+
 	}
+
+	public boolean updateStatoCapoByTappa(Capo inputSet) {
+
+		boolean esito = false;
+
+		try {
+			esito = capoDAO.updateStatoCapoByTappa(inputSet);
+		} catch (Exception e) {
+			System.err.println("Errore update stato capo per tappa");
+		}
+		return esito;
+
+	}
+
 	public String getNewIdCapo() {
-		
+
 		String id = "";
 
 		try {
@@ -88,10 +103,11 @@ public class ConcreteCapoFacade implements ICapoFacade {
 			System.err.println("Errore generazione nuovo id capo");
 		}
 		return id;
-		
+
 	}
-	public boolean insertCapo(Capo c) throws ParseException{
-		
+
+	public boolean insertCapo(Capo c) throws ParseException {
+
 		boolean esito = false;
 
 		try {
@@ -100,7 +116,7 @@ public class ConcreteCapoFacade implements ICapoFacade {
 			System.err.println("Errore inserimento capo");
 		}
 		return esito;
-		
+
 	}
 	
 	public String getStatoCapoById(Capo c) {

@@ -17,9 +17,11 @@ import com.sun.tools.javac.Main;
 
 import it.unipv.ingsfw.facade.F2aFacade;
 import it.unipv.ingsfw.model.Capo;
+import it.unipv.ingsfw.model.StatoCapo;
 import it.unipv.ingsfw.model.lavorazioneCapi.ObservableStazioneLavoro;
 import it.unipv.ingsfw.model.lavorazioneCapi.StatoStazione;
 import it.unipv.ingsfw.model.negozio.Negozio;
+import it.unipv.ingsfw.model.negozio.StatoTappa;
 import it.unipv.ingsfw.model.tickets.Itinerario;
 import it.unipv.ingsfw.model.tickets.StatoTicket;
 import it.unipv.ingsfw.model.tickets.Ticket;
@@ -42,8 +44,7 @@ public class TicketAction {
 	private Ticket new_tik;
 	private GUILoginCorriere login; // Login View
 	private MainFrameTicket main; // Main View Corriere
-	private FrameSvolgimentoTicket svt; // Main View Svolgimento Ticket
-	int i = 0;
+	private FrameSvolgimentoTicket svt1; // Main View Svolgimento Ticket
 
 	public TicketAction(GUILoginCorriere login) {
 		this.tik = new Ticket(null, null);
@@ -60,8 +61,11 @@ public class TicketAction {
 
 	public TicketAction(Ticket tik, FrameSvolgimentoTicket svt) {
 		this.tik = tik;
-		this.svt = svt;
-		//addSvolgimentoTicketListeners();
+		this.svt1 = svt;
+		addRitiroAvvenutoPressoTappaListeners();
+		addConsegnaAvvenutaPressoTappaListeners();
+		// addSvolgimentoTicketListeners();
+
 	}
 
 	// setto i Tiket associati al corriere, ma non è meglio fare così anche per
@@ -169,58 +173,111 @@ public class TicketAction {
 	}
 
 	private void addSvolgimentoTicketListeners() {
-		
+
 		main.getBottonePresaCaricoTicket().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (main.getBottonePresaCaricoTicket().getActionCommand().equalsIgnoreCase("Prendi In Carico")) {
 					new_tik.setStato(StatoTicket.PRESO_IN_CARICO);
 					F2aFacade.getInstance().getGestioneTicketsFacade().updateStatoTicket(new_tik);
-					new_tik=F2aFacade.getInstance().getGestioneTicketsFacade().selectTicketById(new_tik);
+					new_tik = F2aFacade.getInstance().getGestioneTicketsFacade().selectTicketById(new_tik);
 					main.setVisible(false);
 					main.setJMenuBar(null);
 					main.removeAll();
-					FrameSvolgimentoTicket svt = new FrameSvolgimentoTicket(new_tik);
-					svt.setVisible(true);
-					svt.getFieldId().setText("Svolgimento Ticket: " + new_tik.getIdTicket());
-					// inizialmente mostrata la prima tappa dell'itinerario
-					svt.getFieldTappaCorrente().setText("Tappa Corrente: " + new_tik.getItinerario().getTappaCorrente());
-					capo_fit = new Capo();
-					if (new_tik.getTipologia().toString().equalsIgnoreCase("RITIRO")) {
-						svt.getBottoneRitiroAvvenuto().setVisible(true);
-						svt.getBottoneConsegnaAvvenuta().setVisible(false);
-						System.out.println(new_tik.getItinerario());
-						System.out.println((Negozio) new_tik.getItinerario().getTappaCorrente());
-						capo_fit.setNegozioDeposito((Negozio) new_tik.getItinerario().getTappaCorrente());
-						ArrayList<Capo> capi = F2aFacade.getInstance().getCapoFacade().selectCapiDaRitirareByTappa(capo_fit);
-						svt.getFieldListaCapiDaRitirarePressoTappa().setText(showCapiOfTappa(capi,svt));
-						svt.getLabelCapiDaRitirarePressoTappa().setVisible(true);
-						svt.getFieldListaCapiDaRitirarePressoTappa().setVisible(true);
-					} else if (new_tik.getTipologia().toString().equalsIgnoreCase("CONSEGNA")) {
-						svt.getBottoneConsegnaAvvenuta().setVisible(true);
-						svt.getBottoneRitiroAvvenuto().setVisible(false);
-						capo_fit.setNegozioConsegna((Negozio) new_tik.getItinerario().getTappaCorrente());
-						ArrayList<Capo> capi = F2aFacade.getInstance().getCapoFacade().selectCapiDaConsegnareByTappa(capo_fit);
-						svt.getFieldListaCapiDaConsegnarePressoTappa().setText(showCapiOfTappa(capi,svt));
-						svt.getLabelCapiDaRitirarePressoTappa().setVisible(true);
-						svt.getFieldListaCapiDaConsegnarePressoTappa().setVisible(true);
-					}
+					FrameSvolgimentoTicket svt1 = new FrameSvolgimentoTicket(new_tik);
+					svt1.setVisible(true);
+					svt1.getFieldId().setText("Svolgimento Ticket: " + new_tik.getIdTicket());
+					showTappaCorrenteECapi(svt1);
 				}
 			}
 		});
 
 	}
-//creare un metodo in Itinerario che mi permetta di verificare quale è la tappa corrente (ovvero la prima in ordine, che si trova a stato "NON_ATTRAVERSATO", l'altro mi deve porre a stato attraversato, le tappe attraversate
 
-	private String showCapiOfTappa(ArrayList<Capo> capi, FrameSvolgimentoTicket svt ) {
-		Font currentFont = main.getFieldId().getFont();
-		Font boldFont = currentFont.deriveFont(Font.ITALIC); 
-		svt.getFieldId().setFont(boldFont);
-		String listaCapi = "";
-		for (Capo capo : capi) {
-			listaCapi += "\n- " + capo.toStringCor();
+	private void addRitiroAvvenutoPressoTappaListeners() {
+
+		svt1.getBottoneRitiroAvvenuto().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (svt1.getBottoneRitiroAvvenuto().getActionCommand()
+						.equalsIgnoreCase("Ritiro presso tappa corrente avvenuto")) {
+					// Se la lista dei capi ritirati per il ticket non è vuota
+					// appena il bottone viene premuto i capi vengono posti allo stato "RITIRATO"
+					if (!svt1.getTik().getListaCapiRitOCon().isEmpty()) {
+						Capo capo_fit = new Capo((Negozio) svt1.getTik().getItinerario().getTappaCorrente(), null);
+						capo_fit.setStatoCapo((StatoCapo.RITIRATO));
+						F2aFacade.getInstance().getCapoFacade().updateStatoCapoByTappa(capo_fit);
+					}
+					// quando il corriere conferma l'avvenuto ritiro presso la tappa viene
+					// aggiornato lo stato di quest'ultima in "ATTRAVERSATA"
+					aggiornaTappaConsRit(svt1);
+				}
+			}
+		});
+
+	}
+
+	private void addConsegnaAvvenutaPressoTappaListeners() {
+
+		svt1.getBottoneConsegnaAvvenuta().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (svt1.getBottoneConsegnaAvvenuta().getActionCommand()
+						.equalsIgnoreCase("Consegna presso tappa corrente avvenuta")) {
+					// Se la lista dei capi consegnati per il ticket non è vuota
+					// appena il bottone viene premuto i capi vengono posti allo stato "CONSEGNATO"
+					if (!svt1.getTik().getListaCapiRitOCon().isEmpty()) {
+						Capo capo_fit = new Capo(null, (Negozio) svt1.getTik().getItinerario().getTappaCorrente());
+						capo_fit.setStatoCapo((StatoCapo.CONSEGNATO));
+						F2aFacade.getInstance().getCapoFacade().updateStatoCapoByTappa(capo_fit);
+					}
+					// quando il corriere conferma l'avvenuta consegna presso la tappa viene
+					// aggiornato lo stato di quest'ultima in "ATTRAVERSATA"
+					aggiornaTappaConsRit(svt1);
+				}
+			}
+		});
+
+	}
+
+	private void aggiornaTappaConsRit(FrameSvolgimentoTicket svt1) {
+		svt1.removeAll();
+		svt1.setVisible(false);
+		FrameSvolgimentoTicket svt2 = new FrameSvolgimentoTicket(tik);
+		svt2.setVisible(true);
+		tik.getItinerario().getTappaCorrente().setStato(StatoTappa.ATTRAVERSATA);
+		svt2.getFieldId().setText("Svolgimento Ticket: " + tik.getIdTicket());
+		// all'ultima tappa
+		if (tik.getItinerario().getListaTappeNonAttraversate().size() == 1) {
+			svt2.getBottoneRitiroAvvenuto().setVisible(false);
+			svt2.getBottoneConsegnaAvvenuta().setVisible(false);
+			svt2.getBottoneCompletaTicket().setVisible(true);
+			addCompletaTicketListeners(svt2);
+			svt2.getLabelTappaCorrente().setVisible(false);
+		} else {
+			showTappaCorrenteECapi(svt2);
 		}
-		return listaCapi;
+	}
+
+	private void addCompletaTicketListeners(FrameSvolgimentoTicket svt2) {
+		svt2.getBottoneCompletaTicket().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (svt2.getBottoneCompletaTicket().getActionCommand().equalsIgnoreCase("Completa Ticket")) {
+					int size = svt2.getTik().getListaCapiRitOCon().size();
+					for (int i = 0; i < size; i++) {
+						Capo capo_fit = new Capo(svt2.getTik().getListaCapiRitOCon().get(i).getIdCapo(),
+								StatoCapo.IN_LAVORAZIONE);
+						F2aFacade.getInstance().getCapoFacade().updateStatoCapo(capo_fit);
+					}
+					// RITORNO ALLA HOME PAGE DEL CORRIERE
+					MainFrameTicket main = new MainFrameTicket(svt2.getTik());
+					main.setVisible(true);
+					svt2.setVisible(false);
+				}
+			}
+		});
+
 	}
 
 	private void showTicketInfo(Ticket ticket) {
@@ -228,35 +285,65 @@ public class TicketAction {
 		ticket = F2aFacade.getInstance().getGestioneTicketsFacade().selectTicketById(ticket);
 		// popolo i componenti con le informazioni del ticket
 		main.getFieldId().setText(String.valueOf(ticket.getIdTicket()));
+		main.getFieldId().setVisible(true);
 		// creo font
 		Font currentFont = main.getFieldId().getFont();
 		Font boldFont = currentFont.deriveFont(Font.ITALIC);
 		main.getFieldId().setFont(boldFont);
 		main.getFieldTipologia().setText(String.valueOf(ticket.getTipologia()));
+		main.getFieldTipologia().setVisible(true);
 		main.getFieldTipologia().setFont(boldFont);
 		main.getAreaDescrizione().setText(ticket.getItinerario().toString());
+		main.getAreaDescrizione().setVisible(true);
 		main.getAreaDescrizione().setFont(boldFont);
 		main.getFieldMezzoAssociato().setText(ticket.getMezzo().toString());
+		main.getFieldMezzoAssociato().setVisible(true);
 		main.getFieldMezzoAssociato().setFont(boldFont);
+		main.getLabelId().setVisible(true);
+		main.getLabelTipologia().setVisible(true);
+		main.getLabelItinerario().setVisible(true);
+		main.getLabelMezzoAssociato().setVisible(true);
 		// aggiorno l'interfaccia grafica
 		// main.getPannelloTicket().revalidate();
 		// main.getPannelloTicket().repaint();
 	}
 
-}
+	private void showTappaCorrenteECapi(FrameSvolgimentoTicket svt) {
+		// inizialmente mostrata la prima tappa dell'itinerario
+		svt.getFieldTappaCorrente().setText("Tappa Corrente: " + svt.getTik().getItinerario().getTappaCorrente());
+		capo_fit = new Capo();
+		if (svt.getTik().getTipologia().toString().equalsIgnoreCase("RITIRO")) {
+			svt.getBottoneRitiroAvvenuto().setVisible(true);
+			svt.getBottoneConsegnaAvvenuta().setVisible(false);
+			System.out.println(svt.getTik().getItinerario());
+			System.out.println((Negozio) svt.getTik().getItinerario().getTappaCorrente());
+			capo_fit.setNegozioDeposito((Negozio) svt.getTik().getItinerario().getTappaCorrente());
+			ArrayList<Capo> capi = F2aFacade.getInstance().getCapoFacade().selectCapiDaRitirareByTappa(capo_fit);
+			svt.getFieldListaCapiDaRitirarePressoTappa().setText(showCapiOfTappa(capi, svt));
+			svt.getLabelCapiDaRitirarePressoTappa().setVisible(true);
+			svt.getFieldListaCapiDaRitirarePressoTappa().setVisible(true);
+		} else if (svt.getTik().getTipologia().toString().equalsIgnoreCase("CONSEGNA")) {
+			svt.getBottoneConsegnaAvvenuta().setVisible(true);
+			svt.getBottoneRitiroAvvenuto().setVisible(false);
+			capo_fit.setNegozioConsegna((Negozio) svt.getTik().getItinerario().getTappaCorrente());
+			ArrayList<Capo> capi = F2aFacade.getInstance().getCapoFacade().selectCapiDaConsegnareByTappa(capo_fit);
+			svt.getFieldListaCapiDaConsegnarePressoTappa().setText(showCapiOfTappa(capi, svt));
+			svt.getLabelCapiDaConsegnarePressoTappa().setVisible(true);
+			svt.getFieldListaCapiDaConsegnarePressoTappa().setVisible(true);
+		}
+	}
 
-/*
- * @Override public void update(Observable o, Object arg) {
- * System.out.println("UPDATEEEEEEEEEEEEEEEEEEE"); ObservableStazioneLavoro staz
- * = (ObservableStazioneLavoro) o;
- * if(staz.getStatoStazione().toString().equalsIgnoreCase("WORKING")) {
- * m.getBottoni().get(i).setBackground(Color.RED);
- * JOptionPane.showMessageDialog(m, "Lavorazione avviata con successo",
- * "Avviso", JOptionPane.INFORMATION_MESSAGE); } else if
- * (staz.getStatoStazione().toString().equalsIgnoreCase("READY")){
- * m.getBottoni().get(i).setBackground(Color.GREEN);
- * JOptionPane.showMessageDialog(m, "Lavorazione conclusa con successo",
- * "Avviso", JOptionPane.INFORMATION_MESSAGE); }
- * 
- * }
- */
+	private String showCapiOfTappa(ArrayList<Capo> capi, FrameSvolgimentoTicket svt) {
+		Font currentFont = svt.getFieldId().getFont();
+		Font boldFont = currentFont.deriveFont(Font.ITALIC);
+		svt.getFieldId().setFont(boldFont);
+		String listaCapi = "";
+		for (Capo capo : capi) {
+			listaCapi += "\n- " + capo.toStringCor();
+			// aggiungo alla lista dei capi ritirati o prelevati i capi della tappa
+			
+			svt.getTik().getListaCapiRitOCon().add(capo);
+		}
+		return listaCapi;
+	}
+}

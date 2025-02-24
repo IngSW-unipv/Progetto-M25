@@ -35,6 +35,7 @@ public class FrameSvolgimentoTicket extends JFrame {
 	private CardLayout cardLayout;
 	private JButton bottoneRitiroAvvenuto;
 	private JButton bottoneConsegnaAvvenuta;
+	private JButton bottoneCompletaTicket;
 	// componenti per visualizzare le informazioni del ticket
 	private JTextArea fieldId;
 	private JLabel labelFieldId;
@@ -117,14 +118,48 @@ public class FrameSvolgimentoTicket extends JFrame {
 		bottoneRitiroAvvenuto.setActionCommand("Ritiro presso tappa corrente avvenuto");
 		bottoneConsegnaAvvenuta = new JButton("Consegna presso tappa corrente avvenuta");
 		bottoneConsegnaAvvenuta.setActionCommand("Consegna presso tappa corrente avvenuta");
+		bottoneCompletaTicket = new JButton("Completa Ticket, Torna Alla Home");
+		bottoneCompletaTicket.setActionCommand("Completa Ticket");
 		pannelloTicket.add(bottoneRitiroAvvenuto);
 		pannelloTicket.add(bottoneConsegnaAvvenuta);
+		pannelloTicket.add(bottoneCompletaTicket);
 		//inizialmente entrambi non visibili, fatti vedere in base al fatto che il ticket è di tipo consegna o di tipo ritiro
 		bottoneRitiroAvvenuto.setVisible(false);
 		bottoneConsegnaAvvenuta.setVisible(false);
+		bottoneCompletaTicket.setVisible(false);
 		new TicketAction(tik, this);
 	}
 	
+
+	public JButton getBottoneCompletaTicket() {
+		return bottoneCompletaTicket;
+	}
+
+
+	public void setBottoneCompletaTicket(JButton bottoneCompletaTicket) {
+		this.bottoneCompletaTicket = bottoneCompletaTicket;
+	}
+
+
+	public JLabel getLabelFieldId() {
+		return labelFieldId;
+	}
+
+
+	public void setLabelFieldId(JLabel labelFieldId) {
+		this.labelFieldId = labelFieldId;
+	}
+
+
+	public JLabel getLabelTappaCorrente() {
+		return labelTappaCorrente;
+	}
+
+
+	public void setLabelTappaCorrente(JLabel labelTappaCorrente) {
+		this.labelTappaCorrente = labelTappaCorrente;
+	}
+
 
 	public JLabel getLabelCapiDaRitirarePressoTappa() {
 		return labelCapiDaRitirarePressoTappa;

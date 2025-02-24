@@ -75,6 +75,19 @@ public class Capo {
 		this.statoCapo = stato;
 	}
 
+	public Capo(Negozio negozioDeposito, Negozio negozioConsegna) {
+		super();
+		this.idCapo = null;
+		this.statoCapo = null;
+		this.tipoLavaggio = null;
+		this.dataRitiro = null;
+		this.dataUltimaConsegna = null;
+		this.negozioDeposito = negozioDeposito;
+		this.negozioConsegna = negozioConsegna;
+		this.prezzoScontato = 0;
+		this.cliente = null;
+	}
+	
 	public Capo() {
 		super();
 		this.idCapo = null;

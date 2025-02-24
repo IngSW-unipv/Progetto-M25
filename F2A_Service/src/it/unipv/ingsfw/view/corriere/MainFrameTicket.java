@@ -52,8 +52,8 @@ public class MainFrameTicket extends JFrame {
 	private JLabel labelMezzoAssociato;
 	private JTextArea fieldMezzoAssociato;
 	private JTextArea fieldTipologia;
-	private JLabel labelDescrizione;
-	private JTextArea areaDescrizione;
+	private JLabel labelItinerario;
+	private JTextArea areaItinerario;
 
 	/**
 	 * ad ogni componentebisogna associare un Listener per il relativo evento in
@@ -116,17 +116,24 @@ public class MainFrameTicket extends JFrame {
 
 		// creo i componenti per visualizzare le informazioni del ticket
 		labelId = new JLabel("ID Ticket:");
+		labelId.setVisible(false);
 		fieldId = new JTextArea(2, 10);
+		fieldId.setVisible(false);
 		fieldId.setEditable(false);
-		labelTipologia = new JLabel("Titolo:");
+		labelTipologia = new JLabel("Tipologia:");
+		labelTipologia.setVisible(false);
 		fieldTipologia = new JTextArea(2, 10);
+		fieldTipologia.setVisible(false);
 		fieldTipologia.setEditable(false);
-		labelDescrizione = new JLabel("Descrizione:");
-		areaDescrizione = new JTextArea(3, 15);
-		areaDescrizione.setEditable(false);
-		labelMezzoAssociato = new JLabel("Id Mezzo:");
-		;
+		labelItinerario = new JLabel("Itinerario:");
+		labelItinerario.setVisible(false);
+		areaItinerario = new JTextArea(3, 15);
+		areaItinerario.setVisible(false);
+		areaItinerario.setEditable(false);
+		labelMezzoAssociato = new JLabel("Mezzo:");
+		labelMezzoAssociato.setVisible(false);
 		fieldMezzoAssociato = new JTextArea(2, 10);
+		fieldMezzoAssociato.setVisible(false);
 		fieldMezzoAssociato.setEditable(false);
 
 		// aggiungo i componenti al pannello
@@ -134,13 +141,29 @@ public class MainFrameTicket extends JFrame {
 		pannelloTicket.add(fieldId);
 		pannelloTicket.add(labelTipologia);
 		pannelloTicket.add(fieldTipologia);
-		pannelloTicket.add(labelDescrizione);
-		pannelloTicket.add(areaDescrizione);
+		pannelloTicket.add(labelItinerario);
+		pannelloTicket.add(areaItinerario);
 		pannelloTicket.add(labelMezzoAssociato);
 		pannelloTicket.add(fieldMezzoAssociato);
 		new TicketAction(tik, this);
 	}
 
+
+	public JLabel getLabelItinerario() {
+		return labelItinerario;
+	}
+
+	public void setLabelItinerario(JLabel labelItinerario) {
+		this.labelItinerario = labelItinerario;
+	}
+
+	public JTextArea getAreaItinerario() {
+		return areaItinerario;
+	}
+
+	public void setAreaItinerario(JTextArea areaItinerario) {
+		this.areaItinerario = areaItinerario;
+	}
 
 	public JLabel getLabelTipologia() {
 		return labelTipologia;
@@ -191,19 +214,19 @@ public class MainFrameTicket extends JFrame {
 	}
 
 	public JLabel getLabelDescrizione() {
-		return labelDescrizione;
+		return labelItinerario;
 	}
 
 	public void setLabelDescrizione(JLabel labelDescrizione) {
-		this.labelDescrizione = labelDescrizione;
+		this.labelItinerario = labelDescrizione;
 	}
 
 	public JTextArea getAreaDescrizione() {
-		return areaDescrizione;
+		return areaItinerario;
 	}
 
 	public void setAreaDescrizione(JTextArea areaDescrizione) {
-		this.areaDescrizione = areaDescrizione;
+		this.areaItinerario = areaDescrizione;
 	}
 
 	public Ticket getTik() {

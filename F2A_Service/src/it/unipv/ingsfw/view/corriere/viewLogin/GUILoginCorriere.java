@@ -48,7 +48,6 @@ public class GUILoginCorriere extends JFrame{
 		setLayout(new BorderLayout());
 		add(cred, BorderLayout.NORTH);
 		add(pannello, BorderLayout.CENTER);
-		//add(b, BorderLayout.SOUTH);
 		new TicketAction(this);
 	}
 

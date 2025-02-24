@@ -13,5 +13,6 @@ public interface ICapoDAO {
 	public ArrayList<Capo> selectCapiDaRitirareByTappa(Capo input);
 	public ArrayList<Capo> selectCapiDaConsegnareByTappa(Capo input);
 	public String getStatoCapoById(Capo c);
+	public boolean updateStatoCapoByTappa(Capo inputSet);
 	
 }
