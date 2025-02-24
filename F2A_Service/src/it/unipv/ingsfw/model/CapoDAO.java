@@ -305,6 +305,35 @@ public class CapoDAO implements ICapoDAO {
 		return result;
 	}
 	
+	@Override
+	public String getStatoCapoById(Capo c) {
+
+		conn = DBConnection.startConnection(conn);
+		PreparedStatement st1;
+		ResultSet rs1;
+		String stato = null;
+
+		try {
+			String query = "SELECT stato FROM Capi WHERE IDC = ?;";
+			st1 = conn.prepareStatement(query);
+			st1.setString(1, c.getIdCapo());
+			rs1 = st1.executeQuery();
+
+            if (rs1.next()) {
+                stato = rs1.getString("stato");
+            }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		DBConnection.closeConnection(conn);
+		return stato;
+	}
+
+	
+	
 	public static void main(String[] args) throws ParseException {
 		// da testare inserimento corretto data
 
@@ -322,9 +351,11 @@ public class CapoDAO implements ICapoDAO {
 		System.out.println(t);*/
 		
 		CapoDAO c =new CapoDAO();
-		String id=c.getNewIdCapo();
-		System.out.println(id);
+		//String id=c.getNewIdCapo();
+		//System.out.println(id);
 		
+		String Stato =c.getStatoCapoById(new Capo("C013"));
+		System.out.println(Stato);
 	}
 
 }

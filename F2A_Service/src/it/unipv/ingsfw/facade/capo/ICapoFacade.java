@@ -12,5 +12,6 @@ public interface ICapoFacade {
 	public boolean updateStatoCapo(Capo inputSet);
 	public String getNewIdCapo();
 	public boolean insertCapo(Capo c) throws ParseException;
+	public String getStatoCapoById(Capo c);
 
 }

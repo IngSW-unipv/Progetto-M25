@@ -102,5 +102,17 @@ public class ConcreteCapoFacade implements ICapoFacade {
 		return esito;
 		
 	}
+	
+	public String getStatoCapoById(Capo c) {
+		String esito="";
+
+	try {
+		esito = capoDAO.getStatoCapoById(c);
+	} catch (Exception e) {
+		System.err.println("Errore recupero stato capo");
+	}
+	return esito;
+		
+	}
 
 }

@@ -12,5 +12,6 @@ public interface ICapoDAO {
 	public boolean insertCapo(Capo c) throws ParseException;
 	public ArrayList<Capo> selectCapiDaRitirareByTappa(Capo input);
 	public ArrayList<Capo> selectCapiDaConsegnareByTappa(Capo input);
+	public String getStatoCapoById(Capo c);
 	
 }

@@ -1,24 +1,34 @@
 package it.unipv.ingsfw.model.negozio;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
+//import java.util.Date;
 import java.util.HashMap;
 
-import javax.swing.JFrame;
+
+//import javax.swing.JFrame;
 
 import it.unipv.ingsfw.facade.F2aFacade;
 import it.unipv.ingsfw.model.Capo;
-import it.unipv.ingsfw.model.StatoCapo;
-import it.unipv.ingsfw.model.TipoLavaggio;
+//import it.unipv.ingsfw.model.StatoCapo;
+//import it.unipv.ingsfw.model.TipoLavaggio;
+
+import it.unipv.ingsfw.model.scontistica.TotemContext;
+
 import it.unipv.ingsfw.model.users.Cliente;
-import it.unipv.ingsfw.view.clienteframe.ClienteFrameRegLog;
+
+//import it.unipv.ingsfw.model.scontistica.TotemContext;
+
+//import it.unipv.ingsfw.model.scontistica.IScontisticaStrategy;
+//import it.unipv.ingsfw.view.clienteframe.ClienteFrameRegLog;
 
 public class Totem {
 	
-	private boolean statoSportello;
+	//private boolean statoSportello;
 	private Cliente cliente;
 	private ArrayList<Capo> listaCapiDepositati;
-	
+	private TotemContext totemContext;
+		
+
 	/**
 	 * @param statoSportello
 	 * @param listaClienti
@@ -26,7 +36,7 @@ public class Totem {
 	 */
 	public Totem(boolean statoSportello,  ArrayList<Capo> listaCapiDepositati) {
 		super();
-		this.statoSportello = statoSportello;
+		//this.statoSportello = statoSportello;
 		//this.listaClienti = listaClienti;
 		this.listaCapiDepositati = listaCapiDepositati;
 	}
@@ -34,13 +44,13 @@ public class Totem {
 	public Totem() {
 		
 	}
-	public boolean isStatoSportello() {
+	/*public boolean isStatoSportello() {
 		return statoSportello;
 	}
 
 	public void setStatoSportello(boolean statoSportello) {
 		this.statoSportello = statoSportello;
-	}
+	}*/
 
 	public Cliente getCliente() {
         return cliente;
@@ -56,7 +66,7 @@ public class Totem {
 	public void setListaCapiDepositati(ArrayList<Capo> listaCapiDepositati) {
 		this.listaCapiDepositati = listaCapiDepositati;
 	}
-	
+	/*
 	@Override
 	public String toString() {
 		String totem = "Totem\nStatoSportello " + statoSportello;
@@ -64,7 +74,7 @@ public class Totem {
 		for(Capo c : listaCapiDepositati)
 			totem += c.toString();
 		return totem;
-	}
+	}*/
 	
     
     
@@ -90,7 +100,14 @@ public class Totem {
 		return esito;
 	}
 
-    
+	public TotemContext getTotemContext() {
+		return totemContext;
+	}
+
+	public void setTotemContext(TotemContext totemContext) {
+		this.totemContext = totemContext;
+	}
+
     /*
 	public static void main(String[] args) {
 		Totem t = new Totem();

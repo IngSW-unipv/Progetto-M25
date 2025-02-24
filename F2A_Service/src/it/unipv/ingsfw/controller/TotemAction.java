@@ -6,18 +6,15 @@ import java.util.Date;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
-
 import it.unipv.ingsfw.facade.F2aFacade;
 import it.unipv.ingsfw.model.Capo;
 import it.unipv.ingsfw.model.StatoCapo;
 import it.unipv.ingsfw.model.TipoLavaggio;
 import it.unipv.ingsfw.model.negozio.Negozio;
 import it.unipv.ingsfw.model.negozio.Totem;
+import it.unipv.ingsfw.model.scontistica.TotemContext;
 import it.unipv.ingsfw.model.users.Cliente;
-import it.unipv.ingsfw.view.cliente.*;
 import it.unipv.ingsfw.view.clienteframe.ClienteFrameDepRit;
 import it.unipv.ingsfw.view.clienteframe.ClienteFrameDeposito;
 import it.unipv.ingsfw.view.clienteframe.ClienteFrameLog;
@@ -25,11 +22,10 @@ import it.unipv.ingsfw.view.clienteframe.ClienteFrameReg;
 import it.unipv.ingsfw.view.clienteframe.ClienteFrameRegLog;
 import it.unipv.ingsfw.view.clienteframe.ClienteFrameRitiro;
 
-//parti commentate sono le originali
-
 public class TotemAction {
 		
-    private Integer costoInt;
+    private int costoInt;
+    private Double costoDScontato;
 	private Cliente cl; // Model
     private Totem t;
     private ClienteFrameLog cfl; // Login View
@@ -244,7 +240,6 @@ public class TotemAction {
 				            opzioniLavaggio,               // I valori delle opzioni nel menu a tendina
 				            opzioniLavaggio[0]             // Il valore predefinito (la prima opzione)
 				        );
-				        //System.out.println(selectedOption);
 				        sol=selectedOption;
 						}
 					
@@ -301,12 +296,15 @@ public class TotemAction {
 						
 						
 						costoInt=F2aFacade.getInstance().getLavaggioFacade().getCostoLavaggio(sol);
-						//implementare logica per generare prezzo scontato STRATEGY
-						String costoS =Integer.toString(costoInt);
-						
+						t.setTotemContext(new TotemContext(costoInt));
+						//t.getTotemContext().setCosto(costoInt);
+						costoDScontato = t.getTotemContext().getTotal();
+						t.getTotemContext().getTotal();
+						String costoSIntero = Integer.toString(costoInt);
+						String costoSScontato = Double.toString(costoDScontato);
 					
 						JOptionPane.showMessageDialog(cfd, "Riepilogo dati: "+"\n"+ " Codice cliente: "+idCliente +"\n Negozio ritiro: "+indirNegoRit+"\n"
-								+"\n Data ultima ritiro: "+dataUltimaRitiro+"\n"+" Tipologia servizio: "+sol+"\n COSTO SERVIZIO: "+costoS+"\n");
+								+"\n Data ultima ritiro: "+dataUltimaRitiro+"\n"+" Tipologia servizio: "+sol+"\n COSTO INTERO: "+costoSIntero+"\n COSTO SCONTATO: "+costoSScontato);
 						
 						}
 					}
@@ -320,13 +318,12 @@ public class TotemAction {
 						TipoLavaggio sol1=TipoLavaggio.valueOf(sol);				
 						StatoCapo s=StatoCapo.IN_STORE;
 						t.setCliente(new Cliente(cfd.getPannello().getIdText().getText()));
-						double costoD = (double) costoInt;
+						//double costoD = (double) costoInt;
 						
 						boolean result;
 						try {
-							result=t.generaPrenotazioneCapo(new Capo(idc,s,sol1,null, date ,sonr,sond,costoD,t.getCliente()));
+							result=t.generaPrenotazioneCapo(new Capo(idc,s,sol1,null, date ,sonr,sond,costoDScontato,t.getCliente()));
 						} catch (ParseException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 						JOptionPane.showMessageDialog(cfd,"\n Codice capo: "+idc+"\n");
@@ -362,15 +359,29 @@ public class TotemAction {
 	    	cfrit.getPannello().getRitButton().addActionListener(new ActionListener() {
 	    		@Override
 				public void actionPerformed(ActionEvent e) {
-	    		if (cfrit.getPannello().getRitButton().getActionCommand().equalsIgnoreCase("Ritira")) {
-	    			StatoCapo stato=StatoCapo.PRELEVATO;
-	    			String idCapo=cfrit.getPannello().getIdcText().getText();
-	    			Boolean esito=F2aFacade.getInstance().getCapoFacade().updateStatoCapo(new Capo(idCapo, stato));
-	    			JOptionPane.showMessageDialog(cfrit, "Può ritirare il capo");	    			
+	    			if (cfrit.getPannello().getRitButton().getActionCommand().equalsIgnoreCase("Ritira")) {
+	    				//StatoCapo stato=StatoCapo.PRELEVATO;
+	    				String idCapo=cfrit.getPannello().getIdcText().getText();
+	    				if (!idCapo.matches("[Cc]\\d{3}")) {
+	                        JOptionPane.showMessageDialog(cfrit, "ID capo non valido: deve essere nel formato CXXX (dove X è un numero).");
+	                        return;
+	                        }
+	    				String statoCorrente = F2aFacade.getInstance().getCapoFacade().getStatoCapoById(new Capo(idCapo));//aggiunta
+	    				//Boolean esito=F2aFacade.getInstance().getCapoFacade().updateStatoCapo(new Capo(idCapo, stato));
+	    				if (statoCorrente.equalsIgnoreCase("CONSEGNATO")) {
+	    					StatoCapo stato = StatoCapo.PRELEVATO;
+	    					Boolean esito = F2aFacade.getInstance().getCapoFacade().updateStatoCapo(new Capo(idCapo, stato));
+	    					if(esito){
+	    						JOptionPane.showMessageDialog(cfrit, "Può ritirare il capo :)");
+	    					} 
+	    				}
+	    				else {
+	                        JOptionPane.showMessageDialog(cfrit, "STATO CAPO: "+statoCorrente+"\nImmposibile effettuare ritiro \nSiamo spiacenti :(");
+	    				}
 	    			}
-
 	    		}
 	    	});
+	    	
 	    	cfrit.getPannello().getEsciButton().addActionListener(new ActionListener() {
 	    		@Override
 					public void actionPerformed(ActionEvent e) {					
@@ -394,5 +405,3 @@ public class TotemAction {
 	    }	  	  
 }
 		
-
-

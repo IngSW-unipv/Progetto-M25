@@ -95,7 +95,17 @@ public class Capo {
 	public void setIdCapo(String idCapo) {
 		this.idCapo = idCapo;
 	}
-
+	
+	public Capo(String idCapo) {
+		super();
+		this.idCapo = idCapo;
+	}
+	
+	public Capo(TipoLavaggio sol) {
+		super();
+		this.tipoLavaggio = sol;
+	}
+	
 	public StatoCapo getStatoCapo() {
 		return statoCapo;
 	}
