@@ -3,3 +3,10 @@ DBURL = jdbc:mysql://127.0.0.1:3306/%s
 db_usn = root
 db_psw = 
 schema = f2a_service?serverTimezone=UTC
+#SCONTISTICHE
+#discount.strategy.class.name=it.unipv.ingsfw.model.scontistica.XmasStrategy
+#discount.strategy.class.name=it.unipv.ingsfw.model.scontistica.ClienteFortunatoStrategy
+#discount.strategy.class.name=it.unipv.ingsfw.model.scontistica.AnniversarioAziendaStrategy
+#discount.strategy.class.name=it.unipv.ingsfw.model.scontistica.FestaCittaStrategy
+#discount.strategy.class.name=it.unipv.ingsfw.model.scontistica.PromozioniEstiveStrategy
+discount.strategy.class.name=it.unipv.ingsfw.model.scontistica.PulizieDiPrimaveraStrategy
