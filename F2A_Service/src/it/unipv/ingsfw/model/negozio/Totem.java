@@ -11,7 +11,7 @@ import it.unipv.ingsfw.model.Capo;
 import it.unipv.ingsfw.model.StatoCapo;
 import it.unipv.ingsfw.model.TipoLavaggio;
 import it.unipv.ingsfw.model.users.Cliente;
-import it.unipv.ingsfw.view.cliente.ClienteFrameRegLog;
+import it.unipv.ingsfw.view.clienteframe.ClienteFrameRegLog;
 
 public class Totem {
 	

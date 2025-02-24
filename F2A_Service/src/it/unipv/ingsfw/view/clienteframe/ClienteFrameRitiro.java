@@ -1,4 +1,4 @@
-package it.unipv.ingsfw.view.cliente;
+package it.unipv.ingsfw.view.clienteframe;
 
 
 import java.awt.BorderLayout;
@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 
 import it.unipv.ingsfw.controller.TotemAction;
 import it.unipv.ingsfw.model.negozio.Totem;
+import it.unipv.ingsfw.view.clientepanel.ClienteRitiroPanel;
 
 public class ClienteFrameRitiro extends JFrame{
 	ClienteRitiroPanel pannello;

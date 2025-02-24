@@ -1,8 +1,9 @@
-package it.unipv.ingsfw.view.cliente;
+package it.unipv.ingsfw.view.cliente.test;
 import javax.swing.*;
 
 import it.unipv.ingsfw.model.negozio.Totem;
 import it.unipv.ingsfw.model.users.*;
+import it.unipv.ingsfw.view.clienteframe.ClienteFrameLog;
 public class ClienteFrameLogTest {
 
 	public static void main(String[] args) {

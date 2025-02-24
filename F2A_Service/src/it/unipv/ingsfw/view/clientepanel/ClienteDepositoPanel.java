@@ -1,4 +1,4 @@
-package it.unipv.ingsfw.view.cliente;
+package it.unipv.ingsfw.view.clientepanel;
 import java.awt.*;
 import javax.swing.*;
 
@@ -27,7 +27,7 @@ public class ClienteDepositoPanel extends JPanel {
  		setLocation(screenWidth/4, screenHeight/4);
  		
  		setLayout(new BorderLayout());
-		idLabel = new JLabel("inserire codice cliente per sconto");
+		idLabel = new JLabel("inserire codice cliente per sconto *");
  	    idText = new JTextField(25);
  		spaceLabel1 = new JLabel("    ");
  		dataLabel = new JLabel("data ultima per ritiro capo: (aaaa-mm-gg) *");

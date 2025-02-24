@@ -1,6 +1,8 @@
-package it.unipv.ingsfw.view.cliente;
+package it.unipv.ingsfw.view.cliente.test;
 
 import javax.swing.JFrame;
+
+import it.unipv.ingsfw.view.clienteframe.ClienteFrameDepRit;
 
 public class ClienteFrameDepRitTest {
 	public static void main(String[] args) {

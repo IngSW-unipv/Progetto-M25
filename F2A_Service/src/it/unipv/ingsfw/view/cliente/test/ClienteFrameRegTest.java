@@ -1,8 +1,9 @@
-package it.unipv.ingsfw.view.cliente;
+package it.unipv.ingsfw.view.cliente.test;
 import javax.swing.*;
 
 import it.unipv.ingsfw.model.negozio.Totem;
 import it.unipv.ingsfw.model.users.Cliente;
+import it.unipv.ingsfw.view.clienteframe.ClienteFrameReg;
 
 public class ClienteFrameRegTest {
 

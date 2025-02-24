@@ -1,4 +1,4 @@
-package it.unipv.ingsfw.view.cliente;
+package it.unipv.ingsfw.view.clientepanel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

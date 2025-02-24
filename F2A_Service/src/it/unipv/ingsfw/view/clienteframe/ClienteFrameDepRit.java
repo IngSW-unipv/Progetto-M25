@@ -1,9 +1,9 @@
 
-package it.unipv.ingsfw.view.cliente;
+package it.unipv.ingsfw.view.clienteframe;
 import java.awt.*;
 import javax.swing.*;
 import it.unipv.ingsfw.controller.TotemAction;
-//import it.unipv.ingsfw.model.negozio.Totem;
+import it.unipv.ingsfw.view.clientepanel.ButtonDepRitPanel;
 
 public class ClienteFrameDepRit extends JFrame{ 
 

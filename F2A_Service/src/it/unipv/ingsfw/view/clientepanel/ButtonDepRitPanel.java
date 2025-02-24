@@ -1,4 +1,4 @@
-package it.unipv.ingsfw.view.cliente;
+package it.unipv.ingsfw.view.clientepanel;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;

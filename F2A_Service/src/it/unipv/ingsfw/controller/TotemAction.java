@@ -18,6 +18,12 @@ import it.unipv.ingsfw.model.negozio.Negozio;
 import it.unipv.ingsfw.model.negozio.Totem;
 import it.unipv.ingsfw.model.users.Cliente;
 import it.unipv.ingsfw.view.cliente.*;
+import it.unipv.ingsfw.view.clienteframe.ClienteFrameDepRit;
+import it.unipv.ingsfw.view.clienteframe.ClienteFrameDeposito;
+import it.unipv.ingsfw.view.clienteframe.ClienteFrameLog;
+import it.unipv.ingsfw.view.clienteframe.ClienteFrameReg;
+import it.unipv.ingsfw.view.clienteframe.ClienteFrameRegLog;
+import it.unipv.ingsfw.view.clienteframe.ClienteFrameRitiro;
 
 //parti commentate sono le originali
 

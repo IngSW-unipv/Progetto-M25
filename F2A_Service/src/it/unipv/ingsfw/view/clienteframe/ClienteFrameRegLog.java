@@ -1,10 +1,11 @@
-package it.unipv.ingsfw.view.cliente;
+package it.unipv.ingsfw.view.clienteframe;
 
 import java.awt.*;
 
 import javax.swing.*;
 
 import it.unipv.ingsfw.controller.TotemAction;
+import it.unipv.ingsfw.view.clientepanel.ButtonRegLogPanel;
 
 public class ClienteFrameRegLog extends JFrame{
 	
