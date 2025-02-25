@@ -1,47 +1,31 @@
 package it.unipv.ingsfw.controller;
 
-import java.awt.Color;
 import java.awt.Font;
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Observable;
-import java.util.Observer;
 
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
-import com.sun.tools.javac.Main;
 
 import it.unipv.ingsfw.facade.F2aFacade;
 import it.unipv.ingsfw.model.Capo;
 import it.unipv.ingsfw.model.StatoCapo;
-import it.unipv.ingsfw.model.lavorazioneCapi.ObservableStazioneLavoro;
-import it.unipv.ingsfw.model.lavorazioneCapi.StatoStazione;
 import it.unipv.ingsfw.model.negozio.Negozio;
 import it.unipv.ingsfw.model.negozio.StatoTappa;
-import it.unipv.ingsfw.model.tickets.Itinerario;
 import it.unipv.ingsfw.model.tickets.StatoTicket;
 import it.unipv.ingsfw.model.tickets.Ticket;
 import it.unipv.ingsfw.model.users.Corriere;
-import it.unipv.ingsfw.model.users.DipendenteDAO;
-import it.unipv.ingsfw.model.users.Operatore;
-import it.unipv.ingsfw.model.users.TipoOperatore;
 import it.unipv.ingsfw.view.corriere.FrameSvolgimentoTicket;
 import it.unipv.ingsfw.view.corriere.MainFrameTicket;
 import it.unipv.ingsfw.view.corriere.viewLogin.GUILoginCorriere;
-import it.unipv.ingsfw.view.operatore.MainFrameManutentore;
-import it.unipv.ingsfw.view.operatore.MainFrameOperatore;
 import it.unipv.ingsfw.view.operatore.MenuListenerAdapter;
-import it.unipv.ingsfw.view.operatore.viewLogin.GUILoginOperatore;
 
 public class TicketAction {
 
 	private Ticket tik; // ModelFacade
-	private Capo capo_fit;
-	private Ticket new_tik;
+	private Capo capoFit;
+	private Ticket newTik;
 	private GUILoginCorriere login; // Login View
 	private MainFrameTicket main; // Main View Corriere
 	private FrameSvolgimentoTicket svt1; // Main View Svolgimento Ticket
@@ -68,27 +52,7 @@ public class TicketAction {
 
 	}
 
-	// setto i Tiket associati al corriere, ma non è meglio fare così anche per
-	// operatore
-	// questa classe facendo da controller non dovrebbe richiamare direttamente il
-	// controllo delle credenziali invece che farlo invocare da corriere
-	/**
-	 * Ticket ticket = new Ticket(StatoTicket.ASSEGNATO ,cor); ArrayList <Ticket>
-	 * ticketAssegnati = new ArrayList <Ticket>(); ticketAssegnati =
-	 * F2aFacade.getInstance().getGestioneTicketsFacade().selectTicketByStatoAndCorriere(ticket);
-	 * //cor.setStazioniAssociate(); ^ //main.aggiornaStazioni();
-	 * addMainListenersCorriere(); }
-	 **/
 
-	/**
-	 * public CorriereAction(Operatore op, MainFrameManutentore man) { this.op = op;
-	 * this.man = man; op.setStazioniAssociate(); man.aggiornaStazioni();
-	 * addMainListenersManutentore(); }
-	 **/
-
-	// a tutti i bottoni associa un'azione (evento che si deve scatenare)
-	// iniziamo con l'associare un Action Listener al bottone prresente nel bottone
-	// di login
 	private void addLoginListener() {
 		login.getPannello().getLoginButton().addActionListener(new ActionListener() {
 			@Override
@@ -142,15 +106,8 @@ public class TicketAction {
 					String[] optionsArray = anteprimaTicket.toArray(new String[0]);
 					if (optionsArray.length > 0) {
 						// Creazione del menu a tendina con JOptionPane
-						String selectedOption = (String) JOptionPane.showInputDialog(null, // Finestra principale (null
-																							// usa
-																							// la finestra di default)
-								"Scegli un Ticket:", // Messaggio che appare sopra il menu a tendina
-								"Ticket Assegnati", // Titolo della finestra
-								JOptionPane.PLAIN_MESSAGE, // Tipo di finestra di dialogo (senza icona)
-								null, // Icona (null per nessuna icona)
-								optionsArray, // I valori delle opzioni nel menu a tendina
-								optionsArray[0] // Il valore predefinito (la prima opzione)
+						String selectedOption = (String) JOptionPane.showInputDialog(null,"Scegli un Ticket:","Ticket Assegnati", JOptionPane.PLAIN_MESSAGE, null, optionsArray,
+								optionsArray[0] // Il valore predefinito del menù a tendina (la prima opzione)
 						);
 
 						System.out.println(selectedOption);
@@ -158,8 +115,8 @@ public class TicketAction {
 							// prelevo l'id dall'anteprima
 							String idTik = selectedOption.substring(4, 8);
 							System.out.println(idTik);
-							new_tik = new Ticket(idTik);
-							showTicketInfo(new_tik);
+							newTik = new Ticket(idTik);
+							showTicketInfo(newTik);
 							main.getBottonePresaCaricoTicket().setVisible(true);
 						}
 					} else {
@@ -178,15 +135,15 @@ public class TicketAction {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (main.getBottonePresaCaricoTicket().getActionCommand().equalsIgnoreCase("Prendi In Carico")) {
-					new_tik.setStato(StatoTicket.PRESO_IN_CARICO);
-					F2aFacade.getInstance().getGestioneTicketsFacade().updateStatoTicket(new_tik);
-					new_tik = F2aFacade.getInstance().getGestioneTicketsFacade().selectTicketById(new_tik);
+					newTik.setStato(StatoTicket.PRESO_IN_CARICO);
+					F2aFacade.getInstance().getGestioneTicketsFacade().updateStatoTicket(newTik);
+					newTik = F2aFacade.getInstance().getGestioneTicketsFacade().selectTicketById(newTik);
 					main.setVisible(false);
 					main.setJMenuBar(null);
 					main.removeAll();
-					FrameSvolgimentoTicket svt1 = new FrameSvolgimentoTicket(new_tik);
+					FrameSvolgimentoTicket svt1 = new FrameSvolgimentoTicket(newTik);
 					svt1.setVisible(true);
-					svt1.getFieldId().setText("Svolgimento Ticket: " + new_tik.getIdTicket());
+					svt1.getFieldId().setText("Svolgimento Ticket: " + newTik.getIdTicket());
 					showTappaCorrenteECapi(svt1);
 				}
 			}
@@ -204,9 +161,9 @@ public class TicketAction {
 					// Se la lista dei capi ritirati per il ticket non è vuota
 					// appena il bottone viene premuto i capi vengono posti allo stato "RITIRATO"
 					if (!svt1.getTik().getListaCapiRitOCon().isEmpty()) {
-						Capo capo_fit = new Capo((Negozio) svt1.getTik().getItinerario().getTappaCorrente(), null);
-						capo_fit.setStatoCapo((StatoCapo.RITIRATO));
-						F2aFacade.getInstance().getCapoFacade().updateStatoCapoByTappa(capo_fit);
+						Capo capoFit = new Capo((Negozio) svt1.getTik().getItinerario().getTappaCorrente(), null);
+						capoFit.setStatoCapo((StatoCapo.RITIRATO));
+						F2aFacade.getInstance().getCapoFacade().updateStatoCapoByTappa(capoFit);
 					}
 					// quando il corriere conferma l'avvenuto ritiro presso la tappa viene
 					// aggiornato lo stato di quest'ultima in "ATTRAVERSATA"
@@ -264,12 +221,16 @@ public class TicketAction {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (svt2.getBottoneCompletaTicket().getActionCommand().equalsIgnoreCase("Completa Ticket")) {
+					//CAMBIO LO STATO DI TUTTI I CAPI DEL TICKET
 					int size = svt2.getTik().getListaCapiRitOCon().size();
 					for (int i = 0; i < size; i++) {
 						Capo capo_fit = new Capo(svt2.getTik().getListaCapiRitOCon().get(i).getIdCapo(),
 								StatoCapo.IN_LAVORAZIONE);
 						F2aFacade.getInstance().getCapoFacade().updateStatoCapo(capo_fit);
 					}
+					//CAMBIO LO STATO DEL TICKET IN COMPLETATO
+					svt2.getTik().setStato(StatoTicket.COMPLETATO);
+					F2aFacade.getInstance().getGestioneTicketsFacade().updateStatoTicket(svt2.getTik());
 					// RITORNO ALLA HOME PAGE DEL CORRIERE
 					MainFrameTicket main = new MainFrameTicket(svt2.getTik());
 					main.setVisible(true);
@@ -311,22 +272,22 @@ public class TicketAction {
 	private void showTappaCorrenteECapi(FrameSvolgimentoTicket svt) {
 		// inizialmente mostrata la prima tappa dell'itinerario
 		svt.getFieldTappaCorrente().setText("Tappa Corrente: " + svt.getTik().getItinerario().getTappaCorrente());
-		capo_fit = new Capo();
+		capoFit = new Capo();
 		if (svt.getTik().getTipologia().toString().equalsIgnoreCase("RITIRO")) {
 			svt.getBottoneRitiroAvvenuto().setVisible(true);
 			svt.getBottoneConsegnaAvvenuta().setVisible(false);
 			System.out.println(svt.getTik().getItinerario());
 			System.out.println((Negozio) svt.getTik().getItinerario().getTappaCorrente());
-			capo_fit.setNegozioDeposito((Negozio) svt.getTik().getItinerario().getTappaCorrente());
-			ArrayList<Capo> capi = F2aFacade.getInstance().getCapoFacade().selectCapiDaRitirareByTappa(capo_fit);
+			capoFit.setNegozioDeposito((Negozio) svt.getTik().getItinerario().getTappaCorrente());
+			ArrayList<Capo> capi = F2aFacade.getInstance().getCapoFacade().selectCapiDaRitirareByTappa(capoFit);
 			svt.getFieldListaCapiDaRitirarePressoTappa().setText(showCapiOfTappa(capi, svt));
 			svt.getLabelCapiDaRitirarePressoTappa().setVisible(true);
 			svt.getFieldListaCapiDaRitirarePressoTappa().setVisible(true);
 		} else if (svt.getTik().getTipologia().toString().equalsIgnoreCase("CONSEGNA")) {
 			svt.getBottoneConsegnaAvvenuta().setVisible(true);
 			svt.getBottoneRitiroAvvenuto().setVisible(false);
-			capo_fit.setNegozioConsegna((Negozio) svt.getTik().getItinerario().getTappaCorrente());
-			ArrayList<Capo> capi = F2aFacade.getInstance().getCapoFacade().selectCapiDaConsegnareByTappa(capo_fit);
+			capoFit.setNegozioConsegna((Negozio) svt.getTik().getItinerario().getTappaCorrente());
+			ArrayList<Capo> capi = F2aFacade.getInstance().getCapoFacade().selectCapiDaConsegnareByTappa(capoFit);
 			svt.getFieldListaCapiDaConsegnarePressoTappa().setText(showCapiOfTappa(capi, svt));
 			svt.getLabelCapiDaConsegnarePressoTappa().setVisible(true);
 			svt.getFieldListaCapiDaConsegnarePressoTappa().setVisible(true);

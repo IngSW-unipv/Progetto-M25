@@ -3,7 +3,6 @@ package it.unipv.ingsfw.model.tickets;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import it.unipv.ingsfw.model.negozio.Negozio;
 import it.unipv.ingsfw.model.negozio.StatoTappa;
 import it.unipv.ingsfw.model.negozio.Tappa;
 

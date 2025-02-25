@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import it.unipv.ingsfw.jdbc.DBConnection;
-import it.unipv.ingsfw.model.users.Corriere;
 
 public class MezzoDAO implements IMezzoDAO {
 	

@@ -3,20 +3,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLTimeoutException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 
-import it.unipv.ingsfw.model.Capo;
-import it.unipv.ingsfw.model.tickets.TipologiaTicket;
 
 import it.unipv.ingsfw.jdbc.DBConnection;
 import it.unipv.ingsfw.model.users.Corriere;
-import it.unipv.ingsfw.model.users.DipendenteDAO;
 
-import java.util.ArrayList;
 
 public class TicketDAO implements ITicketDAO {
 	

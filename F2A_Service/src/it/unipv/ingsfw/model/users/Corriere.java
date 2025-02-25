@@ -1,9 +1,7 @@
 package it.unipv.ingsfw.model.users;
 
-import java.util.ArrayList;
 
 import it.unipv.ingsfw.facade.F2aFacade;
-import it.unipv.ingsfw.model.lavorazioneCapi.ObservableStazioneLavoro;
 
 public class Corriere extends Dipendente {
 	private StatoCorriere statoCorriere;

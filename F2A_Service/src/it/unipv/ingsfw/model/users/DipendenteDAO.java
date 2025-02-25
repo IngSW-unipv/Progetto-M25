@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import it.unipv.ingsfw.jdbc.DBConnection;
-import it.unipv.ingsfw.model.lavorazioneCapi.LavorazioneDAO;
 
 public class DipendenteDAO implements IDipendenteDAO {
 
@@ -35,7 +34,6 @@ public class DipendenteDAO implements IDipendenteDAO {
 		conn = DBConnection.startConnection(conn);
 		Statement st1;
 		ResultSet rs1;
-		Dipendente d;
 
 		try {
 			st1 = conn.createStatement();
@@ -63,8 +61,6 @@ public class DipendenteDAO implements IDipendenteDAO {
 		conn = DBConnection.startConnection(conn);
 		PreparedStatement st1;
 		ResultSet rs1;
-		PreparedStatement st2;
-		ResultSet rs2;
 		Corriere c;
 
 		try {
@@ -78,21 +74,6 @@ public class DipendenteDAO implements IDipendenteDAO {
 
 				c = new Corriere(rs1.getString(1), rs1.getString(2), rs1.getString(3), rs1.getString(4),
 						rs1.getString(5), rs1.getString(6), rs1.getInt(8), null);
-				// MODIFICATO 18/02
-
-				// controllo quali corrieri hanno almeno un ticket non completato
-				/**
-				 * String query2 = "SELECT * FROM DIPENDENTI D WHERE D.IDDIPENDENTE = '" +
-				 * rs1.getString(1) + "' AND EXISTS (SELECT * FROM TICKET T WHERE D.IDDIPENDENTE
-				 * = T.IDDIPENDENTE AND T.STATO <> 'COMPLETATO')";
-				 * 
-				 * st2 = conn.prepareStatement(query2); rs2 = st2.executeQuery(query2);
-				 * 
-				 * while (rs2.next())
-				 **/
-
-				// c.setStatoCorriere(StatoCorriere.OCCUPATO);
-
 				result.add(c);
 			}
 
@@ -327,7 +308,6 @@ public class DipendenteDAO implements IDipendenteDAO {
 
 			} catch (ClassCastException e) {
 				System.err.println("Errore in fase di casting del dipendente");
-				Corriere c = (Corriere) d;
 				st1.setString(7, "CORRIERE"); // tipo
 				st1.setString(9, null); // tipooperatore
 				st1.executeUpdate();
@@ -526,47 +506,6 @@ public class DipendenteDAO implements IDipendenteDAO {
 		return tipoDipendente;
 	}
 
-	public static void main(String[] args) {
-		DipendenteDAO d = new DipendenteDAO();
-
-		/*
-		 * Operatore o = new Operatore("D001", "Andrea", "Bigoli", "BGLAND23Y45R207U",
-		 * "andrea.bigoli@f2aservice.com", "ciaomamma", 1200,
-		 * TipoOperatore.MANUTENTORE); boolean t = d.insertDipendente(o); if (t)
-		 * System.out.println(o);
-		 * 
-		 * Operatore fittizio = new Operatore(null, null, null, null, null, null, 0,
-		 * TipoOperatore.MANUTENTORE); ArrayList<Operatore> lista =
-		 * d.selectByTipoOperatore(fittizio);
-		 * 
-		 * for (Operatore o1 : lista) System.out.println(o1);
-		 */
-
-		/*
-		 * Corriere c = new Corriere("D002", "Filippo", "Andreini", "BGLAND23Y45R207T",
-		 * "filippo.andreini@f2aservice.com", "ciaopapa", 1200, StatoCorriere.LIBERO);
-		 * boolean t = d.insertDipendente(c); if (t) System.out.println(c);
-		 */
-
-		// Corriere fittizio = new Corriere(null, null, null, null, null, null, 0);
-
-		/*
-		 * ArrayList<Corriere> listaCorrieri = d.selectCorrieri();
-		 * 
-		 * for (Corriere o1 : listaCorrieri) System.out.println(o1);
-		 * 
-		 * System.out.println("--------------------------------------------------------"
-		 * ); ArrayList<Operatore> listaResponsabiliLiberi =
-		 * d.selectResponsabiliStazioneNonAssegnati();
-		 * 
-		 * for (Operatore o2 : listaResponsabiliLiberi) System.out.println(o2);
-		 */
-
-		Operatore o = new Operatore("fabio.colombo@f2aservice.com", "1234");
-		// System.out.println(d.selectByEmailPassword(o));
-		System.out.println(d.selectTipoOperatoreById(new Operatore(d.selectIdByEmailPassword(o))));
-
-	}
 
 	@Override
 	public Operatore selectOperatoreByEmailPassword(Dipendente input) {

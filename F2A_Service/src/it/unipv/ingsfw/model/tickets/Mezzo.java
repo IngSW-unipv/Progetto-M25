@@ -1,8 +1,5 @@
 package it.unipv.ingsfw.model.tickets;
 
-import it.unipv.ingsfw.model.users.Corriere;
-import it.unipv.ingsfw.model.users.DipendenteDAO;
-
 public class Mezzo {
 	
 	private String idMezzo;
