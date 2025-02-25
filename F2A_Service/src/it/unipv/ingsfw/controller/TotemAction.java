@@ -2,6 +2,9 @@ package it.unipv.ingsfw.controller;
 import java.awt.event.ActionEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -94,8 +97,6 @@ public class TotemAction {
 					public void actionPerformed(ActionEvent e) {						
 					if(cfrl.getBrlp().getRegButton().getActionCommand().equalsIgnoreCase("Reg")) {	
 						cfrl.dispose();
-						//ClienteFrameReg cfr = new ClienteFrameReg(cl);
-						//Totem t=new Totem();
 						ClienteFrameReg cfr = new ClienteFrameReg(t);
 						cfr.setVisible(true);
 						}
@@ -124,7 +125,6 @@ public class TotemAction {
 						cfdr.dispose();
 						ClienteFrameRitiro cfrit =new ClienteFrameRitiro(t);
 						cfrit.setVisible(true);
-						//JOptionPane.showMessageDialog(cfl, "Ritiro non implementato", "Errore", JOptionPane.ERROR_MESSAGE);
 						}
 					}	    		
 	    	});
@@ -157,10 +157,17 @@ public class TotemAction {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
 	                if (cfr.getPannello().getRegButton().getActionCommand().equalsIgnoreCase("Registrazione")) {
+	                	String cf = cfr.getPannello().getUserTextCf().getText();
+                        // Controllo lunghezza CF
+                        if (cf.length() != 16) {
+                            JOptionPane.showMessageDialog(cfr, "Il codice fiscale non valido.", "Errore", JOptionPane.ERROR_MESSAGE);
+                            return; // Interrompe l'esecuzione se il CF non è valido
+                        }
 	                	String idcl = (F2aFacade.getInstance().getGestioneNegozioFacade().getNewIdCliente());
 	                	t.setCliente(new Cliente(idcl,cfr.getPannello().getUserTextNome().getText(), cfr.getPannello().getUserTextCognome().getText(),
 	                			cfr.getPannello().getUserTextCf().getText(), cfr.getPannello().getUserTextEmail().getText(), cfr.getPannello().getUserTextPw().getText()));
 	                	boolean isValid = F2aFacade.getInstance().getGestioneNegozioFacade().insertCliente(t.getCliente());
+
 	                	if (isValid==true) {
 		                    JOptionPane.showMessageDialog(cfr, "Registrazione effettuata" + "\n" +"Il suo codice cliente è: "+idcl);	
 		                    cfr.dispose();
@@ -252,9 +259,6 @@ public class TotemAction {
 	    		@Override
 					public void actionPerformed(ActionEvent e) {					
 					if (cfd.getPannello().getVerificaDatiButton().getActionCommand().equalsIgnoreCase("Verifica")) {	
-						//cfd.dispose();						
-						//ClienteFrameRiepilogo cfr = new ClienteFrameRiepilogo(t);
-						//cfr.setVisible(true);
 						String idCliente = cfd.getPannello().getIdText().getText().trim();
 						String dataUltimaRitiro =cfd.getPannello().getDataText().getText().trim();
 						// Controlli sui campi
@@ -262,11 +266,36 @@ public class TotemAction {
 							JOptionPane.showMessageDialog(cfd, "Il campo 'ID Cliente' è obbligatorio.", "Errore", JOptionPane.ERROR_MESSAGE);
 							return; // Interrompe l'esecuzione se il campo non è valido
 						}
+			            // Controllo formato ID cliente (clXXX, CLXXX, ClXXX, cLXXX)
+			            String regexIdCliente = "^[cC][lL]\\d{3}$";
+			            if (!idCliente.matches(regexIdCliente)) {
+			                JOptionPane.showMessageDialog(cfd, "L'ID cliente deve essere nel formato clXXX, dove XXX sono numeri.", "Errore", JOptionPane.ERROR_MESSAGE);
+			                return; // Interrompe l'esecuzione se il campo non è valido
+			            }
         
 			            // Controllo formato della data (aaaa-mm-gg)
 			            String regexData = "^\\d{4}-\\d{2}-\\d{2}$";
 			            if (!dataUltimaRitiro.matches(regexData)) {
 			                JOptionPane.showMessageDialog(cfd, "La data deve essere nel formato aaaa-mm-gg.", "Errore", JOptionPane.ERROR_MESSAGE);
+			                return;
+			            }
+			            
+			            // Verifica che la data sia valida
+			            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			            LocalDate dataInserita = null;
+			            try {
+			                dataInserita = LocalDate.parse(dataUltimaRitiro, formatter);
+			            } catch (java.time.format.DateTimeParseException ex) {
+			                JOptionPane.showMessageDialog(cfd, "La data inserita non è valida.", "Errore", JOptionPane.ERROR_MESSAGE);
+			                return;
+			            }
+
+			            // Controllo che la data sia successiva a quella corrente (data e ora)
+			            LocalDateTime oraCorrente = LocalDateTime.now();
+			            LocalDateTime dataOraInserita = dataInserita.atStartOfDay(); // Imposta l'ora a mezzanotte
+
+			            if (dataOraInserita.isBefore(oraCorrente)) {
+			                JOptionPane.showMessageDialog(cfd, "La data e l'ora devono essere successive a quelle correnti.", "Errore", JOptionPane.ERROR_MESSAGE);
 			                return;
 			            }
 			            
@@ -360,14 +389,12 @@ public class TotemAction {
 	    		@Override
 				public void actionPerformed(ActionEvent e) {
 	    			if (cfrit.getPannello().getRitButton().getActionCommand().equalsIgnoreCase("Ritira")) {
-	    				//StatoCapo stato=StatoCapo.PRELEVATO;
 	    				String idCapo=cfrit.getPannello().getIdcText().getText();
 	    				if (!idCapo.matches("[Cc]\\d{3}")) {
 	                        JOptionPane.showMessageDialog(cfrit, "ID capo non valido: deve essere nel formato CXXX (dove X è un numero).");
 	                        return;
 	                        }
-	    				String statoCorrente = F2aFacade.getInstance().getCapoFacade().getStatoCapoById(new Capo(idCapo));//aggiunta
-	    				//Boolean esito=F2aFacade.getInstance().getCapoFacade().updateStatoCapo(new Capo(idCapo, stato));
+	    				String statoCorrente = F2aFacade.getInstance().getCapoFacade().getStatoCapoById(new Capo(idCapo));
 	    				if (statoCorrente.equalsIgnoreCase("CONSEGNATO")) {
 	    					StatoCapo stato = StatoCapo.PRELEVATO;
 	    					Boolean esito = F2aFacade.getInstance().getCapoFacade().updateStatoCapo(new Capo(idCapo, stato));
