@@ -54,7 +54,7 @@ public class CapoDAO implements ICapoDAO {
 				negCon = new Negozio(rs1.getString(7));
 				cl = new Cliente(rs1.getString(9));
 				Capo c = new Capo(rs1.getString(1), StatoCapo.valueOf(rs1.getString(2)),
-						TipoLavaggio.valueOf(rs1.getString(3)), rs1.getDate(4), rs1.getDate(5), negDep, negCon,
+						TipoLavaggio.valueOf(String.valueOf(rs1.getInt(3))), rs1.getDate(4), rs1.getDate(5), negDep, negCon,
 						rs1.getDouble(8), cl);
 
 				result.add(c);

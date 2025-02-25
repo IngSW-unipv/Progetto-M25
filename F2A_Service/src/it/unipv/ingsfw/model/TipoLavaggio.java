@@ -18,6 +18,19 @@ public enum TipoLavaggio {
         this.tipoLav = tipoLav;
     }
     
+    public String getTipoLav() {
+		return tipoLav;
+	}
+
+	public static TipoLavaggio fromTipoLav(String tipoLavaggio) {
+        for (TipoLavaggio tipo : values()) {
+            if (tipo.getTipoLav().equalsIgnoreCase(tipoLavaggio)) {
+                return tipo;
+            }
+        }
+        throw new IllegalArgumentException("Tipo lavaggio non valido: " + tipoLavaggio);
+    }
+    
     @Override
     public String toString() {
         return tipoLav;

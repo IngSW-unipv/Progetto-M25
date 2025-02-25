@@ -183,6 +183,8 @@ public class Capo {
 		this.cliente = cliente;
 	}
 
+	
+	
 	@Override
 	public String toString() {
 		return "Capo " + idCapo + "\nStato: " + statoCapo + "\nTipoLavaggio: " + tipoLavaggio + "\nDataRitiro: "
