@@ -53,8 +53,9 @@ public class Corriere extends Dipendente {
 	
 	@Override
 	public String toString() {
-		return super.toString() + "\nStatoCorriere " + statoCorriere;
+		return super.toString() + "\nStatoCorriere: " + statoCorriere;
 	}
+	
 	
 	//AGGIUNTO IN DATA 19/02
 	public Corriere getCorriereByID() {

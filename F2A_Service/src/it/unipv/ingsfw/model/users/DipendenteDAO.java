@@ -132,7 +132,7 @@ public class DipendenteDAO implements IDipendenteDAO {
 
 		try {
 
-			String query = "SELECT * FROM DIPENDENTE D WHERE D.TIPO = 'CORRIERE' AND NOT EXISTS (SELECT * FROM TICKET T WHERE D.IDDIPENDENTE = T.IDDIPENDENTE AND S.STATO <> 'COMPLETATO');";
+			String query = "SELECT * FROM DIPENDENTI D WHERE D.TIPO = 'CORRIERE' AND NOT EXISTS (SELECT * FROM TICKET T WHERE D.IDDIPENDENTE = T.IDDIPENDENTE AND T.STATO <> 'COMPLETATO');";
 			st1 = conn.prepareStatement(query);
 			rs1 = st1.executeQuery(query);
 			while (rs1.next()) {
