@@ -3,13 +3,14 @@ import java.awt.event.ActionEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
 import it.unipv.ingsfw.facade.F2aFacade;
 import it.unipv.ingsfw.model.Capo;
 import it.unipv.ingsfw.model.StatoCapo;
@@ -81,6 +82,8 @@ public class TotemAction {
 	    }  
 
 	    private void addLogRegListener() {
+	    	String passwordCorretta = "qwerty1234";
+	    	
 	    	cfrl.getBrlp().getLogButton().addActionListener(new ActionListener() {
 	    		@Override
 					public void actionPerformed(ActionEvent e) {					
@@ -102,9 +105,30 @@ public class TotemAction {
 						}
 					}	    		
 	    	});
+			cfrl.getBrlp().getSpegniButton().addActionListener(new ActionListener() {
+			    @Override
+					public void actionPerformed(ActionEvent e) {						
+					if(cfrl.getBrlp().getSpegniButton().getActionCommand().equalsIgnoreCase("Spegni")) {	
+						richiediPassword(cfrl, passwordCorretta);
+						}
+					}	    		
+	    	});
+			
 	    }
 	    
-	    
+	    private void richiediPassword(JFrame cfrl, String passwordCorretta) {
+	        JPasswordField passwordField = new JPasswordField();
+	        int option = JOptionPane.showConfirmDialog(cfrl, passwordField, "Inserisci Password", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+	        if (option == JOptionPane.OK_OPTION) {
+	            String passwordInserita = new String(passwordField.getPassword());
+	            if (passwordInserita.equals(passwordCorretta)) {
+	                cfrl.dispose();
+	            } else {
+	                JOptionPane.showMessageDialog(cfrl, "Password errata", "Errore", JOptionPane.ERROR_MESSAGE);
+	            }
+	        }
+	    }
 	    
 	    private void addDepRitListener() {
 	    	cfdr.getBdrp().getDepButton().addActionListener(new ActionListener() {
@@ -150,6 +174,16 @@ public class TotemAction {
 	                }
 	            }
 	        });
+	    	cfl.getPannello().getEsciButton().addActionListener(new ActionListener() {
+	    		@Override
+					public void actionPerformed(ActionEvent e) {					
+					if (cfl.getPannello().getEsciButton().getActionCommand().equalsIgnoreCase("Logout")) {
+						cfl.dispose();
+						ClienteFrameRegLog cfrl = new ClienteFrameRegLog();
+						cfrl.setVisible(true);
+					}
+	    		}
+	    	});
 	    }
 
 	    private void addRegisterListener() {
@@ -158,11 +192,32 @@ public class TotemAction {
 	            public void actionPerformed(ActionEvent e) {
 	                if (cfr.getPannello().getRegButton().getActionCommand().equalsIgnoreCase("Registrazione")) {
 	                	String cf = cfr.getPannello().getUserTextCf().getText();
+	                	String email = cfr.getPannello().getUserTextEmail().getText();
+                        String password = cfr.getPannello().getUserTextPw().getText();
+	                	
                         // Controllo lunghezza CF
                         if (cf.length() != 16) {
                             JOptionPane.showMessageDialog(cfr, "Il codice fiscale non valido.", "Errore", JOptionPane.ERROR_MESSAGE);
                             return; // Interrompe l'esecuzione se il CF non è valido
                         }
+
+                        // Controllo campi email e password non nulli
+                        if (email == null || email.trim().isEmpty()) {
+                            JOptionPane.showMessageDialog(cfr, "Il campo email è obbligatorio.", "Errore", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
+                        if (password == null || password.trim().isEmpty()) {
+                            JOptionPane.showMessageDialog(cfr, "Il campo password è obbligatorio.", "Errore", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
+                        // Controllo lunghezza password
+                        if (password.length() < 8) {
+                            JOptionPane.showMessageDialog(cfr, "La password deve contenere almeno 8 caratteri.", "Errore", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
 	                	String idcl = (F2aFacade.getInstance().getGestioneNegozioFacade().getNewIdCliente());
 	                	t.setCliente(new Cliente(idcl,cfr.getPannello().getUserTextNome().getText(), cfr.getPannello().getUserTextCognome().getText(),
 	                			cfr.getPannello().getUserTextCf().getText(), cfr.getPannello().getUserTextEmail().getText(), cfr.getPannello().getUserTextPw().getText()));
@@ -181,6 +236,16 @@ public class TotemAction {
                 
 	            }
 	        });
+	    	cfr.getPannello().getEsciButton().addActionListener(new ActionListener() {
+	    		@Override
+					public void actionPerformed(ActionEvent e) {					
+					if (cfr.getPannello().getEsciButton().getActionCommand().equalsIgnoreCase("Logout")) {
+						cfr.dispose();
+						ClienteFrameRegLog cfrl = new ClienteFrameRegLog();
+						cfrl.setVisible(true);
+					}
+	    		}
+	    	});
 	    }	
 	    
 	    private void addDepositoListener() {
@@ -261,7 +326,7 @@ public class TotemAction {
 					if (cfd.getPannello().getVerificaDatiButton().getActionCommand().equalsIgnoreCase("Verifica")) {	
 						String idCliente = cfd.getPannello().getIdText().getText().trim();
 						String dataUltimaRitiro =cfd.getPannello().getDataText().getText().trim();
-						// Controlli sui campi
+
 						if (idCliente.isEmpty()) {
 							JOptionPane.showMessageDialog(cfd, "Il campo 'ID Cliente' è obbligatorio.", "Errore", JOptionPane.ERROR_MESSAGE);
 							return; // Interrompe l'esecuzione se il campo non è valido
@@ -270,7 +335,7 @@ public class TotemAction {
 			            String regexIdCliente = "^[cC][lL]\\d{3}$";
 			            if (!idCliente.matches(regexIdCliente)) {
 			                JOptionPane.showMessageDialog(cfd, "L'ID cliente deve essere nel formato clXXX, dove XXX sono numeri.", "Errore", JOptionPane.ERROR_MESSAGE);
-			                return; // Interrompe l'esecuzione se il campo non è valido
+			                return; 
 			            }
         
 			            // Controllo formato della data (aaaa-mm-gg)
@@ -290,25 +355,22 @@ public class TotemAction {
 			                return;
 			            }
 
-			            // Controllo che la data sia successiva a quella corrente (data e ora)
-			            LocalDateTime oraCorrente = LocalDateTime.now();
-			            LocalDateTime dataOraInserita = dataInserita.atStartOfDay(); // Imposta l'ora a mezzanotte
-
-			            if (dataOraInserita.isBefore(oraCorrente)) {
-			                JOptionPane.showMessageDialog(cfd, "La data e l'ora devono essere successive a quelle correnti.", "Errore", JOptionPane.ERROR_MESSAGE);
+			            // Controllo che la data sia successiva a quella corrente di almeno 3 giorni
+			            LocalDate dataMinima = LocalDate.now().plusDays(3);
+			            if (dataInserita.isBefore(dataMinima)) {
+			                JOptionPane.showMessageDialog(cfd, "La data deve essere successiva di almeno 3 giorni rispetto a quella odierna.", "Errore", JOptionPane.ERROR_MESSAGE);
 			                return;
 			            }
-			            
-			            // Verifica che la data sia valida
+
 			            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			            sdf.setLenient(false); // Imposta la modalità rigorosa per evitare date invalide (es. 2025-02-31)
+			            sdf.setLenient(false);
 			            try {
 			                date = sdf.parse(dataUltimaRitiro);
 			            } catch (ParseException ex) {
 			                JOptionPane.showMessageDialog(cfd, "La data inserita non è valida.", "Errore", JOptionPane.ERROR_MESSAGE);
 			                return;
 			            }
-			            if (sond == null) { // Aggiungi il controllo per sond
+			            if (sond == null) { 
 			                JOptionPane.showMessageDialog(cfd, "Devi selezionare un negozio di deposito.", "Errore", JOptionPane.ERROR_MESSAGE);
 			                return;
 			            }

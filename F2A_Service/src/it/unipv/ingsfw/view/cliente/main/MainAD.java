@@ -1,9 +1,9 @@
-package it.unipv.ingsfw.view.cliente.test;
+package it.unipv.ingsfw.view.cliente.main;
 import javax.swing.*;
 
 import it.unipv.ingsfw.view.clienteframe.ClienteFrameRegLog;
 
-public class ClienteFrameRegLogTest {
+public class MainAD {
 
 	public static void main(String[] args) {
 		ClienteFrameRegLog c = new ClienteFrameRegLog();

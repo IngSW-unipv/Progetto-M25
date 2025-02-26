@@ -16,6 +16,7 @@ public class RegistrazionePanel extends JPanel  {
 	JTextField userTextPw;
     JButton regButton;
     JLabel spaceLabel1;
+    JButton esciButton;
     
     
  	public RegistrazionePanel() {
@@ -52,11 +53,26 @@ public class RegistrazionePanel extends JPanel  {
  	    areaDati.add(userTextPw);
  	    add(areaDati, BorderLayout.CENTER);
  	    
+ 	    JPanel comandiArea = new JPanel(new GridLayout(2, 1));
+ 		esciButton = new JButton("Torna indietro");
+ 		esciButton.setActionCommand("Logout");
  	    regButton = new JButton("Registrati");
  		regButton.setActionCommand("Registrazione");
- 		add(regButton, BorderLayout.SOUTH);
+		comandiArea.add(esciButton);
+ 		comandiArea.add(regButton);		
+ 		add(comandiArea, BorderLayout.SOUTH);
  	    
  	}
+
+
+	public JButton getEsciButton() {
+		return esciButton;
+	}
+
+
+	public void setEsciButton(JButton esciButton) {
+		this.esciButton = esciButton;
+	}
 
 
 	public JLabel getUserNome() {

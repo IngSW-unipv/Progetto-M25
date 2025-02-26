@@ -17,8 +17,6 @@ public class ClienteDAO implements IClienteDAO {
 
 	public ClienteDAO() {
 		super();
-		// this.schema = "PROVA";
-		// conn=DBConnection.startConnection(conn,schema);
 	}
 	
 	public static ClienteDAO getInstance() {
@@ -186,7 +184,7 @@ public class ClienteDAO implements IClienteDAO {
 
 	
 	
-	
+	/*
 	public static void main(String[] args) {
 		
 		ClienteDAO c = new ClienteDAO();
@@ -222,7 +220,7 @@ public class ClienteDAO implements IClienteDAO {
         System.out.println(esito);
 		*/		
 		
-		
+		/*
 		//Ricerca cliente tramite mail e password
 		
 		Cliente c4 = new Cliente("", "", "", "", "Stefano.Rossi@f2aservice.com", "Admin");
@@ -239,7 +237,7 @@ public class ClienteDAO implements IClienteDAO {
         System.out.println(nuovoIdCliente);
 		*/
 		
-	} 
+	//} 
 	
 
 }

@@ -10,6 +10,7 @@ public class LoginPanel extends JPanel {
     JPasswordField passText;
     JButton loginButton;
     JLabel spaceLabel1;
+    JButton esciButton;
     
     
  	public LoginPanel() {
@@ -41,13 +42,28 @@ public class LoginPanel extends JPanel {
  	    areaDati.add(spaceLabel1);
  	    add(areaDati, BorderLayout.CENTER);
  	    
+ 	    JPanel comandiArea = new JPanel(new GridLayout(2, 1));
+ 		esciButton = new JButton("Torna indietro");
+ 		esciButton.setActionCommand("Logout");
  	    loginButton = new JButton("Login");
  		loginButton.setActionCommand("accesso");
- 		add(loginButton, BorderLayout.SOUTH);
+ 		comandiArea.add(esciButton);
+ 		comandiArea.add(loginButton);
+ 		//add(esciButton, BorderLayout.SOUTH);
+ 		//add(loginButton, BorderLayout.SOUTH);
+ 		add(comandiArea, BorderLayout.SOUTH);
  	    
  	}
  	
- 	public JTextField getUserText() {
+ 	public JButton getEsciButton() {
+		return esciButton;
+	}
+
+	public void setEsciButton(JButton esciButton) {
+		this.esciButton = esciButton;
+	}
+
+	public JTextField getUserText() {
  		return userText;
  	}
 
