@@ -98,12 +98,12 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 		boolean esito = true;
 
 		try {
-			query1 = "SELECT IDCATENA FROM CATENELAVORAZIONE C WHERE NOT EXISTS (SELECT * FROM STAZIONILAVORO S WHERE C.IDCATENA = S.IDCATENA AND S.TIPO = '"
-					+ s.getTipo().toString() + "')";
+			//query1 = "SELECT IDCATENA FROM CATENELAVORAZIONE C WHERE NOT EXISTS (SELECT * FROM STAZIONILAVORO S WHERE C.IDCATENA = S.IDCATENA AND S.TIPO = '"+ s.getTipo().toString() + "')";
+			query1 = "SELECT IDCATENA FROM CATENELAVORAZIONE C WHERE NOT EXISTS (SELECT * FROM STAZIONILAVORO S WHERE C.IDCATENA = S.IDCATENA AND S.TIPO = ?)";
 			st2 = conn.prepareStatement(query1);
-			// st2.setString(1,s.getTipo().toString());
+			st2.setString(1,s.getTipo().toString());
 
-			rs2 = st2.executeQuery(query1);
+			rs2 = st2.executeQuery();
 
 			while (rs2.next()) {
 

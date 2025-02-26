@@ -42,10 +42,10 @@ public class SingletonSedeLavorazione {
 		return listaCatene;
 	}
 
-	/*
-	 * public void setListaCatene() { this.listaCatene = new
-	 * ArrayList<CatenaLavorazione>(); }
-	 */
+	public void setListaCatene(ArrayList<CatenaLavorazione> listaCatene) { 
+		this.listaCatene = listaCatene; 
+	}
+	 
 
 	// deve restituire un booleano
 	public boolean addCatenaLavorazione(CatenaLavorazione catena) {

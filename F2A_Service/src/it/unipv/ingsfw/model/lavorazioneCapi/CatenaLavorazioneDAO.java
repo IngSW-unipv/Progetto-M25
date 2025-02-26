@@ -128,8 +128,8 @@ public class CatenaLavorazioneDAO implements ICatenaLavorazioneDAO {
 			st1.executeUpdate();
 
 		} catch (SQLIntegrityConstraintViolationException e) {
-			System.err.println("Catena già esistente --> Inserimento automatico con codice corretto");
-			insertCatena(new CatenaLavorazione(getNewIdCatena(), c.getTipoLavaggio()));
+			System.err.println("Catena già esistente --> Nuova idCatena: " + (getNewIdCatena()) );
+			//insertCatena(new CatenaLavorazione(getNewIdCatena(), c.getTipoLavaggio()));
 			esito = false;
 		} catch (Exception e) {
 			e.printStackTrace();

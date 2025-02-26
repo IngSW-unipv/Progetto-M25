@@ -5,7 +5,7 @@ import it.unipv.ingsfw.model.Capo;
 
 public class Negozio extends Tappa {
 
-	public Totem totem;
+	private Totem totem;
 	
 	/**public Negozio(String idTappa, StatoTappa stato, String indirizzo, Totem totem) {
 		super(idTappa, stato, indirizzo);

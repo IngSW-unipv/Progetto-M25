@@ -275,7 +275,6 @@ public class Operatore extends Dipendente{
 	//metodo eseguito in chiusura di una lavorazione da parte di un responsabile presso una stazione di lavoro
 	
 	public synchronized int fermaStazione(int index) throws Exception {
-		//ObservableStazioneLavoroDAO dao = new ObservableStazioneLavoroDAO();
 	
 		stazioniAssociate.get(index).messaInStandBy(index);
 	

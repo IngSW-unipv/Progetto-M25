@@ -26,7 +26,11 @@ public class ObservableStazioneLavoro extends Observable {
 	 */
 	public ObservableStazioneLavoro(String idStazione, TipologiaStazione tipo, StatoStazione statoStazione,
 			double livelloProdottoLavaggio) {
-		this.idStazione = idStazione;
+		if(idStazione.length() == 4) {
+			this.idStazione = idStazione;
+		}else {
+			throw new IllegalArgumentException("Errore nell'inserimento dell'id stazione");
+		}
 		this.tipo = tipo;
 		this.statoStazione = statoStazione;
 		this.livelloProdottoLavaggio = livelloProdottoLavaggio;
@@ -107,8 +111,6 @@ public class ObservableStazioneLavoro extends Observable {
 	
 	
 	public boolean setListaCapiDaLavorare(Capo c) {
-		//CapoDAO capi = new CapoDAO();
-		//LavorazioneDAO lav = LavorazioneDAO.getInstance();
 
 		if (statoStazione.toString().equals("READY")) {
 			// modificare per far prelevare solo i capi SOSPESI nella tabella lavorazione,
@@ -142,31 +144,24 @@ public class ObservableStazioneLavoro extends Observable {
 
 	public void messaInLavorazione(int index) {
 		statoStazione = StatoStazione.WORKING;
-		//setChanged();
 		System.out.println("Stato cambiato 1 , notifico gli osservatori...");
-	    //notifyObservers(index);
 		notificaObservers(index);
 	}
 
 	public void messaInStandBy(int index) {
 		statoStazione = StatoStazione.READY;
-		//setChanged();
 		System.out.println("Stato cambiato 2 , notifico gli osservatori...");
-	    //notifyObservers(index);
 		notificaObservers(index);
 	}
 
 	public void messaInManutenzione(int index) {
 		statoStazione = StatoStazione.MAINTENANCE;
-		//setChanged();
 		System.out.println("Stato cambiato 3 , notifico gli osservatori...");
-	    //notifyObservers(index);
 		notificaObservers(index);
 	}
 
 	public boolean checkPresenzaCapi() {
 		boolean esitoCaricamento = false;
-		//LavorazioneDAO lav = LavorazioneDAO.getInstance();
 
 		// prelevo capi dalla tabella lavorazione a db nel caso in cui ci siano già dei
 		// capi pronti per la lavorazione
@@ -179,8 +174,7 @@ public class ObservableStazioneLavoro extends Observable {
 			// nel caso in cui non ci fossero dei capi già assegnati a db allora andiamo a
 			// prelevare, sempre da db, i capi in attesa di lavorazione e con la medesima
 			// tipologia di lavaggio della stazione
-
-			//CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
+			
 			esitoCaricamento = setListaCapiDaLavorare(new Capo(StatoCapo.IN_LAVORAZIONE, F2aFacade.getInstance().getLavorazioneCapiFacade().selectCatenaByStazione(this).getTipoLavaggio()));
 		}
 
@@ -191,7 +185,6 @@ public class ObservableStazioneLavoro extends Observable {
 	}
 
 	public boolean caricamentoLavorazioni() {
-		//LavorazioneDAO lav = LavorazioneDAO.getInstance();
 
 		boolean esitoCaricamento = false;
 		for (Capo c : listaCapiDaLavorare) {
@@ -202,23 +195,19 @@ public class ObservableStazioneLavoro extends Observable {
 	}
 
 	public boolean aggiornamentoLavorazioni() {
-		//LavorazioneDAO lav = LavorazioneDAO.getInstance();
-
+		
 		boolean esitoCaricamento = false;
 		for (Capo c : listaCapiDaLavorare) {
 			esitoCaricamento = F2aFacade.getInstance().getLavorazioneCapiFacade().updateLavorazione(this, c);
-			// System.out.println(c);
+			System.out.println(c);
 		}
 		System.out.println("AGGIORNAMENTO TABELLA LAVORAZIONI CON DATA");
 		return esitoCaricamento;
 	}
 
 	public boolean caricamentoLavorazioniSospese() {
-		//LavorazioneDAO lav = LavorazioneDAO.getInstance();
 
 		boolean esitoCaricamento = false;
-
-		// System.out.println("this: " + this.getIdStazione());
 
 		for (Capo c : listaCapiDaLavorare)
 			esitoCaricamento = F2aFacade.getInstance().getLavorazioneCapiFacade().addLavorazioneSospesa(this, c);
@@ -227,28 +216,26 @@ public class ObservableStazioneLavoro extends Observable {
 	}
 
 	public void svuotaStazione() {
-		// ArrayList<Capo> capiDaSpostare = this.listaCapiDaLavorare;
+
 		this.listaCapiDaLavorare.clear();
 	}
 
 	public String getIdCatena() {
-		//ObservableStazioneLavoroDAO obs = new ObservableStazioneLavoroDAO();
+		
 		String idCatena = F2aFacade.getInstance().getLavorazioneCapiFacade().selectIdCatenaByStazione(this);
 		return idCatena;
 	}
 
 	public boolean removeCapiStazione() {
 
-		//CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
 
 		ArrayList<ObservableStazioneLavoro> stazioni = F2aFacade.getInstance().getLavorazioneCapiFacade().selectStazioniByCatena(new CatenaLavorazione(this.getIdCatena()));
 
-		for (ObservableStazioneLavoro s : stazioni)
+		for (ObservableStazioneLavoro s : stazioni) {
 			System.out.println(s.getIdStazione());
+		}
 
-		if (this.getTipo().toString().equals("STIRATURA") || F2aFacade.getInstance().getLavorazioneCapiFacade().selectCatenaByStazione(this).getTipoLavaggio().toString().equals("PELLE")) {
-
-			//CapoDAO cap = new CapoDAO();
+		if (this.getTipo().toString().equalsIgnoreCase("ASCIUGATURA") && F2aFacade.getInstance().getLavorazioneCapiFacade().selectCatenaByStazione(this).getTipoLavaggio().toString().equalsIgnoreCase("6")) {
 
 			for (Capo c : this.getListaCapiDaLavorare()) {
 				c.setStatoCapo(StatoCapo.IN_CONSEGNA);
@@ -258,19 +245,18 @@ public class ObservableStazioneLavoro extends Observable {
 
 		} else {
 
+			//System.out.println(this.getTipo());
+			//System.out.println(F2aFacade.getInstance().getLavorazioneCapiFacade().selectCatenaByStazione(this).getTipoLavaggio());
 			// String sub = this.getIdStazione().substring(3);
 			int numPrimaStazione = Integer.parseInt(stazioni.get(0).getIdStazione().substring(3));
 
 			String newIdStazione = this.getIdStazione();
 			String sub = newIdStazione.substring(3);
-			// System.out.println(sub);
 			int num = Integer.parseInt(sub);
 
 			int numStazioneSuccessiva = num - numPrimaStazione + 1;
 			System.out.println("NUM STAZIONE SUCCESSIVA: " + numStazioneSuccessiva);
-			// System.out.println(stazioni.get(numStazioneSuccessiva).getIdStazione());
 			stazioni.get(numStazioneSuccessiva).setListaCapiDaLavorare(this.listaCapiDaLavorare);
-			// System.out.println("bbbbbbbbbbbbbb");
 			stazioni.get(numStazioneSuccessiva).caricamentoLavorazioniSospese();
 		}
 
@@ -299,7 +285,6 @@ public class ObservableStazioneLavoro extends Observable {
     	System.out.println("NOTIFICHE");
     	System.out.println(observers.size());
         for (Observer observer : observers) {
-        	//System.out.println("AAAAAAAAAA");
             observer.update(this, index);
         }
     }

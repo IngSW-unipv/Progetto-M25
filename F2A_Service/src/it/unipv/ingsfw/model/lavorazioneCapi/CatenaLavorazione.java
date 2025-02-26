@@ -80,9 +80,13 @@ public class CatenaLavorazione {
 		//ObservableStazioneLavoroDAO stazione = new ObservableStazioneLavoroDAO();
 
 		if (listaStazioni.size() <= 2 && !tipoLavaggio.equals(TipoLavaggio.PELLE) && !tipoStazioneAlreadyExists(newStazione)) {
+			listaStazioni.add(newStazione);
 			if (F2aFacade.getInstance().getLavorazioneCapiFacade().insertStazioneWithKnownCatena(newStazione, this)) {
-				listaStazioni.add(newStazione);
 				return true;
+			}else {
+				if(listaStazioni.size() > 3)
+					listaStazioni.removeLast();
+				return false;
 			}
 
 		}
@@ -107,6 +111,7 @@ public class CatenaLavorazione {
 		return catena;
 	}
 	
+	/*
 	public static void main(String[] args) {
 		
 		//CatenaLavorazioneDAO cat = new CatenaLavorazioneDAO();
@@ -154,5 +159,5 @@ public class CatenaLavorazione {
 			
 		
 		
-	}
+	}*/
 }
