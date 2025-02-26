@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
-
 import it.unipv.ingsfw.facade.F2aFacade;
 import it.unipv.ingsfw.model.Capo;
 import it.unipv.ingsfw.model.StatoCapo;
@@ -24,11 +23,11 @@ import it.unipv.ingsfw.view.operatore.MenuListenerAdapter;
 public class TicketAction {
 
 	private Ticket tik; // ModelFacade
-	private Capo capoFit;
-	private Ticket newTik;
 	private GUILoginCorriere login; // Login View
 	private MainFrameTicket main; // Main View Corriere
 	private FrameSvolgimentoTicket svt1; // Main View Svolgimento Ticket
+	private Capo capoFit;
+	private Ticket newTik;
 
 	public TicketAction(GUILoginCorriere login) {
 		this.tik = new Ticket(null, null);
@@ -52,7 +51,6 @@ public class TicketAction {
 
 	}
 
-
 	private void addLoginListener() {
 		login.getPannello().getLoginButton().addActionListener(new ActionListener() {
 			@Override
@@ -65,13 +63,11 @@ public class TicketAction {
 					boolean isValid = cor.verificaCredenzialiAccesso(login.getPannello().getUserText().getText(),
 							login.getPannello().getPassText().getText());
 
-					cor = new Corriere(F2aFacade.getInstance().getDipendentiFacade().selectIdByEmailPassword(
-							new Corriere(login.getPannello().getUserText().getText()/** mail **/
-									, login.getPannello().getPassText().getText()/** password **/
-					)));
+					cor = new Corriere(F2aFacade.getInstance().getDipendentiFacade()
+							.selectIdByEmailPassword(new Corriere(login.getPannello().getUserText().getText(),
+									login.getPannello().getPassText().getText())));
 
-					// se mail e password inseriti sono corretti e i tipo di dipendente è un
-					// corriere
+					// se mail e password inseriti sono corretti e i tipo di dipendente è un corriere
 					if (isValid && F2aFacade.getInstance().getDipendentiFacade().selectTipoDipendenteById(cor)
 							.equalsIgnoreCase("CORRIERE")) {
 						JOptionPane.showMessageDialog(login, "Benvenuto Corriere!", "Accesso",
@@ -104,9 +100,8 @@ public class TicketAction {
 					String[] optionsArray = anteprimaTicket.toArray(new String[0]);
 					if (optionsArray.length > 0) {
 						// Creazione del menu a tendina con JOptionPane
-						String selectedOption = (String) JOptionPane.showInputDialog(null,"Scegli un Ticket:","Ticket Assegnati", JOptionPane.PLAIN_MESSAGE, null, optionsArray,
-								optionsArray[0] // Il valore predefinito del menù a tendina (la prima opzione)
-						);
+						String selectedOption = (String) JOptionPane.showInputDialog(null, "Scegli un Ticket:",
+								"Ticket Assegnati", JOptionPane.PLAIN_MESSAGE, null, optionsArray, optionsArray[0]);
 
 						System.out.println(selectedOption);
 						if (selectedOption != null) {
@@ -219,14 +214,14 @@ public class TicketAction {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (svt2.getBottoneCompletaTicket().getActionCommand().equalsIgnoreCase("Completa Ticket")) {
-					//CAMBIO LO STATO DI TUTTI I CAPI DEL TICKET
+					// CAMBIO LO STATO DI TUTTI I CAPI DEL TICKET
 					int size = svt2.getTik().getListaCapiRitOCon().size();
 					for (int i = 0; i < size; i++) {
 						Capo capo_fit = new Capo(svt2.getTik().getListaCapiRitOCon().get(i).getIdCapo(),
 								StatoCapo.IN_LAVORAZIONE);
 						F2aFacade.getInstance().getCapoFacade().updateStatoCapo(capo_fit);
 					}
-					//CAMBIO LO STATO DEL TICKET IN COMPLETATO
+					// CAMBIO LO STATO DEL TICKET IN COMPLETATO
 					svt2.getTik().setStato(StatoTicket.COMPLETATO);
 					F2aFacade.getInstance().getGestioneTicketsFacade().updateStatoTicket(svt2.getTik());
 					// RITORNO ALLA HOME PAGE DEL CORRIERE
@@ -290,7 +285,7 @@ public class TicketAction {
 			svt.getFieldListaCapiDaConsegnarePressoTappa().setText(showCapiOfTappa(capi, svt));
 			svt.getLabelCapiDaConsegnarePressoTappa().setVisible(true);
 			svt.getFieldListaCapiDaConsegnarePressoTappa().setVisible(true);
-			svt.getScrollPane().setVisible(false);
+			svt.getScrollPane2().setVisible(true);
 		}
 	}
 
@@ -300,11 +295,11 @@ public class TicketAction {
 		svt.getFieldId().setFont(boldFont);
 		String listaCapi = "";
 		for (Capo capo : capi) {
-			listaCapi += "\n- " + capo.toStringCor()+"\n";
+			listaCapi += "\n- " + capo.toStringCor() + "\n";
 			// aggiungo alla lista dei capi ritirati o prelevati i capi della tappa
 			svt.getTik().getListaCapiRitOCon().add(capo);
 		}
 		return listaCapi;
 	}
-	
+
 }

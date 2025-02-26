@@ -129,4 +129,7 @@ public class CorriereTest {
 	public void testSelectTipoDipendenteById() {
 		assertEquals("CORRIERE", dao.selectTipoDipendenteById(corriereTest));
 	}
+
+
+
 }

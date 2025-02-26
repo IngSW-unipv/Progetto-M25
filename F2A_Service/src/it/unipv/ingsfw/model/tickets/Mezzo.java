@@ -1,20 +1,32 @@
 package it.unipv.ingsfw.model.tickets;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Mezzo {
 	
 	private String idMezzo;
 	private int capienza;
 	private boolean disponibilita;
+	private static final int CAPACITA_MINIMA = 10;
+    private static final int CAPACITA_MASSIMA = 500;
 	
 	/**
 	 * @param idMezzo
 	 * @param capienza
 	 * @param disponibilita
 	 */
+    
 	public Mezzo(String idMezzo, int capienza, boolean disponibilita) {
 		super();
-		this.idMezzo = idMezzo;
-		this.capienza = capienza;
+		Pattern pattern = Pattern.compile("M\\d{3}");
+        Matcher matcher = pattern.matcher(idMezzo);
+        if(!matcher.matches()) {
+            this.idMezzo = null;
+        } else {
+            this.idMezzo = idMezzo;
+        }
+		setCapienza(capienza);
 		this.disponibilita = disponibilita;
 	}
 	
@@ -38,9 +50,12 @@ public class Mezzo {
 		return capienza;
 	}
 
-	public void setCapienza(int capienza) {
-		this.capienza = capienza;
-	}
+    public void setCapienza(int capienza) {
+        if (capienza < CAPACITA_MINIMA || capienza > CAPACITA_MASSIMA) {
+            throw new IllegalArgumentException("La capienza deve essere compresa tra " + CAPACITA_MINIMA + " e " + CAPACITA_MASSIMA);
+        }
+        this.capienza = capienza;
+    }
 
 	public boolean isDisponibilita() {
 		return disponibilita;

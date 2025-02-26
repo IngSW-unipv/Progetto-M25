@@ -1,5 +1,8 @@
 package it.unipv.ingsfw.model.users;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public abstract class Dipendente {
 	
 	private String idDipendente;
@@ -52,7 +55,7 @@ public abstract class Dipendente {
 		this.password = null;
 		this.stipendio = 0;
 	}
-
+	
 	public String getIdDipendente() {
 		return idDipendente;
 	}

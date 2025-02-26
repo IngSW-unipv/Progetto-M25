@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-
 import it.unipv.ingsfw.jdbc.DBConnection;
 
 public class MezzoDAO implements IMezzoDAO {
@@ -41,6 +40,10 @@ public class MezzoDAO implements IMezzoDAO {
 	@Override
 	public Mezzo selectById(Mezzo m) {
 		String IdMez= m.getIdMezzo();
+		
+		//controllo aggiunto in fase di test
+		
+	     
 		conn = DBConnection.startConnection(conn);
 		PreparedStatement st1;
 		PreparedStatement st2;
@@ -60,15 +63,19 @@ public class MezzoDAO implements IMezzoDAO {
 			st2.setString(1, IdMez);
 			rs2 = st2.executeQuery();
 
-			while (rs1.next()) {
-				m = new Mezzo (rs1.getString(1),rs1.getInt(2),false);
-				while (rs2.next()) {
-					if(rs2.getInt(1)==0) m.setDisponibilita(true);
+			if (rs1.next()) {
+				while (rs1.next()) {
+					m = new Mezzo (rs1.getString(1),rs1.getInt(2),false);
+					while (rs2.next()) {
+					     
+						if(rs2.getInt(1)==0) m.setDisponibilita(true);
+					}
 				}
+			}else {
+				return null;
 			}
 			
-		} catch (ClassCastException e) {
-			System.out.println("Errore in fase di casting del dipendente");
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
