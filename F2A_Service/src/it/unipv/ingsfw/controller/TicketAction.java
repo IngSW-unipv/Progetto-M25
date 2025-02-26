@@ -77,7 +77,6 @@ public class TicketAction {
 						JOptionPane.showMessageDialog(login, "Benvenuto Corriere!", "Accesso",
 								JOptionPane.INFORMATION_MESSAGE);
 						login.dispose();
-						// DipendenteDAO d = new DipendenteDAO();
 						MainFrameTicket login = new MainFrameTicket(tik);
 						login.setVisible(true);
 					} else {
@@ -89,7 +88,6 @@ public class TicketAction {
 	}
 
 	private void addMainListenersCorriere() {
-		// DipendenteDAO d = new DipendenteDAO();
 		main.getMenu().getGestioneTicket().addMenuListener(
 				new MenuListenerAdapter(() -> main.getCardLayout().show(main.getPannello(), "Ticket")));
 		;
@@ -283,6 +281,7 @@ public class TicketAction {
 			svt.getFieldListaCapiDaRitirarePressoTappa().setText(showCapiOfTappa(capi, svt));
 			svt.getLabelCapiDaRitirarePressoTappa().setVisible(true);
 			svt.getFieldListaCapiDaRitirarePressoTappa().setVisible(true);
+			svt.getScrollPane().setVisible(true);
 		} else if (svt.getTik().getTipologia().toString().equalsIgnoreCase("CONSEGNA")) {
 			svt.getBottoneConsegnaAvvenuta().setVisible(true);
 			svt.getBottoneRitiroAvvenuto().setVisible(false);
@@ -291,6 +290,7 @@ public class TicketAction {
 			svt.getFieldListaCapiDaConsegnarePressoTappa().setText(showCapiOfTappa(capi, svt));
 			svt.getLabelCapiDaConsegnarePressoTappa().setVisible(true);
 			svt.getFieldListaCapiDaConsegnarePressoTappa().setVisible(true);
+			svt.getScrollPane().setVisible(false);
 		}
 	}
 
@@ -300,11 +300,11 @@ public class TicketAction {
 		svt.getFieldId().setFont(boldFont);
 		String listaCapi = "";
 		for (Capo capo : capi) {
-			listaCapi += "\n- " + capo.toStringCor();
+			listaCapi += "\n- " + capo.toStringCor()+"\n";
 			// aggiungo alla lista dei capi ritirati o prelevati i capi della tappa
-			
 			svt.getTik().getListaCapiRitOCon().add(capo);
 		}
 		return listaCapi;
 	}
+	
 }

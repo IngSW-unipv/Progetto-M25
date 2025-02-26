@@ -45,6 +45,10 @@ public class Itinerario {
 		this.listaTappeNegozi = null;
 	}
 
+	public Itinerario() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getIdItinerario() {
 		return idItinerario;
 	}
@@ -68,10 +72,15 @@ public class Itinerario {
 		return i;
 	}
 
+
 	@Override
 	public String toString() {
-		String itinerario = "\n ID Itinerario: " + idItinerario + "\n\nTAPPE:";
+		String itinerario = "\n ID Itinerario: " + idItinerario + "\n TAPPE:";
 		int i = 1;
+		//sistemato in fase di test aggiunto controllo su null
+		if (listaTappeNegozi==null) {
+			return itinerario;
+		}
 		for (Tappa n : listaTappeNegozi) {
 			itinerario += "\n-Tappa " + i + ": " + n.toString();
 			i++;

@@ -194,9 +194,8 @@ public class Capo {
 	}
 	
 	public String toStringCor() {
-		return "ID Capo: " + idCapo + "\nTipoLavaggio: " + tipoLavaggio + "\nId NegozioRitiro: "
-				+ negozioDeposito.getIdTappa() + "\nIdCliente: " + cliente.getIdCliente();
+		return "ID Capo: " + idCapo + "\nTipoLavaggio: " + tipoLavaggio+ "\nIdCliente: " + cliente.getIdCliente();
 	}
-	
+		
 
 }

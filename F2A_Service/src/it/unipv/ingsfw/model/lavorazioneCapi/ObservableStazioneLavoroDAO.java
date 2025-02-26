@@ -67,7 +67,7 @@ public class ObservableStazioneLavoroDAO implements IObservableStazioneLavoroDAO
 			st1 = conn.prepareStatement(query);
 			st1.setString(1, input.getStatoStazione().toString());
 
-			rs1 = st1.executeQuery(query);
+			rs1 = st1.executeQuery();
 
 			while (rs1.next()) {
 

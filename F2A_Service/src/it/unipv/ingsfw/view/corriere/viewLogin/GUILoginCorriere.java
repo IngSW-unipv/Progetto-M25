@@ -5,19 +5,12 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.Image;
-import java.awt.MenuBar;
 import java.awt.Toolkit;
 
-import javax.swing.Box;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 
 import it.unipv.ingsfw.controller.TicketAction;
-import it.unipv.ingsfw.controller.OperatoreAction;
-import it.unipv.ingsfw.model.users.Corriere;
-import it.unipv.ingsfw.model.users.Operatore;
 
 public class GUILoginCorriere extends JFrame{
 	
@@ -69,7 +62,6 @@ public class GUILoginCorriere extends JFrame{
 
 
 	public static void main(String[] args) {
-		Corriere cor = new Corriere();
 		GUILoginCorriere loginCor = new GUILoginCorriere();
 		loginCor.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		loginCor.setVisible(true);

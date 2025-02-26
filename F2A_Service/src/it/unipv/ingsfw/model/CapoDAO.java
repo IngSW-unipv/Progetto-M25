@@ -6,18 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
 import java.sql.Statement;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import it.unipv.ingsfw.jdbc.DBConnection;
 import it.unipv.ingsfw.model.negozio.Negozio;
-import it.unipv.ingsfw.model.negozio.Totem;
 import it.unipv.ingsfw.model.users.Cliente;
 
 public class CapoDAO implements ICapoDAO {
@@ -30,7 +25,7 @@ public class CapoDAO implements ICapoDAO {
 		super();
 		// this.schema = "PROVA";
 		// conn=DBConnection.startConnection(conn,schema);
-		format = new SimpleDateFormat("YYYY-MM-DD");
+		setFormat(new SimpleDateFormat("YYYY-MM-DD"));
 	}
 
 	@Override
@@ -54,7 +49,7 @@ public class CapoDAO implements ICapoDAO {
 				negCon = new Negozio(rs1.getString(7));
 				cl = new Cliente(rs1.getString(9));
 				Capo c = new Capo(rs1.getString(1), StatoCapo.valueOf(rs1.getString(2)),
-						TipoLavaggio.valueOf(String.valueOf(rs1.getInt(3))), rs1.getDate(4), rs1.getDate(5), negDep, negCon,
+						TipoLavaggio.valueOf(rs1.getString(3)), rs1.getDate(4), rs1.getDate(5), negDep, negCon,
 						rs1.getDouble(8), cl);
 
 				result.add(c);
@@ -277,6 +272,7 @@ public class CapoDAO implements ICapoDAO {
 		ResultSet rs1;
 		//negozio deposito = negozio ritiro != negozio consegna
 		Negozio negDep;
+		Negozio negCons;
 		Cliente cl;
 
 		try {
@@ -288,8 +284,8 @@ public class CapoDAO implements ICapoDAO {
 			rs1 = st1.executeQuery();
 
 			while (rs1.next()) {
-				negDep = new Negozio(rs1.getString(6));
-				Negozio negCons = new Negozio(rs1.getString(7));
+				negDep =input.getNegozioDeposito();
+				negCons = new Negozio(rs1.getString(7));
 				cl = new Cliente(rs1.getString(9));
 				Capo c = new Capo(rs1.getString(1), StatoCapo.valueOf(rs1.getString(2)),
 						input.getTipoLavaggio(), rs1.getDate(4), rs1.getDate(5), negDep, negCons,
@@ -397,6 +393,14 @@ public class CapoDAO implements ICapoDAO {
 		
 		String Stato =c.getStatoCapoById(new Capo("C013"));
 		System.out.println(Stato);
+	}
+
+	public SimpleDateFormat getFormat() {
+		return format;
+	}
+
+	public void setFormat(SimpleDateFormat format) {
+		this.format = format;
 	}
 
 }

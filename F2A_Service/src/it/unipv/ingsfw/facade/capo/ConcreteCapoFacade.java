@@ -61,7 +61,7 @@ public class ConcreteCapoFacade implements ICapoFacade {
 		try {
 			lista = capoDAO.selectCapiDaConsegnareByTappa(input);
 		} catch (Exception e) {
-			System.err.println("Errore nel prelevamento dei capi da ritirare per tappa");
+			System.err.println("Errore nel prelevamento dei capi da consegnare per tappa");
 		}
 		return lista;
 

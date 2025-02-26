@@ -62,7 +62,7 @@ public class Mezzo {
 	
 	@Override
 	public String toString() {
-		return  "Id Mezzo: " + idMezzo + "\nCapienza: " + capienza + "\n";
+		return  "\n Id Mezzo: " + idMezzo + "\n Capienza: " + capienza;
 	}
 	
 }

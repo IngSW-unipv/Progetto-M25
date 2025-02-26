@@ -2,20 +2,9 @@ package it.unipv.ingsfw.view.corriere;
 
 import java.awt.*;
 import javax.swing.*;
-import java.util.List;
-import java.util.ArrayList;
 
-import it.unipv.ingsfw.controller.OperatoreAction;
 import it.unipv.ingsfw.controller.TicketAction;
-import it.unipv.ingsfw.model.lavorazioneCapi.ObservableStazioneLavoro;
-import it.unipv.ingsfw.model.lavorazioneCapi.ObservableStazioneLavoroDAO;
-import it.unipv.ingsfw.model.lavorazioneCapi.StatoStazione;
 import it.unipv.ingsfw.model.tickets.Ticket;
-import it.unipv.ingsfw.model.users.Corriere;
-import it.unipv.ingsfw.model.users.DipendenteDAO;
-import it.unipv.ingsfw.model.users.Operatore;
-import it.unipv.ingsfw.view.operatore.viewLogin.GUILoginOperatore;
-
 /**
  * top-level Container--> contenitore principale, mi permette di aggiungere
  * altri componenti --> visualizza la finestra dell'interfaccia --> contiene
@@ -45,6 +34,28 @@ public class FrameSvolgimentoTicket extends JFrame {
 	private JLabel labelCapiDaConsegnarePressoTappa;
 	private JTextArea fieldListaCapiDaRitirarePressoTappa;
 	private JTextArea fieldListaCapiDaConsegnarePressoTappa;
+	private JScrollPane scrollPane;
+	private JScrollPane scrollPane2;
+
+	public JScrollPane getScrollPane() {
+		return scrollPane;
+	}
+
+
+	public void setScrollPane(JScrollPane scrollPane) {
+		this.scrollPane = scrollPane;
+	}
+
+
+	public JScrollPane getScrollPane2() {
+		return scrollPane2;
+	}
+
+
+	public void setScrollPane2(JScrollPane scrollPane2) {
+		this.scrollPane2 = scrollPane2;
+	}
+
 
 	/**
 	 * ad ogni componentebisogna associare un Listener per il relativo evento in
@@ -95,15 +106,15 @@ public class FrameSvolgimentoTicket extends JFrame {
 		labelFieldId= new JLabel("TICKET IN SVOLGIMENTO: ");
 		fieldId = new JTextArea(2, 10);
 		labelTappaCorrente= new JLabel("Tappa Corrente: ");
-		fieldTappaCorrente = new JTextArea(2, 10);
+		fieldTappaCorrente = new JTextArea(2, 3);
 		pannelloTicket.add(labelFieldId);
 		pannelloTicket.add(fieldId);
 		pannelloTicket.add(labelTappaCorrente);
 		pannelloTicket.add(fieldTappaCorrente);
 		labelCapiDaRitirarePressoTappa= new JLabel("Capi Da Ritirare: ");
 		labelCapiDaConsegnarePressoTappa= new JLabel("Capi Da Consegnare: ");
-		fieldListaCapiDaRitirarePressoTappa=new JTextArea (2,10);
-		fieldListaCapiDaConsegnarePressoTappa=new JTextArea (2,10);
+		fieldListaCapiDaRitirarePressoTappa=new JTextArea (10,20);
+		fieldListaCapiDaConsegnarePressoTappa=new JTextArea (10,20);
 		pannelloTicket.add(labelCapiDaRitirarePressoTappa);
 		pannelloTicket.add(labelCapiDaConsegnarePressoTappa);
 		pannelloTicket.add(fieldListaCapiDaRitirarePressoTappa);
@@ -113,7 +124,12 @@ public class FrameSvolgimentoTicket extends JFrame {
 		fieldListaCapiDaConsegnarePressoTappa.setVisible(false);
 		labelCapiDaRitirarePressoTappa.setVisible(false);
 		labelCapiDaConsegnarePressoTappa.setVisible(false);
-		
+		scrollPane = new JScrollPane(fieldListaCapiDaRitirarePressoTappa);
+		scrollPane2 = new JScrollPane(fieldListaCapiDaConsegnarePressoTappa);
+		pannelloTicket.add(scrollPane, BorderLayout.CENTER);
+		pannelloTicket.add(scrollPane2, BorderLayout.CENTER);
+		scrollPane.setVisible(false);
+		scrollPane2.setVisible(false);
 		bottoneRitiroAvvenuto = new JButton("Ritiro presso tappa corrente avvenuto");
 		bottoneRitiroAvvenuto.setActionCommand("Ritiro presso tappa corrente avvenuto");
 		bottoneConsegnaAvvenuta = new JButton("Consegna presso tappa corrente avvenuta");
@@ -123,6 +139,7 @@ public class FrameSvolgimentoTicket extends JFrame {
 		pannelloTicket.add(bottoneRitiroAvvenuto);
 		pannelloTicket.add(bottoneConsegnaAvvenuta);
 		pannelloTicket.add(bottoneCompletaTicket);
+		//textArea.setPreferredSize(new Dimension(600, 400));
 		//inizialmente entrambi non visibili, fatti vedere in base al fatto che il ticket è di tipo consegna o di tipo ritiro
 		bottoneRitiroAvvenuto.setVisible(false);
 		bottoneConsegnaAvvenuta.setVisible(false);

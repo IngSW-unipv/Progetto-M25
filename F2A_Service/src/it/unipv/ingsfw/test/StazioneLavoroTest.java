@@ -1,20 +1,363 @@
 package it.unipv.ingsfw.test;
 
-import static org.junit.Assert.*;
-
+import it.unipv.ingsfw.model.Capo;
+import it.unipv.ingsfw.model.StatoCapo;
+import it.unipv.ingsfw.model.TipoLavaggio;
+import it.unipv.ingsfw.model.lavorazioneCapi.ObservableStazioneLavoro;
+import it.unipv.ingsfw.model.lavorazioneCapi.ObservableStazioneLavoroDAO;
+import it.unipv.ingsfw.model.lavorazioneCapi.StatoStazione;
+import it.unipv.ingsfw.model.lavorazioneCapi.TipologiaStazione;
+import it.unipv.ingsfw.model.users.Operatore;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
+import static org.junit.Assert.*;
+
 public class StazioneLavoroTest {
 
+	private ObservableStazioneLavoro stazione;
+	private ObservableStazioneLavoro stazione2;
+	private ObservableStazioneLavoroDAO stazioneDAO;
+	private Capo capo;
+	private Operatore operatore;
+
 	@Before
-	public void setUp() throws Exception {
-		
+	public void setUp() {
+		stazione = new ObservableStazioneLavoro("S001", TipologiaStazione.LAVAGGIO, StatoStazione.READY, 100.0);
+		stazione2 = new ObservableStazioneLavoro("S004", TipologiaStazione.ASCIUGATURA, StatoStazione.READY, 100.0);
+		stazioneDAO = new ObservableStazioneLavoroDAO();
+		capo = new Capo(StatoCapo.IN_LAVORAZIONE, TipoLavaggio.BIANCHI);
+		operatore = new Operatore("D001");
 	}
 
 	@Test
-	public void test() {
-		fail("Not yet implemented");
+	public void testSetListaCapiDaLavorare() {
+		boolean result = stazione2.setListaCapiDaLavorare(capo);
+		assertTrue(result);
+		assertFalse(stazione2.getListaCapiDaLavorare().isEmpty());
+	}
+
+	@Test
+	public void testMessaInLavorazione() {
+		stazione.messaInLavorazione(0);
+		assertEquals(StatoStazione.WORKING, stazione.getStatoStazione());
+	}
+
+	@Test
+	public void testMessaInStandBy() {
+		stazione.messaInStandBy(0);
+		assertEquals(StatoStazione.READY, stazione.getStatoStazione());
+	}
+
+	@Test
+	public void testMessaInManutenzione() {
+		stazione.messaInManutenzione(0);
+		assertEquals(StatoStazione.MAINTENANCE, stazione.getStatoStazione());
+	}
+
+	@Test
+	public void testCheckPresenzaCapi() {
+		boolean result = stazione.checkPresenzaCapi();
+		assertTrue(result);
+	}
+
+	@Test
+	public void testSvuotaStazione() {
+		stazione.setListaCapiDaLavorare(capo);
+		stazione.svuotaStazione();
+		assertTrue(stazione.getListaCapiDaLavorare().isEmpty());
+	}
+
+	@Test
+	public void testRemoveCapiStazione() {
+		stazione.setListaCapiDaLavorare(capo);
+		boolean result = stazione.removeCapiStazione();
+		assertTrue(result);
+	}
+
+	@Test
+	public void testAssegnazionePostGuasto() {
+		stazione.assegnazionePostGuasto(0);
+		assertEquals(StatoStazione.MAINTENANCE, stazione.getStatoStazione());
+	}
+
+	@Test
+	public void testSelectAll() {
+		ArrayList<ObservableStazioneLavoro> stazioni = stazioneDAO.selectAll();
+		assertFalse(stazioni.isEmpty());
+	}
+
+	@Test
+	public void testSelectByStato() {
+		ArrayList<ObservableStazioneLavoro> stazioni = stazioneDAO.selectByStato(stazione);
+		assertFalse(stazioni.isEmpty());
+	}
+
+	@Test
+	public void testAssegnazioneResponsabileStazioneLibero() {
+		boolean result = stazioneDAO.assegnazioneResponsabileStazioneLibero(stazione);
+		assertTrue(result);
+	}
+
+	@Test
+	public void testAssegnazioneManutentoreLibero() {
+		stazione.setStatoStazione(StatoStazione.MAINTENANCE);
+		boolean result = stazioneDAO.assegnazioneManutentoreLibero(stazione);
+		assertTrue(result);
+	}
+
+	@Test
+	public void testSelectStazioniReadyNonAssegnate() {
+		ArrayList<ObservableStazioneLavoro> stazioni = stazioneDAO.selectStazioniReadyNonAssegnate();
+		assertFalse(stazioni.isEmpty());
+	}
+
+	@Test
+	public void testSelectStazioniMaintenanceNonAssegnate() {
+		stazione.setStatoStazione(StatoStazione.MAINTENANCE);
+		ArrayList<ObservableStazioneLavoro> stazioni = stazioneDAO.selectStazioniMaintenanceNonAssegnate();
+		assertFalse(stazioni.isEmpty());
+	}
+
+	@Test
+	public void testSelectStazioniReadyNonAssegnatePerTipo() {
+		ObservableStazioneLavoro stazione = stazioneDAO
+				.selectStazioniReadyNonAssegnatePerTipo(new ObservableStazioneLavoro(TipologiaStazione.LAVAGGIO));
+		assertNotNull(stazione);
+	}
+
+	@Test
+	public void testAssegnazioneOperatoreNoto() {
+		boolean result = stazioneDAO.assegnazioneOperatoreNoto(stazione, operatore);
+		assertTrue(result);
+	}
+
+	@Test
+	public void testChangeStatoStazione() {
+		stazione.setStatoStazione(StatoStazione.WORKING);
+		boolean result = stazioneDAO.changeStatoStazione(stazione);
+		assertTrue(result);
+	}
+
+	@Test
+	public void testSelectStazioniByOperatore() {
+		stazioneDAO.assegnazioneOperatoreNoto(stazione, operatore);
+		ArrayList<ObservableStazioneLavoro> lista = stazioneDAO.selectStazioniByOperatore(operatore);
+		assertFalse(lista.isEmpty());
+	}
+
+	@Test
+	public void testChiusuraAssegnazioneOperatoreNoto() {
+		stazioneDAO.assegnazioneOperatoreNoto(stazione, operatore);
+		boolean result = stazioneDAO.chiusuraAssegnazioneOperatoreNoto(stazione, operatore);
+		assertTrue(result);
+	}
+
+	// Casi Of-By-One per ObservableStazioneLavoro
+	@Test
+	public void testIdStazioneLimiteInferiore() {
+		try {
+			new ObservableStazioneLavoro("", TipologiaStazione.LAVAGGIO, StatoStazione.READY, 100.0);
+			fail("Dovrebbe lanciare un'eccezione per idStazione vuoto.");
+		} catch (IllegalArgumentException e) {
+			// Test superato se l'eccezione viene lanciata
+		}
+	}
+
+	@Test
+	public void testIdStazioneLimiteSuperiore() {
+		try {
+			new ObservableStazioneLavoro("S00123456789", TipologiaStazione.LAVAGGIO, StatoStazione.READY, 100.0);
+			fail("Dovrebbe lanciare un'eccezione per idStazione troppo lungo.");
+		} catch (IllegalArgumentException e) {
+			// Test superato se l'eccezione viene lanciata
+		}
+	}
+
+	@Test
+	public void testListaCapiDaLavorareVuota() {
+		assertEquals(0, stazione.getListaCapiDaLavorare().size());
+	}
+
+	@Test
+	public void testListaCapiDaLavorareUnElemento() {
+		ArrayList<Capo> listaCapi = new ArrayList<>();
+		listaCapi.add(capo);
+		stazione.setListaCapiDaLavorare(listaCapi);
+		assertEquals(1, stazione.getListaCapiDaLavorare().size());
+	}
+
+	@Test
+	public void testListaCapiDaLavorareMoltiElementi() {
+		ArrayList<Capo> listaCapi = new ArrayList<>();
+		listaCapi.add(capo);
+		listaCapi.add(new Capo(StatoCapo.IN_LAVORAZIONE, TipoLavaggio.COLORATI));
+		stazione.setListaCapiDaLavorare(listaCapi);
+		assertEquals(2, stazione.getListaCapiDaLavorare().size());
+	}
+
+	// Casi Of-By-One per ObservableStazioneLavoroDAO
+
+	@Test
+	public void testSelectStazioniByOperatoreNessunaStazione() {
+		// Assicurati che non ci siano stazioni assegnate all'operatore nel database
+		ArrayList<ObservableStazioneLavoro> stazioni = stazioneDAO.selectStazioniByOperatore(operatore);
+		assertEquals(0, stazioni.size());
+	}
+
+	@Test
+	public void testSelectStazioniByOperatoreUnaStazione() {
+		// Assicurati che ci sia una stazione assegnata all'operatore nel database
+		stazioneDAO.assegnazioneOperatoreNoto(stazione, operatore);
+		ArrayList<ObservableStazioneLavoro> stazioni = stazioneDAO.selectStazioniByOperatore(operatore);
+		assertEquals(1, stazioni.size());
+	}
+
+	@Test
+	public void testSelectStazioniByOperatoreMolteStazioni() {
+		// Assicurati che ci siano più stazioni assegnate all'operatore nel database
+		stazioneDAO.assegnazioneOperatoreNoto(stazione, operatore);
+		stazioneDAO.assegnazioneOperatoreNoto(stazione2, operatore);
+		ArrayList<ObservableStazioneLavoro> stazioni = stazioneDAO.selectStazioniByOperatore(operatore);
+		assertTrue(stazioni.size() > 1);
+	}
+
+	@Test
+	public void testSelectAllNessunaStazione() {
+		// Assicurati che non ci siano stazioni nel database
+		ArrayList<ObservableStazioneLavoro> stazioni = stazioneDAO.selectAll();
+		assertEquals(0, stazioni.size());
+	}
+
+	@Test
+	public void testSelectAllUnaStazione() {
+		// Assicurati che ci sia una stazione nel database
+		ArrayList<ObservableStazioneLavoro> stazioni = stazioneDAO.selectAll();
+		assertEquals(1, stazioni.size());
+	}
+
+	@Test
+	public void testSelectAllMolteStazioni() {
+		// Assicurati che ci siano più stazioni nel database
+		ArrayList<ObservableStazioneLavoro> stazioni = stazioneDAO.selectAll();
+		assertTrue(stazioni.size() > 1);
+	}
+
+	@Test
+	public void testSelectByStatoNessunaStazione() {
+		// Assicurati che non ci siano stazioni con lo stato specificato
+		ObservableStazioneLavoro stazioneFittizia = new ObservableStazioneLavoro(TipologiaStazione.LAVAGGIO);
+		stazioneFittizia.setStatoStazione(StatoStazione.MAINTENANCE);
+		ArrayList<ObservableStazioneLavoro> stazioni = stazioneDAO.selectByStato(stazioneFittizia);
+		assertEquals(0, stazioni.size());
+	}
+
+	@Test
+	public void testSelectByStatoUnaStazione() {
+		// Assicurati che ci sia una stazione con lo stato specificato
+		ArrayList<ObservableStazioneLavoro> stazioni = stazioneDAO.selectByStato(stazione);
+		assertEquals(1, stazioni.size());
+	}
+
+	@Test
+	public void testSelectByStatoMolteStazioni() {
+		// Assicurati che ci siano più stazioni con lo stato specificato
+		ObservableStazioneLavoro stazioneFittizia = new ObservableStazioneLavoro(TipologiaStazione.LAVAGGIO);
+		stazioneFittizia.setStatoStazione(StatoStazione.READY);
+		ArrayList<ObservableStazioneLavoro> stazioni = stazioneDAO.selectByStato(stazioneFittizia);
+		assertTrue(stazioni.size() > 1);
+	}
+
+	@Test
+	public void testAssegnazioneResponsabileStazioneLiberoNessunResponsabile() {
+		// Assicurati che non ci siano responsabili liberi nel database
+		// (potrebbe richiedere la modifica dei dati di test)
+		boolean result = stazioneDAO.assegnazioneResponsabileStazioneLibero(stazione);
+		assertFalse(result);
+	}
+
+	@Test
+	public void testAssegnazioneResponsabileStazioneLiberoUnResponsabile() {
+		// Assicurati che ci sia un responsabile libero nel database
+		// (potrebbe richiedere la modifica dei dati di test)
+		boolean result = stazioneDAO.assegnazioneResponsabileStazioneLibero(stazione);
+		assertTrue(result);
+	}
+
+	@Test
+	public void testAssegnazioneManutentoreLiberoNessunManutentore() {
+		// Assicurati che non ci siano manutentori liberi nel database
+		// (potrebbe richiedere la modifica dei dati di test)
+		stazione.setStatoStazione(StatoStazione.MAINTENANCE);
+		boolean result = stazioneDAO.assegnazioneManutentoreLibero(stazione);
+		assertFalse(result);
+	}
+
+	@Test
+	public void testAssegnazioneManutentoreLiberoUnManutentore() {
+		// Assicurati che ci sia un manutentore libero nel database
+		// (potrebbe richiedere la modifica dei dati di test)
+		stazione.setStatoStazione(StatoStazione.MAINTENANCE);
+		boolean result = stazioneDAO.assegnazioneManutentoreLibero(stazione);
+		assertTrue(result);
+	}
+
+	@Test
+	public void testSelectStazioniReadyNonAssegnateNessunaStazione() {
+		// Assicurati che non ci siano stazioni pronte e non assegnate nel database
+		ArrayList<ObservableStazioneLavoro> stazioni = stazioneDAO.selectStazioniReadyNonAssegnate();
+		assertEquals(0, stazioni.size());
+	}
+
+	@Test
+	public void testSelectStazioniReadyNonAssegnateUnaStazione() {
+		// Assicurati che ci sia una stazione pronta e non assegnata nel database
+		ArrayList<ObservableStazioneLavoro> stazioni = stazioneDAO.selectStazioniReadyNonAssegnate();
+		assertEquals(1, stazioni.size());
+	}
+
+	@Test
+	public void testSelectStazioniReadyNonAssegnateMolteStazioni() {
+		// Assicurati che ci siano più stazioni pronte e non assegnate nel database
+		ArrayList<ObservableStazioneLavoro> stazioni = stazioneDAO.selectStazioniReadyNonAssegnate();
+		assertTrue(stazioni.size() > 1);
+	}
+
+	@Test
+	public void testSelectStazioniMaintenanceNonAssegnateNessunaStazione() {
+		// Assicurati che non ci siano stazioni in manutenzione e non assegnate nel
+		// database
+		ArrayList<ObservableStazioneLavoro> stazioni = stazioneDAO.selectStazioniMaintenanceNonAssegnate();
+		assertEquals(0, stazioni.size());
+	}
+
+	@Test
+	public void testSelectStazioniMaintenanceNonAssegnateUnaStazione() {
+		// Assicurati che ci sia una stazione in manutenzione e non assegnata nel
+		// database
+		stazione.setStatoStazione(StatoStazione.MAINTENANCE);
+		ArrayList<ObservableStazioneLavoro> stazioni = stazioneDAO.selectStazioniMaintenanceNonAssegnate();
+		assertEquals(1, stazioni.size());
+	}
+
+	@Test
+	public void testSelectStazioniMaintenanceNonAssegnateMolteStazioni() {
+		// Assicurati che ci siano più stazioni in manutenzione e non assegnate nel
+		// database
+		stazione.setStatoStazione(StatoStazione.MAINTENANCE);
+		ArrayList<ObservableStazioneLavoro> stazioni = stazioneDAO.selectStazioniMaintenanceNonAssegnate();
+		assertTrue(stazioni.size() > 1);
+	}
+
+	@Test
+	public void testSelectStazioniReadyNonAssegnatePerTipoNessunaStazione() {
+		// Assicurati che non ci siano stazioni pronte e non assegnate per il tipo
+		// specificato
+		ObservableStazioneLavoro stazioneFittizia = new ObservableStazioneLavoro(TipologiaStazione.ASCIUGATURA);
+		ObservableStazioneLavoro stazione = stazioneDAO.selectStazioniReadyNonAssegnatePerTipo(stazioneFittizia);
+		assertNull(stazione);
 	}
 
 }

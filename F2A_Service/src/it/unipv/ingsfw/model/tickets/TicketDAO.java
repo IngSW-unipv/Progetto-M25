@@ -20,6 +20,7 @@ public class TicketDAO implements ITicketDAO {
 		super();
 	}
 	
+	//Concettualmente un singleton ma visibilità a public per il DAO FACTORY (retClass.getDeclaredConstructor().newInstance())
 	public static TicketDAO getInstance() {
 		if (instance == null) {
 			instance = new TicketDAO();

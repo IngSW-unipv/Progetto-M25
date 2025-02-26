@@ -24,6 +24,13 @@ public class Ticket {
 	 */
 	public Ticket(String idTicket, TipologiaTicket tipologia, StatoTicket stato, Mezzo mezzo,Itinerario itinerario,Corriere corriere) {
 		super();
+		//Aggiunti in Fase di testing, ovviamente questo tipo di controllo non è fatto nei costruttori ove si vuole idTicket=null
+		if (idTicket == null || idTicket.length() == 0) {
+	        throw new IllegalArgumentException("idTicket non può essere vuoto.");
+	    }
+	    if (idTicket.length() > 4) {
+	        throw new IllegalArgumentException("idTicket non può superare i 4 caratteri.");
+	    }
 		this.idTicket = idTicket;
 		this.tipologia = tipologia;
 		this.stato = stato;
@@ -58,6 +65,15 @@ public class Ticket {
 
 	public Ticket(String idTicket) {
 		super();
+		if (idTicket == null || idTicket.length() == 0) {
+	        throw new IllegalArgumentException("idTicket non può essere vuoto.");
+	    }
+	    if (idTicket.length() > 4) {
+	        throw new IllegalArgumentException("idTicket non può superare i 4 caratteri.");
+	    }
+	    if (idTicket.length() < 4) {
+	        throw new IllegalArgumentException("idTicket non può avere meno di 4 caratteri");
+	    }
 		this.idTicket = idTicket;
 		this.tipologia = null;
 		this.stato = null;
@@ -101,7 +117,7 @@ public class Ticket {
 	
 	@Override
 	public String toString() {
-		return  "\nTicket " + idTicket + "\nTipologia: " + tipologia + "\nStato: " + stato+"\n\n Info Corriere: "+corriere+"\n \n Info Itinerario: "+itinerario;
+		return  "\nTicket " + idTicket + "\nTipologia: " + tipologia + "\nStato: " + stato+"\n\n Info Corriere: "+corriere+"\n\n Info Itinerario:"+itinerario+"\n\n Info Mezzo:"+mezzo;
 	}
 
 	public Mezzo getMezzo() {
