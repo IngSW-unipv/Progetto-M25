@@ -1,6 +1,11 @@
 package it.unipv.ingsfw.model.negozio;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Date;
 //import java.util.Date;
 import java.util.HashMap;
 
@@ -107,7 +112,79 @@ public class Totem {
 	public void setTotemContext(TotemContext totemContext) {
 		this.totemContext = totemContext;
 	}
+	
+	public boolean cfValido(String cf) {
+		if (cf.length() != 16) {
+			return false;
+		}
+		return true;	
+	}
 
+	public boolean mailVuota(String email) {
+		
+		if (email == null || email.trim().isEmpty()) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean pwValida(String password) {
+	        if (password == null || password.trim().isEmpty()) {
+	            return false;
+	        }	        
+	        if (password.length() < 8) {
+	            return false;
+	        }
+	        return true; 
+	    }
+	
+	public boolean idValido(String id) {
+		if (id == null || id.trim().isEmpty()) {
+			return false;
+		}
+		String regexIdCliente = "^[cC][lL]\\d{3}$";
+        if (!id.trim().matches(regexIdCliente)) {
+        	return false;
+        }
+        return true;		
+	}
+	
+	public boolean dataValida(String data) {
+        // Controllo formato della data (aaaa-mm-gg)
+        String regexData = "^\\d{4}-\\d{2}-\\d{2}$";
+        if (data == null || !data.matches(regexData)) {
+            return false;
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dataInserita = null;
+        try {
+            dataInserita = LocalDate.parse(data, formatter);
+        } catch (DateTimeParseException ex) {
+            return false;
+        }
+        LocalDate dataMinima = LocalDate.now().plusDays(3);
+        if (dataInserita.isBefore(dataMinima)) {
+            return false;
+        }
+        return true;
+	}
+	
+	public boolean idCapoValido(String id) {
+        if (id == null || id.trim().isEmpty()) {
+            return false;
+        }
+        if (!id.matches("[Cc]\\d{3}")) {
+            return false;
+        }
+		return true;
+	}
+	
+
+	
+	
+	
+	
+	
     /*
 	public static void main(String[] args) {
 		Totem t = new Totem();

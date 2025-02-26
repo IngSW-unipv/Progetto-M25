@@ -191,30 +191,19 @@ public class TotemAction {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
 	                if (cfr.getPannello().getRegButton().getActionCommand().equalsIgnoreCase("Registrazione")) {
-	                	String cf = cfr.getPannello().getUserTextCf().getText();
-	                	String email = cfr.getPannello().getUserTextEmail().getText();
-                        String password = cfr.getPannello().getUserTextPw().getText();
-	                	
-                        // Controllo lunghezza CF
-                        if (cf.length() != 16) {
-                            JOptionPane.showMessageDialog(cfr, "Il codice fiscale non valido.", "Errore", JOptionPane.ERROR_MESSAGE);
+                        
+                        if(t.cfValido(cfr.getPannello().getUserTextCf().getText())==false) {
+                        	JOptionPane.showMessageDialog(cfr, "Il codice fiscale non valido.", "Errore", JOptionPane.ERROR_MESSAGE);
                             return; // Interrompe l'esecuzione se il CF non è valido
                         }
-
-                        // Controllo campi email e password non nulli
-                        if (email == null || email.trim().isEmpty()) {
+                        
+                        if(t.mailVuota(cfr.getPannello().getUserTextEmail().getText())==true) {
                             JOptionPane.showMessageDialog(cfr, "Il campo email è obbligatorio.", "Errore", JOptionPane.ERROR_MESSAGE);
                             return;
                         }
-
-                        if (password == null || password.trim().isEmpty()) {
-                            JOptionPane.showMessageDialog(cfr, "Il campo password è obbligatorio.", "Errore", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-
-                        // Controllo lunghezza password
-                        if (password.length() < 8) {
-                            JOptionPane.showMessageDialog(cfr, "La password deve contenere almeno 8 caratteri.", "Errore", JOptionPane.ERROR_MESSAGE);
+                        
+                        if(t.pwValida(cfr.getPannello().getUserTextPw().getText())== false) {
+                        	JOptionPane.showMessageDialog(cfr, "Il campo password è obbligatorio. \nLa password deve essere di almeno 8 caratteri", "Errore", JOptionPane.ERROR_MESSAGE);
                             return;
                         }
 
@@ -322,54 +311,26 @@ public class TotemAction {
 	    	
 	    	cfd.getPannello().getVerificaDatiButton().addActionListener(new ActionListener() {
 	    		@Override
-					public void actionPerformed(ActionEvent e) {					
+					public void actionPerformed(ActionEvent e) {	
 					if (cfd.getPannello().getVerificaDatiButton().getActionCommand().equalsIgnoreCase("Verifica")) {	
-						String idCliente = cfd.getPannello().getIdText().getText().trim();
-						String dataUltimaRitiro =cfd.getPannello().getDataText().getText().trim();
-
-						if (idCliente.isEmpty()) {
-							JOptionPane.showMessageDialog(cfd, "Il campo 'ID Cliente' è obbligatorio.", "Errore", JOptionPane.ERROR_MESSAGE);
-							return; // Interrompe l'esecuzione se il campo non è valido
+						
+						if(t.idValido(cfd.getPannello().getIdText().getText())==false){
+							JOptionPane.showMessageDialog(cfd, "Il campo 'ID Cliente' è obbligatorio.\nL'ID cliente deve essere nel formato clXXX, dove XXX sono numeri.", "Errore", JOptionPane.ERROR_MESSAGE);
+							return;
 						}
-			            // Controllo formato ID cliente (clXXX, CLXXX, ClXXX, cLXXX)
-			            String regexIdCliente = "^[cC][lL]\\d{3}$";
-			            if (!idCliente.matches(regexIdCliente)) {
-			                JOptionPane.showMessageDialog(cfd, "L'ID cliente deve essere nel formato clXXX, dove XXX sono numeri.", "Errore", JOptionPane.ERROR_MESSAGE);
-			                return; 
-			            }
-        
-			            // Controllo formato della data (aaaa-mm-gg)
-			            String regexData = "^\\d{4}-\\d{2}-\\d{2}$";
-			            if (!dataUltimaRitiro.matches(regexData)) {
-			                JOptionPane.showMessageDialog(cfd, "La data deve essere nel formato aaaa-mm-gg.", "Errore", JOptionPane.ERROR_MESSAGE);
-			                return;
-			            }
-			            
-			            // Verifica che la data sia valida
-			            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-			            LocalDate dataInserita = null;
-			            try {
-			                dataInserita = LocalDate.parse(dataUltimaRitiro, formatter);
-			            } catch (java.time.format.DateTimeParseException ex) {
-			                JOptionPane.showMessageDialog(cfd, "La data inserita non è valida.", "Errore", JOptionPane.ERROR_MESSAGE);
-			                return;
-			            }
-
-			            // Controllo che la data sia successiva a quella corrente di almeno 3 giorni
-			            LocalDate dataMinima = LocalDate.now().plusDays(3);
-			            if (dataInserita.isBefore(dataMinima)) {
-			                JOptionPane.showMessageDialog(cfd, "La data deve essere successiva di almeno 3 giorni rispetto a quella odierna.", "Errore", JOptionPane.ERROR_MESSAGE);
-			                return;
-			            }
-
+						if(t.dataValida(cfd.getPannello().getDataText().getText())==false) {
+							JOptionPane.showMessageDialog(cfd, "La data inserita non è valida.\nLa data deve essere successiva di almeno 3 giorni rispetto a quella odierna.", "Errore", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
 			            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			            sdf.setLenient(false);
 			            try {
-			                date = sdf.parse(dataUltimaRitiro);
+			                date = sdf.parse(cfd.getPannello().getDataText().getText());
 			            } catch (ParseException ex) {
 			                JOptionPane.showMessageDialog(cfd, "La data inserita non è valida.", "Errore", JOptionPane.ERROR_MESSAGE);
 			                return;
 			            }
+			            
 			            if (sond == null) { 
 			                JOptionPane.showMessageDialog(cfd, "Devi selezionare un negozio di deposito.", "Errore", JOptionPane.ERROR_MESSAGE);
 			                return;
@@ -394,8 +355,8 @@ public class TotemAction {
 						String costoSIntero = Integer.toString(costoInt);
 						String costoSScontato = Double.toString(costoDScontato);
 					
-						JOptionPane.showMessageDialog(cfd, "Riepilogo dati: "+"\n"+ " Codice cliente: "+idCliente +"\n Negozio ritiro: "+indirNegoRit+"\n"
-								+"\n Data ultima ritiro: "+dataUltimaRitiro+"\n"+" Tipologia servizio: "+sol+"\n COSTO INTERO: "+costoSIntero+"\n COSTO SCONTATO: "+costoSScontato);
+						JOptionPane.showMessageDialog(cfd, "Riepilogo dati: "+"\n"+ " Codice cliente: "+cfd.getPannello().getIdText().getText() +"\n Negozio ritiro: "+indirNegoRit+"\n"
+								+"\n Data ultima ritiro: "+cfd.getPannello().getDataText().getText()+"\n"+" Tipologia servizio: "+sol+"\n COSTO INTERO: "+costoSIntero+"\n COSTO SCONTATO: "+costoSScontato);
 						
 						}
 					}
@@ -451,21 +412,22 @@ public class TotemAction {
 	    		@Override
 				public void actionPerformed(ActionEvent e) {
 	    			if (cfrit.getPannello().getRitButton().getActionCommand().equalsIgnoreCase("Ritira")) {
-	    				String idCapo=cfrit.getPannello().getIdcText().getText();
-	    				if (!idCapo.matches("[Cc]\\d{3}")) {
-	                        JOptionPane.showMessageDialog(cfrit, "ID capo non valido: deve essere nel formato CXXX (dove X è un numero).");
+	    				
+	    				if(t.idCapoValido(cfrit.getPannello().getIdcText().getText())==false) {
+	    					JOptionPane.showMessageDialog(cfrit, "ID capo non valido: deve essere nel formato CXXX (dove X è un numero).");
 	                        return;
-	                        }
-	    				String statoCorrente = F2aFacade.getInstance().getCapoFacade().getStatoCapoById(new Capo(idCapo));
+	    				}
+	    				
+	    				String statoCorrente = F2aFacade.getInstance().getCapoFacade().getStatoCapoById(new Capo(cfrit.getPannello().getIdcText().getText()));
 	    				if (statoCorrente.equalsIgnoreCase("CONSEGNATO")) {
 	    					StatoCapo stato = StatoCapo.PRELEVATO;
-	    					Boolean esito = F2aFacade.getInstance().getCapoFacade().updateStatoCapo(new Capo(idCapo, stato));
+	    					Boolean esito = F2aFacade.getInstance().getCapoFacade().updateStatoCapo(new Capo(cfrit.getPannello().getIdcText().getText(), stato));
 	    					if(esito){
 	    						JOptionPane.showMessageDialog(cfrit, "Può ritirare il capo :)");
 	    					} 
 	    				}
 	    				else {
-	                        JOptionPane.showMessageDialog(cfrit, "STATO CAPO: "+statoCorrente+"\nImmposibile effettuare ritiro \nSiamo spiacenti :(");
+	                        JOptionPane.showMessageDialog(cfrit, "STATO CAPO: "+statoCorrente+"\nImposibile effettuare ritiro \nSiamo spiacenti :(");
 	    				}
 	    			}
 	    		}
