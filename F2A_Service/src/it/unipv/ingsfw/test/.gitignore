@@ -5,3 +5,10 @@
 /ItinerarioTest.class
 /MezzoTest.class
 /DipendenteDAOTest.class
+/CatenaLavorazioneTest.class
+/ClienteTest.class
+/ObservableStazioneLavoroTest.class
+/OperatoreTest.class
+/SingletonSedeLavorazioneTest.class
+/TotemTest.class
+/NegozioTest.class
