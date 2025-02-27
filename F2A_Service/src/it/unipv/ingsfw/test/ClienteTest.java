@@ -115,7 +115,8 @@ public class ClienteTest {
     @Test
     public void testInsertCliente() {
     	
-    	//per come è strutturato il codice il codice cliente non deve essere presente su DB
+    	//per come è strutturato il codice IDCL non deve essere presente su DB
+    	//eseguito il test ricordarsi di eliminare la tupla 
    	
         Cliente nuovoCliente = new Cliente("CL026", "Test", "Cliente", "TSTCLT00A00X000Z", "test.cliente@example.com", "testpassword");
         assertTrue(clienteDAO.insertCliente(nuovoCliente));

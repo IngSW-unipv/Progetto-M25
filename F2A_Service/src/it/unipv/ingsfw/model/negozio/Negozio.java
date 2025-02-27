@@ -35,9 +35,9 @@ public class Negozio extends Tappa {
 		return "Negozio " + getIdTappa() + "\nIndirizzo: " + getIndirizzo() + "\n";
 	}
 	
-    public Totem creaTotem(boolean statoSportello, ArrayList<Capo> listaCapiDepositati) {
+    public Totem creaTotem(ArrayList<Capo> listaCapiDepositati) {
         
-        Totem totem1 = new Totem(statoSportello, listaCapiDepositati);
+        Totem totem1 = new Totem(listaCapiDepositati);
         return totem1;
     }
 	

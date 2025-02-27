@@ -1,30 +1,20 @@
 package it.unipv.ingsfw.model.negozio;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+//import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Date;
 //import java.util.Date;
 import java.util.HashMap;
 
 
-//import javax.swing.JFrame;
-
 import it.unipv.ingsfw.facade.F2aFacade;
 import it.unipv.ingsfw.model.Capo;
-//import it.unipv.ingsfw.model.StatoCapo;
-//import it.unipv.ingsfw.model.TipoLavaggio;
 
 import it.unipv.ingsfw.model.scontistica.TotemContext;
 
 import it.unipv.ingsfw.model.users.Cliente;
-
-//import it.unipv.ingsfw.model.scontistica.TotemContext;
-
-//import it.unipv.ingsfw.model.scontistica.IScontisticaStrategy;
-//import it.unipv.ingsfw.view.clienteframe.ClienteFrameRegLog;
 
 public class Totem {
 	
@@ -39,7 +29,7 @@ public class Totem {
 	 * @param listaClienti
 	 * @param listaCapiDepositati
 	 */
-	public Totem(boolean statoSportello,  ArrayList<Capo> listaCapiDepositati) {
+	public Totem(ArrayList<Capo> listaCapiDepositati) {
 		super();
 		//this.statoSportello = statoSportello;
 		//this.listaClienti = listaClienti;
