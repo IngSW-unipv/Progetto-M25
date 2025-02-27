@@ -1,4 +1,4 @@
-package it.unipv.ingsfw.view.cliente.main;
+package it.unipv.ingsfw.main;
 import javax.swing.*;
 
 import it.unipv.ingsfw.view.clienteframe.ClienteFrameRegLog;

@@ -6,7 +6,6 @@ import java.util.Observer;
 
 import it.unipv.ingsfw.facade.F2aFacade;
 import it.unipv.ingsfw.model.Capo;
-import it.unipv.ingsfw.model.CapoDAO;
 import it.unipv.ingsfw.model.StatoCapo;
 
 public class ObservableStazioneLavoro extends Observable {
@@ -235,7 +234,7 @@ public class ObservableStazioneLavoro extends Observable {
 			System.out.println(s.getIdStazione());
 		}
 
-		if (this.getTipo().toString().equalsIgnoreCase("ASCIUGATURA") && F2aFacade.getInstance().getLavorazioneCapiFacade().selectCatenaByStazione(this).getTipoLavaggio().toString().equalsIgnoreCase("6")) {
+		if ((this.getTipo().toString().equalsIgnoreCase("STIRATURA")) || (this.getTipo().toString().equalsIgnoreCase("ASCIUGATURA") && F2aFacade.getInstance().getLavorazioneCapiFacade().selectCatenaByStazione(this).getTipoLavaggio().toString().equalsIgnoreCase("6"))) {
 
 			for (Capo c : this.getListaCapiDaLavorare()) {
 				c.setStatoCapo(StatoCapo.IN_CONSEGNA);

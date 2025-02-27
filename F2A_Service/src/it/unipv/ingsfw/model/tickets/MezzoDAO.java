@@ -41,8 +41,6 @@ public class MezzoDAO implements IMezzoDAO {
 	public Mezzo selectById(Mezzo m) {
 		String IdMez= m.getIdMezzo();
 		
-		//controllo aggiunto in fase di test
-		
 	     
 		conn = DBConnection.startConnection(conn);
 		PreparedStatement st1;
@@ -58,22 +56,22 @@ public class MezzoDAO implements IMezzoDAO {
 			rs1 = st1.executeQuery();
 			
 			//seconda query per impostare la disponibilità del mezzo (true or false) --> se quel mezzo è assegnato ad un ticket 'Presa_in_carico' non è disponibile
-			String query2 = "select count(*) from mezzi join ticket on mezzi.IdMezzo=ticket.IdMezzo where mezzi.IdMezzo =? and ticket.stato='PRESA_IN_CARICO'";
+			String query2 = "select count(*) from mezzi join ticket on mezzi.IdMezzo=ticket.IdMezzo where mezzi.IdMezzo =? and ticket.stato='PRESO_IN_CARICO'";
 			st2 = conn.prepareStatement(query2);
 			st2.setString(1, IdMez);
 			rs2 = st2.executeQuery();
 
-			if (rs1.next()) {
+			//if (rs1.next()) {
 				while (rs1.next()) {
-					m = new Mezzo (rs1.getString(1),rs1.getInt(2),false);
+					m = new Mezzo(rs1.getString(1),rs1.getInt(2),false);
 					while (rs2.next()) {
 					     
 						if(rs2.getInt(1)==0) m.setDisponibilita(true);
 					}
 				}
-			}else {
-				return null;
-			}
+			//}else {
+				//return null;
+			//}
 			
 			
 		} catch (Exception e) {

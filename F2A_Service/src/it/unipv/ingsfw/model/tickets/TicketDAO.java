@@ -147,13 +147,29 @@ public class TicketDAO implements ITicketDAO {
 		connessione = DBConnection.startConnection(connessione);
 		PreparedStatement st1;
 		boolean esito = true;
+		String query = "";
 
 		try {
-			String query = "UPDATE TICKET SET STATO =? WHERE IdTicket = ?";
+			
+			long millis = System.currentTimeMillis();
+			java.sql.Date date = new java.sql.Date(millis);
+			// System.out.println(date);
+			
+			
+			if(ticket.getStato() == StatoTicket.PRESO_IN_CARICO) {
+				
+				query = "UPDATE TICKET SET STATO =?, DATAPRESAINCARICO=? WHERE IdTicket =?";
+				
+			}else if(ticket.getStato() == StatoTicket.COMPLETATO) {
+				
+				query = "UPDATE TICKET SET STATO =?, DATATERMINAZIONE=? WHERE IdTicket =?";
 
+			}
+			
 			st1 = connessione.prepareStatement(query);
 			st1.setString(1, ticket.getStato().toString());
-			st1.setString(2, ticket.getIdTicket());
+			st1.setDate(2, date);
+			st1.setString(3, ticket.getIdTicket());
 
 			st1.executeUpdate();
 

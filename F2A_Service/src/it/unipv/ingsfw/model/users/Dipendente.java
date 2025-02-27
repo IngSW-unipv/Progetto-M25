@@ -1,7 +1,5 @@
 package it.unipv.ingsfw.model.users;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public abstract class Dipendente {
 	

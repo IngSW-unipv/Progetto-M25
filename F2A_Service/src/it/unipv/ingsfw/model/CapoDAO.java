@@ -144,17 +144,23 @@ public class CapoDAO implements ICapoDAO {
 		boolean esito = true;
 
 		try {
+			
+			long millis = System.currentTimeMillis();
+			java.sql.Date date = new java.sql.Date(millis);
+			// System.out.println(date);
+			
 			String query = null;
 			
 			if(inputSet.getNegozioConsegna()==null) {
-				query = "UPDATE CAPI SET STATO =? WHERE IDNEGOZIODEPOSITO = ?";
+				query = "UPDATE CAPI SET STATO =?, DATARITIRO =? WHERE IDNEGOZIODEPOSITO = ? AND STATO='IN_STORE'";
 				st1 = conn.prepareStatement(query);
 				st1.setString(1, inputSet.getStatoCapo().toString());
-				st1.setString(2, inputSet.getNegozioDeposito().getIdTappa());
+				st1.setDate(2, date);
+				st1.setString(3, inputSet.getNegozioDeposito().getIdTappa());
 				st1.executeUpdate();
 			}
 			else if(inputSet.getNegozioDeposito()==null) {
-				query = "UPDATE CAPI SET STATO =? WHERE IDNEGOZIOCONSEGNA = ?";
+				query = "UPDATE CAPI SET STATO =? WHERE IDNEGOZIOCONSEGNA = ? AND STATO='IN_CONSEGNA'";
 				st1 = conn.prepareStatement(query);
 				st1.setString(1, inputSet.getStatoCapo().toString());
 				st1.setString(2, inputSet.getNegozioConsegna().getIdTappa());
@@ -288,7 +294,7 @@ public class CapoDAO implements ICapoDAO {
 				negCons = new Negozio(rs1.getString(7));
 				cl = new Cliente(rs1.getString(9));
 				Capo c = new Capo(rs1.getString(1), StatoCapo.valueOf(rs1.getString(2)),
-						input.getTipoLavaggio(), rs1.getDate(4), rs1.getDate(5), negDep, negCons,
+						TipoLavaggio.fromTipoLav(rs1.getString(3)), rs1.getDate(4), rs1.getDate(5), negDep, negCons,
 						rs1.getDouble(8), cl);
 				result.add(c);
 			}
@@ -327,7 +333,7 @@ public class CapoDAO implements ICapoDAO {
 				negCons = new Negozio(rs1.getString(7));
 				cl = new Cliente(rs1.getString(9));
 				Capo c = new Capo(rs1.getString(1), StatoCapo.valueOf(rs1.getString(2)),
-						input.getTipoLavaggio(), rs1.getDate(4), rs1.getDate(5), negDep, negCons,
+						TipoLavaggio.fromTipoLav(rs1.getString(3)), rs1.getDate(4), rs1.getDate(5), negDep, negCons,
 						rs1.getDouble(8), cl);
 				result.add(c);
 			}

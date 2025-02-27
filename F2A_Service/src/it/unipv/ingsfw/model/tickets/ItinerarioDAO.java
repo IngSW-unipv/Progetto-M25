@@ -62,16 +62,16 @@ public class ItinerarioDAO implements IItinerarioDAO {
 			st1.setString(1, IdIt);
 			rs1 = st1.executeQuery();
 			//CONTROLLO AGGIUNTO IN FASE DI TEST
-			if (rs1.next()) {
+			//if (rs1.next()) {
 				while (rs1.next()) {
 					itinerario.setIdItinerario(rs1.getString(1));
 					tappa = new Negozio(rs1.getString(2), StatoTappa.valueOf(rs1.getString(3)), rs1.getString(4));
 					itinerario.getListaTappeNegozi().add(tappa);
 				}
 				itinerario.setListaTappeNonAttraversate(itinerario.getListaTappeNegozi());
-			}else {
-				return null;
-			}
+			//}else {
+				//return null;
+			//}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -216,10 +216,11 @@ public class TicketAction {
 				if (svt2.getBottoneCompletaTicket().getActionCommand().equalsIgnoreCase("Completa Ticket")) {
 					// CAMBIO LO STATO DI TUTTI I CAPI DEL TICKET
 					int size = svt2.getTik().getListaCapiRitOCon().size();
-					for (int i = 0; i < size; i++) {
-						Capo capo_fit = new Capo(svt2.getTik().getListaCapiRitOCon().get(i).getIdCapo(),
-								StatoCapo.IN_LAVORAZIONE);
-						F2aFacade.getInstance().getCapoFacade().updateStatoCapo(capo_fit);
+					if (svt2.getTik().getTipologia().toString().equalsIgnoreCase("RITIRO")) {
+							for (int i = 0; i < size; i++) {
+								Capo capo_fit = new Capo(svt2.getTik().getListaCapiRitOCon().get(i).getIdCapo(),StatoCapo.IN_LAVORAZIONE);
+								F2aFacade.getInstance().getCapoFacade().updateStatoCapo(capo_fit);
+						}
 					}
 					// CAMBIO LO STATO DEL TICKET IN COMPLETATO
 					svt2.getTik().setStato(StatoTicket.COMPLETATO);

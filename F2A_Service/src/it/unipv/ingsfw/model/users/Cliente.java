@@ -1,7 +1,5 @@
 package it.unipv.ingsfw.model.users;
 
-import it.unipv.ingsfw.facade.F2aFacade;
-
 public class Cliente {
 
 	private String idCliente;

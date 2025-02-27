@@ -1,14 +1,9 @@
 package it.unipv.ingsfw.model.users;
 
 import java.util.ArrayList;
-import java.util.Observer;
 
 import it.unipv.ingsfw.facade.F2aFacade;
-import it.unipv.ingsfw.model.Capo;
-import it.unipv.ingsfw.model.StatoCapo;
-import it.unipv.ingsfw.model.lavorazioneCapi.CatenaLavorazione;
 import it.unipv.ingsfw.model.lavorazioneCapi.ObservableStazioneLavoro;
-import it.unipv.ingsfw.model.lavorazioneCapi.StatoStazione;
 
 public class Operatore extends Dipendente{
 
@@ -247,17 +242,17 @@ public class Operatore extends Dipendente{
 
 		// setStazioniAssociate();
 		if (stazioniAssociate.get(index).checkPresenzaCapi()) {
-			if (numeroCasuale == 1) {
+			//if (numeroCasuale == 1) {
 				System.out.println("Lavorazione avviata");
 				stazioniAssociate.get(index).messaInLavorazione(index);
 				F2aFacade.getInstance().getLavorazioneCapiFacade().changeStatoStazione(stazioniAssociate.get(index));
 				valRitorno = 1;
-			} else {
-				System.err.println("Si è presentato un guasto al macchinario. Assegnazione a manutentore disponibile in corso");
-				stazioniAssociate.get(index).assegnazionePostGuasto(index);
+			//} else {
+				//System.err.println("Si è presentato un guasto al macchinario. Assegnazione a manutentore disponibile in corso");
+				//stazioniAssociate.get(index).assegnazionePostGuasto(index);
 				// stazioniAssociate.get(index).notificaObservers(index);
-				valRitorno = -1;
-			}
+				//valRitorno = -1;
+			//}
 		} else if (!stazioniAssociate.get(index).checkPresenzaCapi()) {
 			System.err.println("Capi assenti");
 			valRitorno = 0;

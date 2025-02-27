@@ -1,13 +1,12 @@
-package it.unipv.ingsfw.view.operatore;
+package it.unipv.ingsfw.main;
 
 import java.util.Scanner;
 
 import javax.swing.JFrame;
-
 import it.unipv.ingsfw.model.users.Operatore;
 import it.unipv.ingsfw.view.operatore.viewLogin.GUILoginOperatore;
 
-public class Test {
+public class MainFC {
 
 	public static void main(String[] args) throws InterruptedException {
 

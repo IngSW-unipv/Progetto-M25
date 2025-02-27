@@ -2,7 +2,6 @@ package it.unipv.ingsfw.controller;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import it.unipv.ingsfw.facade.F2aFacade;
@@ -98,7 +96,6 @@ public class ManutentoreAction implements Observer {
 
 	private void addMainListenersManutentore() {
 		//Operatore manutentore = op;
-		// DipendenteDAO d = new DipendenteDAO();
 
 		man.getMenu().getRefreshButton().addMenuListener(new MenuListenerAdapter(() -> aggiornamenti()));
 		man.getMenu().getGestioneStazioni().addMenuListener(new MenuListenerAdapter(() -> man.getCardLayout().show(man.getPannello(), "Stazioni")));

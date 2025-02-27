@@ -3,6 +3,8 @@ package it.unipv.ingsfw.model.tickets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import it.unipv.ingsfw.facade.F2aFacade;
+
 public class Mezzo {
 	
 	private String idMezzo;
@@ -67,8 +69,7 @@ public class Mezzo {
 	
 	//AGGIUNTO IN DATA 19/02
 	public Mezzo getMezzoByID() {
-		MezzoDAO dao = new MezzoDAO();
-		Mezzo m = dao.selectById(this);
+		Mezzo m = F2aFacade.getInstance().getGestioneTicketsFacade().selectMezzoById(this);
 		return m;
 	}
 	

@@ -1,3 +1,4 @@
+
 package it.unipv.ingsfw.model.tickets;
 //MODIFICATO IN DATA 19/02
 public enum TipologiaTicket {

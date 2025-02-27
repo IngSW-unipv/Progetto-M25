@@ -2,9 +2,6 @@ package it.unipv.ingsfw.model.lavorazioneCapi;
 import java.util.ArrayList;
 
 import it.unipv.ingsfw.facade.F2aFacade;
-import it.unipv.ingsfw.model.Capo;
-import it.unipv.ingsfw.model.CapoDAO;
-import it.unipv.ingsfw.model.StatoCapo;
 import it.unipv.ingsfw.model.TipoLavaggio;
 
 public class CatenaLavorazione {
